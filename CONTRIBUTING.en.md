@@ -10,9 +10,9 @@ especially running the installer on platforms nobody has tried yet.
 
 ## Where help is wanted right now
 
-* **Run the installer on macOS** — the pinned `:apple: macOS` issue.
-* **Run it on Windows**, through WSL2 or Docker Desktop — the pinned
-  `:window: windows` issue.
+* **Run the installer on macOS** — the issue labelled `:apple: macOS`.
+* **Run it on Windows**, through WSL2 or Docker Desktop — the issue labelled
+  `:window: windows`.
 * Fixing a defect in the templates, or improving the right-to-left layout.
 * Improving the Arabic or English wording of the documentation.
 
