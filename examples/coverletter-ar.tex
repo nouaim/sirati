@@ -1,0 +1,137 @@
+%!TEX TS-program = xelatex
+%!TEX encoding = UTF-8 Unicode
+%
+% Arabic (RTL) one-page cover letter example — Awesome Arabic CV
+%
+% Build:  make coverletter-ar        (from the repository root)
+%
+% Same technique as examples/cv-ar.tex: a self-contained RTL document built on
+% polyglossia (Arabic as the main language), with \textenglish{} around every
+% Latin run so emails, URLs and phone numbers keep left-to-right order.  It does
+% not load awesome-cv.cls, whose layout is LTR tabular.
+%
+% Fonts are referenced by family name, so no font files need to be bundled:
+%   Arabic : Tajawal   (system)   Latin : Roboto (system)
+%   Icons  : Font Awesome 7 (CTAN package `fontawesome7`)
+
+\documentclass[10pt, a4paper]{article}
+
+\usepackage{fontspec}
+\usepackage{polyglossia}
+\setmainlanguage[numerals=maghrib]{arabic}
+\setotherlanguage{english}
+
+\defaultfontfeatures{Ligatures=TeX}
+\newfontfamily\arabicfont[Script=Arabic, Scale=0.96]{Tajawal}
+\newfontfamily\arabicfontsf[Script=Arabic, Scale=0.96]{Tajawal}
+\newfontfamily\englishfont[Scale=0.92]{Roboto}
+
+\usepackage[hidelinks,unicode]{hyperref}
+\usepackage{geometry}
+\geometry{left=1.9cm, top=1.6cm, right=1.9cm, bottom=1.6cm, footskip=.35cm}
+
+\usepackage{xcolor}
+\definecolor{awesome}{HTML}{0395DE}
+\definecolor{darktext}{HTML}{333333}
+\definecolor{graytext}{HTML}{5D5D5D}
+\definecolor{lighttext}{HTML}{999999}
+\definecolor{sectiondivider}{HTML}{CCCCCC}
+
+\usepackage{setspace}
+\usepackage{fontawesome7}
+
+\pagestyle{empty}
+
+%-------------------------------------------------------------------------------
+%  Sender details — EDIT ONLY THIS BLOCK (kept identical to examples/cv-ar.tex).
+%  The values below belong to the same fictional person and use the RFC 2606
+%  reserved domain example.com, so nothing here identifies a real individual.
+%-------------------------------------------------------------------------------
+\newcommand{\cvname}{محمد الأمين}
+\newcommand{\cvtitle}{مهندس برمجيات}
+\newcommand{\cvlocation}{الرياض، المملكة العربية السعودية}
+\newcommand{\cvphone}{+000 000 000 000}
+\newcommand{\cvemail}{name@example.com}
+\newcommand{\cvgithub}{example}
+\newcommand{\cvlinkedin}{example}
+
+%-------------------------------------------------------------------------------
+%  Letter details — EDIT THESE to address a real application.
+%-------------------------------------------------------------------------------
+\newcommand{\letterrecipient}{شركة التقنية المتقدمة}
+\newcommand{\letterrecipientaddress}{إدارة التوظيف\\ الرياض، المملكة العربية السعودية}
+\newcommand{\lettersubject}{طلب توظيف — مهندس برمجيات}
+\newcommand{\lettersalutation}{السيد مدير إدارة التوظيف المحترم،}
+\newcommand{\letterclosing}{وتفضلوا بقبول فائق الاحترام،}
+\newcommand{\letterenclosure}{السيرة الذاتية}
+
+%-------------------------------------------------------------------------------
+%  Layout
+%-------------------------------------------------------------------------------
+% Section heading: starts at the right margin in RTL, with the divider rule
+% filling leftwards.  No group spans \par: that is what makes bidi report an
+% unbalanced \endL.
+\newcommand{\lettersection}[1]{%
+  \par\vspace{6.0mm}%
+  {\noindent\fontsize{13.5pt}{1.2em}\bfseries\color{awesome}#1}%
+  \hspace{0.6em}{\color{sectiondivider}\leaders\hrule height 0.8pt\hfill\kern0pt}\par%
+  \vspace{2.8mm}%
+}
+
+\newenvironment{letterbody}{%
+  \fontsize{11.2pt}{1.72em}\color{darktext}\setstretch{1.12}%
+}{%
+  \par
+}
+
+\begin{document}
+
+%-------------------------------------------------------------------------------
+%  Sender header (centred, mirroring the CV)
+%-------------------------------------------------------------------------------
+\begin{center}
+  {\fontsize{23pt}{1.1em}\bfseries\color{darktext} \cvname}\\[0.4em]
+  {\fontsize{10pt}{1em}\bfseries\color{awesome} \cvtitle}\\[0.45em]
+  {\fontsize{9.2pt}{1em}\color{lighttext} \cvlocation}\\[0.55em]
+  {\fontsize{8.4pt}{1em}\color{darktext}
+    \faMobile\ \textenglish{\cvphone}
+    \quad\textbar\quad
+    \faEnvelope\ \href{mailto:\cvemail}{\textenglish{\cvemail}}
+    \quad\textbar\quad
+    \faSquareGithub\ \href{https://github.com/\cvgithub}{\textenglish{\cvgithub}}
+    \quad\textbar\quad
+    \faLinkedin\ \href{https://www.linkedin.com/in/\cvlinkedin}{\textenglish{\cvlinkedin}}
+  }
+\end{center}
+
+\vspace{0.7em}
+\noindent{\color{sectiondivider}\rule{\linewidth}{0.8pt}}\par
+\vspace{0.9em}
+
+%-------------------------------------------------------------------------------
+%  Date (left) and recipient (right) — a mirrored two-column line
+%-------------------------------------------------------------------------------
+\noindent{\bfseries\fontsize{12pt}{1.25em}\color{darktext} \letterrecipient}%
+\hfill{\fontsize{10pt}{1.25em}\color{graytext} \today}\par
+\vspace{0.5mm}
+\noindent{\fontsize{10pt}{1.45em}\color{graytext} \letterrecipientaddress}\par
+
+%-------------------------------------------------------------------------------
+%  Subject, salutation, body, closing
+%-------------------------------------------------------------------------------
+\par\vspace{6.5mm}
+\noindent{\bfseries\fontsize{12pt}{1.25em}\color{darktext} \lettersubject}\par
+\vspace{4.5mm}
+\noindent{\fontsize{11.2pt}{1.55em}\color{darktext} \lettersalutation}\par
+\vspace{1.4mm}
+
+\input{coverletter-ar/body.tex}
+
+\vspace{3.4mm}
+\noindent{\fontsize{11.2pt}{1.55em}\color{darktext} \letterclosing}\par
+\vspace{5.5mm}
+\noindent{\bfseries\fontsize{12pt}{1.25em}\color{darktext} \cvname}\par
+\vspace{4.0mm}
+\noindent{\fontsize{10pt}{1.45em}\color{graytext} المرفقات: \letterenclosure}\par
+
+\end{document}
