@@ -1,4 +1,4 @@
-.PHONY: examples cv-ar coverletter-ar
+.PHONY: examples cv-ar coverletter-ar previews
 
 EXAMPLES_DIR = examples
 
@@ -23,6 +23,13 @@ $(EXAMPLES_DIR)/cv-ar.pdf: $(EXAMPLES_DIR)/cv-ar.tex $(CV_AR_SRCS)
 
 $(EXAMPLES_DIR)/coverletter-ar.pdf: $(EXAMPLES_DIR)/coverletter-ar.tex $(COVERLETTER_AR_SRCS)
 	cd $(EXAMPLES_DIR) && $(CC) -interaction=nonstopmode coverletter-ar.tex
+
+# Regenerate the README preview images from the built PDFs.
+# Needs poppler-utils for pdftoppm; not required by the normal build.
+previews: $(EXAMPLES_DIR)/cv-ar.pdf $(EXAMPLES_DIR)/coverletter-ar.pdf
+	cd $(EXAMPLES_DIR) && for d in cv-ar coverletter-ar; do \
+	  pdftoppm -r 130 -png -f 1 -l 1 $$d.pdf $$d && mv $$d-1.png $$d.png; \
+	done
 
 clean:
 	rm -rf $(EXAMPLES_DIR)/*.pdf

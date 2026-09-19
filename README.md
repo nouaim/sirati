@@ -17,6 +17,15 @@
   <a href="https://creativecommons.org/licenses/by-sa/4.0/">
     <img alt="License: CC BY-SA 4.0" src="https://img.shields.io/badge/license-CC%20BY--SA%204.0-blue.svg" />
   </a>
+  <a href="https://github.com/nouaim/sirati/actions/workflows/main.yml">
+    <img alt="Compile PDFs" src="https://github.com/nouaim/sirati/actions/workflows/main.yml/badge.svg" />
+  </a>
+  <a href="https://raw.githubusercontent.com/nouaim/sirati/main/examples/cv-ar.pdf">
+    <img alt="Download the CV" src="https://img.shields.io/badge/CV-PDF-blue.svg" />
+  </a>
+  <a href="https://raw.githubusercontent.com/nouaim/sirati/main/examples/coverletter-ar.pdf">
+    <img alt="Download the cover letter" src="https://img.shields.io/badge/Cover%20Letter-PDF-blue.svg" />
+  </a>
 </div>
 
 <br />
@@ -43,6 +52,13 @@ authoritative source, and this repository is derived from it.
 
 * [Arabic CV (PDF)](examples/cv-ar.pdf)
 * [Arabic cover letter (PDF)](examples/coverletter-ar.pdf)
+
+| Arabic CV | Arabic cover letter |
+|:---:|:---:|
+| [![Arabic CV](examples/cv-ar.png)](examples/cv-ar.pdf) | [![Arabic cover letter](examples/coverletter-ar.png)](examples/coverletter-ar.pdf) |
+
+Both documents are one page. The previews are rendered from the built PDFs and
+regenerated with `make previews`.
 
 
 ## Requirements
