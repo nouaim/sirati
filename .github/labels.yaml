@@ -38,3 +38,14 @@
 - color: "cfd3d7"
   description: "Extra Large size issue or PR."
   name: "size/XL"
+
+# Content
+- color: "1d76db"
+  description: "Changes to the LaTeX examples."
+  name: "latex"
+- color: "1d76db"
+  description: "Changes to the continuous integration configuration."
+  name: "ci"
+- color: "1d76db"
+  description: "Changes to the documentation."
+  name: "docs"

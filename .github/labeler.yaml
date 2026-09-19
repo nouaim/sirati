@@ -1,0 +1,13 @@
+# Path-based pull request labels.  The label names used here have to exist in
+# the repository; the "Sync labels" workflow creates them from .github/labels.yaml.
+latex:
+- changed-files:
+  - any-glob-to-any-file: 'examples/**'
+
+ci:
+- changed-files:
+  - any-glob-to-any-file: '.github/**'
+
+docs:
+- changed-files:
+  - any-glob-to-any-file: 'README.md'

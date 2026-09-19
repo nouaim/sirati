@@ -1,5 +1,5 @@
 <h1 align="center">
-  <a href="https://github.com/nouaim/awesome-arabic-cv" title="سيرتي">
+  <a href="https://github.com/nouaim/sirati" title="سيرتي">
     <img alt="سيرتي" src="icon.png" width="200px" height="200px" />
   </a>
   <br />
