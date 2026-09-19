@@ -92,8 +92,6 @@ macOS يستخدم Homebrew وMacTeX، وعلى Debian وUbuntu يستخدم `ap
 macOS على جهاز Mac حقيقي بعد؛ فإن فشل عندك فالخطوات اليدوية التالية تعمل هناك أيضًا.
 اقرأه قبل تمريره إلى صدفة: فالسكربت قصير ولا يفعل أكثر من الخطوات اليدوية التالية.
 
-وإن أردت أن تفعلها بنفسك، فهذا ما يشغّله بالضبط.
-
 ```bash
 sudo apt install -y texlive-xetex texlive-latex-recommended texlive-latex-extra \
     texlive-fonts-recommended texlive-lang-arabic \

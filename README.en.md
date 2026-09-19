@@ -95,8 +95,6 @@ macOS branch has not been run on a real Mac yet — if it fails for you, the man
 steps below work there too. Read it before piping it into a shell: the installer
 is short and does nothing beyond the manual steps below.
 
-If you would rather do it yourself, here is exactly what it runs.
-
 ```bash
 sudo apt install -y texlive-xetex texlive-latex-recommended texlive-latex-extra \
     texlive-fonts-recommended texlive-lang-arabic \
