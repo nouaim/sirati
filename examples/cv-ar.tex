@@ -39,7 +39,17 @@
 \definecolor{darktext}{HTML}{333333}
 \definecolor{graytext}{HTML}{5D5D5D}
 \definecolor{lighttext}{HTML}{999999}
+% Section rules: the neutral grey suits the white sheet, which is the default.
 \definecolor{sectiondivider}{HTML}{CCCCCC}
+% \definecolor{sectiondivider}{HTML}{B9A87F}   % warm rule, for the tint below
+
+% Optional: print on ورق شامواه (chamois), the cream book paper that Arabic books
+% are commonly printed on.  The sheet is white by default; to tint it, uncomment
+% the \pagecolor line below and the warm section rule above.  The tint is drawn by
+% xcolor's \pagecolor, which reaches the PDF through the `background' special of
+% the xetex/xdvipdfmx graphics driver.
+\definecolor{shamwa}{HTML}{F7F0DC}
+% \pagecolor{shamwa}
 
 \usepackage{enumitem}
 \usepackage{setspace}

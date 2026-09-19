@@ -126,6 +126,28 @@ The examples currently describe a **fictional person** using the reserved domain
 `example.com`. Replace those values with your own.
 
 
+### Paper
+
+The sheet is **white by default**, and nothing has to be done to keep it that
+way. An optional tint is shipped with the documents: **ورق شامواه** (chamois),
+the cream book paper that Arabic books are commonly printed on.
+
+To switch the tint on, uncomment two lines in the preamble of each document —
+the `\pagecolor` line, and the warm section rule just above it:
+
+```latex
+\definecolor{sectiondivider}{HTML}{B9A87F}   % warm rule: a grey rule vanishes on the tint
+\pagecolor{shamwa}                           % the chamois tint itself
+```
+
+`\pagecolor` belongs to `xcolor`, which both documents already load, so no extra
+package is needed; XeLaTeX draws the tint through the `background` special of the
+xdvipdfmx graphics driver. The value of `shamwa` (`#F7F0DC`) is a definecolor, so
+the tone can be changed to taste. Because the tint covers the whole sheet edge to
+edge, a printer has to be set to print background colours for it to come out on
+paper.
+
+
 ## Credit
 
 [**LaTeX**](https://www.latex-project.org) is a fantastic typesetting program that a lot of people use these days, especially the math and computer science people in academia.
@@ -167,6 +189,8 @@ repository:
 * replaces the English example documents with the Arabic pair, so the repository
   ships one CV and one cover letter rather than several examples;
 * uses Font Awesome 7 in place of Font Awesome 6;
+* keeps the sheet white but ships an optional ورق شامواه (chamois) paper tint,
+  two commented lines away in each document;
 * fetches the Arabic font (Tajawal, SIL OFL 1.1) at build time rather than
   bundling any font file.
 
