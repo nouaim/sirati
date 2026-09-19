@@ -294,10 +294,13 @@ for t in examples cv-ar coverletter-ar clean; do
 done
 
 # ---------------------------------------------------------------------------
-printf '\n== README policy and accuracy ==\n'
+printf '\n== README policy and accuracy (Arabic default + English sibling) ==\n'
+# README.md is the Arabic default and README.en.md is the English version; the
+# two link to each other so a reader can switch between them.  Everything else
+# the project promises - upstream credit, the licence, no donations - has to
+# hold in both files.
 python3 - <<'PY'
-import re, unicodedata
-txt = open("README.md", encoding="utf-8").read()
+import re, os
 ok = True
 
 def check(cond, good, badmsg):
@@ -305,44 +308,66 @@ def check(cond, good, badmsg):
     if cond: print(f"PASS  {good}")
     else: print(f"FAIL  {badmsg}"); ok = False
 
-ar = sum(1 for c in txt if "\u0600" <= c <= "\u06ff")
-check(ar / max(len(txt), 1) < 0.01,
-      f"prose is English (Arabic is {ar/len(txt)*100:.3f}% of the file)",
-      f"README looks translated ({ar/len(txt)*100:.2f}% Arabic)")
-check("Claud D. Park" in txt and "posquit0/Awesome-CV" in txt,
-      "credits the original project and author", "missing upstream credit")
-check(re.search(r"CC BY-SA 4\.0", txt) is not None,
-      "states the CC BY-SA 4.0 licence", "licence not stated")
-check(re.search(r"LICENSE", txt) is not None,
-      "points at the LICENSE file", "no reference to the LICENSE file")
-check(re.search(r"Font Awesome 7|FontAwesome7", txt) is not None,
-      "presents Font Awesome 7 as the icon set", "Font Awesome 7 not mentioned")
-# Prose may name the version we moved away from; what must never appear is
-# an actual dependency on the Font Awesome 6 package.
-check(re.search(r"fontawesome6", txt, re.I) is None,
-      "does not depend on the fontawesome6 package", "fontawesome6 referenced")
-removed = re.compile(r"examples/(?:cv\.tex|cv\.pdf|coverletter\.tex|coverletter\.pdf|coverletter-[01]\.png)")
-check(not removed.search(txt), "no link to a removed example file",
-      "links to a removed example file")
-check("make cv-ar" in txt and "make coverletter-ar" in txt,
-      "documents the Arabic build commands", "Arabic build command not documented")
-check(re.search(r"##\s*Maintainers", txt) is None,
-      "does not present a Maintainers list for this repository",
-      "a Maintainers section is present")
-# The class is gone, so nothing here may advertise LPPL - prose may mention it
-# only to say no LPPL component is shipped, never as a licence link or badge.
-check(re.search(r"latex-project\.org/lppl|badge/license-LPPL", txt, re.I) is None,
-      "advertises no LPPL licence link or badge",
-      "still advertises LPPL as the licence")
-licence_badges = re.findall(r"badge/license-([A-Za-z0-9%._-]+?)-[a-z]+\.svg", txt)
-check(all("cc" in b.lower() for b in licence_badges),
-      f"licence badge matches the stated licence ({licence_badges})",
-      f"licence badge disagrees with the licence text: {licence_badges}")
-# This project asks for no money: no donation, sponsorship or tipping links.
 DONATION = r"paypal|donat|sponsor|ko-?fi|buymeacoffee|patreon|opencollective|liberapay|flattr"
-check(re.search(DONATION, txt, re.I) is None,
-      "solicits no donations or sponsorship",
-      "contains a donation or sponsorship link")
+REMOVED = re.compile(r"examples/(?:cv\.tex|cv\.pdf|coverletter\.tex|coverletter\.pdf|coverletter-[01]\.png)")
+
+def arabic_ratio(txt):
+    return sum(1 for c in txt if "\u0600" <= c <= "\u06ff") / max(len(txt), 1)
+
+for name, lang in (("README.md", "ar"), ("README.en.md", "en")):
+    if not os.path.exists(name):
+        check(False, "", f"{name} is missing")
+        continue
+    txt = open(name, encoding="utf-8").read()
+    ratio = arabic_ratio(txt)
+    if lang == "ar":
+        check(ratio > 0.25,
+              f"README.md is the Arabic default ({ratio*100:.1f}% Arabic letters)",
+              f"README.md is not the Arabic version ({ratio*100:.2f}% Arabic)")
+        check("README.en.md" in txt, "README.md links to the English sibling",
+              "README.md does not link to README.en.md")
+    else:
+        check(ratio < 0.01,
+              f"README.en.md is the English version (Arabic is {ratio*100:.2f}% of the file)",
+              f"README.en.md is not English ({ratio*100:.2f}% Arabic)")
+        check("README.md" in txt, "README.en.md links back to the Arabic default",
+              "README.en.md does not link back to README.md")
+    check("Claud D. Park" in txt and "posquit0/Awesome-CV" in txt,
+          f"{name}: credits the original project and author",
+          f"{name}: missing upstream credit")
+    check(re.search(r"CC BY-SA 4\.0", txt) is not None,
+          f"{name}: states the CC BY-SA 4.0 licence", f"{name}: licence not stated")
+    check(re.search(r"LICENSE", txt) is not None,
+          f"{name}: points at the LICENSE file", f"{name}: no reference to the LICENSE file")
+    check(re.search(r"Font Awesome 7|FontAwesome7", txt) is not None,
+          f"{name}: presents Font Awesome 7 as the icon set",
+          f"{name}: Font Awesome 7 not mentioned")
+    # Prose may name the version we moved away from; what must never appear is
+    # an actual dependency on the Font Awesome 6 package.
+    check(re.search(r"fontawesome6", txt, re.I) is None,
+          f"{name}: does not depend on the fontawesome6 package",
+          f"{name}: fontawesome6 referenced")
+    check(not REMOVED.search(txt), f"{name}: no link to a removed example file",
+          f"{name}: links to a removed example file")
+    check("make cv-ar" in txt and "make coverletter-ar" in txt,
+          f"{name}: documents the Arabic build commands",
+          f"{name}: Arabic build command not documented")
+    check(re.search(r"##\s*Maintainers", txt) is None,
+          f"{name}: does not present a Maintainers list for this repository",
+          f"{name}: a Maintainers section is present")
+    # The class is gone, so nothing here may advertise LPPL - prose may mention
+    # it only to say no LPPL component is shipped, never as a licence link or badge.
+    check(re.search(r"latex-project\.org/lppl|badge/license-LPPL", txt, re.I) is None,
+          f"{name}: advertises no LPPL licence link or badge",
+          f"{name}: still advertises LPPL as the licence")
+    badges = re.findall(r"badge/license-([A-Za-z0-9%._-]+?)-[a-z]+\.svg", txt)
+    check(all("cc" in b.lower() for b in badges),
+          f"{name}: licence badge matches the stated licence ({badges})",
+          f"{name}: licence badge disagrees with the licence text: {badges}")
+    # This project asks for no money: no donation, sponsorship or tipping links.
+    check(re.search(DONATION, txt, re.I) is None,
+          f"{name}: solicits no donations or sponsorship",
+          f"{name}: contains a donation or sponsorship link")
 raise SystemExit(0 if ok else 1)
 PY
 [ $? -eq 0 ] || fail=1

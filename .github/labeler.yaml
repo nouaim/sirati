@@ -10,4 +10,6 @@ ci:
 
 docs:
 - changed-files:
-  - any-glob-to-any-file: 'README.md'
+  - any-glob-to-any-file:
+    - 'README.md'
+    - 'README.en.md'

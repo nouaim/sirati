@@ -7,7 +7,7 @@
 </h1>
 
 <p align="center">
-  An Arabic-first, right-to-left CV and cover-letter template for LaTeX
+  قالب سيرة ذاتية ورسالة تغطية بالعربية، من اليمين إلى اليسار، لـ LaTeX
 </p>
 
 <div align="center">
@@ -30,186 +30,188 @@
 
 <br />
 
-
-## What is this?
-
-**سيرتي** is an Arabic-first take on
-[Awesome CV](https://github.com/posquit0/Awesome-CV), the LaTeX template by
-[Claud D. Park](https://github.com/posquit0).
-
-The Arabic examples are **self-contained XeLaTeX documents** written for
-right-to-left typesetting with [polyglossia](https://ctan.org/pkg/polyglossia).
-This repository does not carry upstream's class file: its layout is built around
-left-to-right tables, and the RTL layout here comes from the language setting
-instead. The documents therefore compile on their own, with no class to install.
-
-If you want the original English template and its class, use
-[upstream Awesome CV](https://github.com/posquit0/Awesome-CV) — it remains the
-authoritative source, and this repository is derived from it.
+<p align="center">
+  <strong>العربية</strong> · <a href="README.en.md">English</a>
+</p>
 
 
-## Preview
+## ما هذا المشروع؟
 
-* [Arabic CV (PDF)](examples/cv-ar.pdf)
-* [Arabic cover letter (PDF)](examples/coverletter-ar.pdf)
+**سيرتي** نسخة عربية من [Awesome CV](https://github.com/posquit0/Awesome-CV)،
+القالب الذي أنشأه [Claud D. Park](https://github.com/posquit0) لـ LaTeX.
 
-| Arabic CV | Arabic cover letter |
+الأمثلة العربية هنا **مستندات XeLaTeX قائمة بذاتها**، مكتوبة لصفّ النص من اليمين إلى
+اليسار عبر [polyglossia](https://ctan.org/pkg/polyglossia). لا يحتوي هذا المستودع على
+ملف الصنف (class) الأصلي: فتخطيطه مبنيّ على جداول من اليسار إلى اليمين، أما التخطيط
+العربي هنا فيأتي من إعداد اللغة نفسها. ولذلك تُصرَّف المستندات وحدها دون تثبيت أي صنف.
+
+وإن أردت القالب الإنجليزي الأصلي وصنفه، فاستخدم
+[مشروع Awesome CV الأصلي](https://github.com/posquit0/Awesome-CV)؛ فهو المرجع الأول،
+وهذا المستودع مشتقّ منه.
+
+
+## معاينة
+
+* [السيرة الذاتية بالعربية (PDF)](examples/cv-ar.pdf)
+* [رسالة التغطية بالعربية (PDF)](examples/coverletter-ar.pdf)
+
+| السيرة الذاتية | رسالة التغطية |
 |:---:|:---:|
-| [![Arabic CV](examples/cv-ar.png)](examples/cv-ar.pdf) | [![Arabic cover letter](examples/coverletter-ar.png)](examples/coverletter-ar.pdf) |
+| [![السيرة الذاتية](examples/cv-ar.png)](examples/cv-ar.pdf) | [![رسالة التغطية](examples/coverletter-ar.png)](examples/coverletter-ar.pdf) |
 
-Both documents are one page. The previews are rendered from the built PDFs and
-regenerated with `make previews`.
-
-
-## Requirements
-
-A full TeX distribution is assumed, with **XeLaTeX** and the
-**polyglossia** package. [TeX Live](https://tug.org/texlive/) is recommended.
-
-The Arabic examples additionally need:
-
-* **Font Awesome 7** — the CTAN package
-  [`fontawesome7`](https://ctan.org/pkg/fontawesome7), which provides the
-  [Font Awesome 7](https://fontawesome.com/v7/icons) icon set
-* an **Arabic font** — the examples use **Tajawal**, referenced by family name
-* a **Latin font** — the examples use **Roboto**, referenced by family name
-
-No font files are bundled with this repository, so the fonts are referenced by
-family name and your system has to provide them:
-
-* **Roboto** is packaged on most distributions: `sudo apt install fonts-roboto`.
-* **Tajawal** is *not* in the usual distribution repositories. Download it from
-  [Google Fonts](https://fonts.google.com/specimen/Tajawal), install the TTFs
-  into `~/.local/share/fonts` and run `fc-cache -f`. Alternatively, change the
-  family name in the preamble of the two documents to an Arabic font you already
-  have — **Amiri** (`fonts-hosny-amiri`) and **Noto Naskh Arabic**
-  (`fonts-noto-core`) are both packaged.
+المستندان في صفحة واحدة. والصور أعلاه مولَّدة من ملفات PDF المبنيّة وتُحدَّث بالأمر
+`make previews`.
 
 
-## Usage
+## المتطلبات
 
-Build the Arabic CV:
+يُفترض وجود توزيعة TeX كاملة تتضمّن **XeLaTeX** وحزمة **polyglossia**، ويُستحسن
+[TeX Live](https://tug.org/texlive/).
+
+وتحتاج الأمثلة العربية فوق ذلك إلى:
+
+* **Font Awesome 7** — حزمة CTAN
+  [`fontawesome7`](https://ctan.org/pkg/fontawesome7)، وهي توفّر أيقونات
+  [Font Awesome 7](https://fontawesome.com/v7/icons)
+* **خط عربي** — والأمثلة تستخدم **Tajawal** بالاسم العائلي
+* **خط لاتيني** — والأمثلة تستخدم **Roboto** بالاسم العائلي
+
+لا يُضمّن هذا المستودع أي ملف خط، بل تُستدعى الخطوط بأسمائها العائلية، وعلى نظامك أن
+يوفّرها:
+
+* **Roboto** متوفّر في معظم التوزيعات: `sudo apt install fonts-roboto`.
+* **Tajawal** *غير* متوفّر في مستودعات التوزيعات المعتادة. نزّله من
+  [Google Fonts](https://fonts.google.com/specimen/Tajawal)، وثبّت ملفات TTF في
+  `~/.local/share/fonts` ثم شغّل `fc-cache -f`. أو غيّر اسم العائلة في تمهيد
+  المستندين إلى خط عربي متوفّر لديك — **Amiri** (`fonts-hosny-amiri`) و
+  **Noto Naskh Arabic** (`fonts-noto-core`) كلاهما متوفّر كحزمة.
+
+
+## الاستخدام
+
+ابنِ السيرة الذاتية العربية:
 
 ```bash
 make cv-ar
 ```
 
-Build the Arabic cover letter:
+وابنِ رسالة التغطية العربية:
 
 ```bash
 make coverletter-ar
 ```
 
-In either case this produces `examples/cv-ar.pdf` or
-`examples/coverletter-ar.pdf`. You can also compile directly:
+وفي الحالتين ينتج الملف `examples/cv-ar.pdf` أو `examples/coverletter-ar.pdf`.
+ويمكنك التصريف مباشرة:
 
 ```bash
 cd examples && xelatex cv-ar.tex
 ```
 
-`make` on its own builds both documents.
+والأمر `make` وحده يبني المستندين.
 
 
-## Customising
+## التخصيص
 
-Both Arabic documents keep the person's details in one clearly marked block near
-the top of the file, and the cover letter keeps its prose in a separate file
-(`examples/coverletter-ar/body.tex`) so the wording can be changed without
-touching the layout:
+يضع المستندان بيانات الشخص في كتلة واحدة واضحة في أعلى الملف، وتُحفظ نصوص رسالة
+التغطية في ملف منفصل (`examples/coverletter-ar/body.tex`) حتى يمكن تغيير الصياغة دون
+المساس بالتخطيط:
 
-* `examples/cv-ar.tex` — CV layout and details
-* `examples/cv-ar/*.tex` — CV sections
-* `examples/coverletter-ar.tex` — letter layout and details
-* `examples/coverletter-ar/body.tex` — letter prose
+* `examples/cv-ar.tex` — تخطيط السيرة الذاتية وبياناتها
+* `examples/cv-ar/*.tex` — أقسام السيرة الذاتية
+* `examples/coverletter-ar.tex` — تخطيط الرسالة وبياناتها
+* `examples/coverletter-ar/body.tex` — نص الرسالة
 
-The examples currently describe a **fictional person** using the reserved domain
-`example.com`. Replace those values with your own.
+والأمثلة تصف حاليًا **شخصًا وهميًا** يستخدم النطاق المحجوز `example.com`. استبدل تلك
+القيم بقيمك.
 
 
-### Paper
+### الورق
 
-The sheet is **white by default**, and nothing has to be done to keep it that
-way. An optional tint is shipped with the documents: **ورق شامواه** (chamois),
-the cream book paper that Arabic books are commonly printed on.
+الورقة **بيضاء افتراضيًا**، ولا يلزم فعل شيء للبقاء عليها. وتأتي مع المستندين صبغة
+اختيارية هي **ورق شامواه**، الورق الكريمي الذي تُطبع عليه الكتب العربية عادةً.
 
-To switch the tint on, uncomment two lines in the preamble of each document —
-the `\pagecolor` line, and the warm section rule just above it:
+ولتشغيل الصبغة أزل التعليق عن سطرين في تمهيد كل مستند: سطر `\pagecolor`، وسطر خط
+الأقسام الدافئ الذي يسبقه مباشرة:
 
 ```latex
-\definecolor{sectiondivider}{HTML}{B9A87F}   % warm rule: a grey rule vanishes on the tint
-\pagecolor{shamwa}                           % the chamois tint itself
+\definecolor{sectiondivider}{HTML}{B9A87F}   % خط دافئ: الخط الرمادي يختفي على الصبغة
+\pagecolor{shamwa}                           % الصبغة نفسها
 ```
 
-`\pagecolor` belongs to `xcolor`, which both documents already load, so no extra
-package is needed; XeLaTeX draws the tint through the `background` special of the
-xdvipdfmx graphics driver. The value of `shamwa` (`#F7F0DC`) is a definecolor, so
-the tone can be changed to taste. Because the tint covers the whole sheet edge to
-edge, a printer has to be set to print background colours for it to come out on
-paper.
+والأمر `\pagecolor` من حزمة `xcolor` التي يستدعيها المستندان أصلًا، فلا حاجة إلى حزمة
+إضافية؛ ويرسم XeLaTeX الصبغة عبر الخاصية `background` في مشغّل الرسوم xdvipdfmx.
+وقيمة `shamwa` (`#F7F0DC`) معرَّفة بـ `\definecolor` فيمكن تعديل الدرجة كما تحب.
+ولأن الصبغة تغطّي الورقة كاملةً من الحافة إلى الحافة، لا بد من ضبط الطابعة على طباعة
+ألوان الخلفية لتظهر على الورق.
 
 
-## Credit
+## شكر وتقدير
 
-[**LaTeX**](https://www.latex-project.org) is a fantastic typesetting program that a lot of people use these days, especially the math and computer science people in academia.
+[**LaTeX**](https://www.latex-project.org) برنامج تنضيد رائع يستخدمه كثيرون، ولا سيما
+في الرياضيات وعلوم الحاسوب في الأوساط الأكاديمية.
 
-[**Awesome CV**](https://github.com/posquit0/Awesome-CV) is the original project this repository is derived from, created by [Claud D. Park](https://github.com/posquit0) with contributions from its community.
+[**Awesome CV**](https://github.com/posquit0/Awesome-CV) المشروع الأصلي الذي اشتُقّ
+منه هذا المستودع، أنشأه [Claud D. Park](https://github.com/posquit0) بمساهمات من
+مجتمعه.
 
-[**FontAwesome7 LaTeX Package**](https://ctan.org/pkg/fontawesome7) is a LaTeX package that provides access to the [Font Awesome 7](https://fontawesome.com/v7/icons) icon set.
+[**FontAwesome7 LaTeX Package**](https://ctan.org/pkg/fontawesome7) حزمة LaTeX توفّر
+أيقونات [Font Awesome 7](https://fontawesome.com/v7/icons).
 
-[**Tajawal**](https://github.com/googlefonts/tajawal) is the Arabic typeface used by the Arabic examples.
+[**Tajawal**](https://github.com/googlefonts/tajawal) الخط العربي المستخدم في الأمثلة
+العربية.
 
-[**Roboto**](https://github.com/google/roboto) is the default font on Android and ChromeOS, and the recommended font for Google’s visual language, Material Design.
+[**Roboto**](https://github.com/google/roboto) الخط الافتراضي في أندرويد وChromeOS،
+والخط الموصى به للغة Google البصرية، Material Design.
 
-[**Source Sans Pro**](https://github.com/adobe-fonts/source-sans-pro) is a set of OpenType fonts that have been designed to work well in user interface (UI) environments.
-
-
-## Licence
-
-Everything in this repository — the Arabic CV and cover letter, their section
-files, and the build files — is published under the
-[Creative Commons Attribution-ShareAlike 4.0 International licence](https://creativecommons.org/licenses/by-sa/4.0/)
-(CC BY-SA 4.0). The full legal code is in [LICENSE](LICENSE).
-
-No file under the LaTeX Project Public License is distributed here. Upstream's
-`awesome-cv.cls` is deliberately **not** included: its layout is built around
-left-to-right tables, the Arabic documents do not use it, and leaving the class
-out means there is no LPPL component to comply with. Fetch it from
-[upstream](https://github.com/posquit0/Awesome-CV) if you want it.
+[**Source Sans Pro**](https://github.com/adobe-fonts/source-sans-pro) مجموعة خطوط
+OpenType مصمّمة للعمل جيدًا في واجهات المستخدم.
 
 
-## Changes from upstream
+## الترخيص
 
-Relative to [Awesome CV](https://github.com/posquit0/Awesome-CV), this
-repository:
+كل ما في هذا المستودع — السيرة الذاتية العربية ورسالة التغطية وملفات أقسامهما وملفات
+البناء — منشور تحت
+[رخصة المشاع الإبداعي نَسب المُصنَّف — الترخيص بالمثل 4.0 دولي](https://creativecommons.org/licenses/by-sa/4.0/)
+(CC BY-SA 4.0). ونصّ الرخصة الكامل في [LICENSE](LICENSE).
 
-* rewrites the CV and the cover letter as standalone right-to-left XeLaTeX
-  documents using [polyglossia](https://ctan.org/pkg/polyglossia), instead of
-  building on the class and its left-to-right layout;
-* drops the class file `awesome-cv.cls` altogether;
-* replaces the English example documents with the Arabic pair, so the repository
-  ships one CV and one cover letter rather than several examples;
-* uses Font Awesome 7 in place of Font Awesome 6;
-* keeps the sheet white but ships an optional ورق شامواه (chamois) paper tint,
-  two commented lines away in each document;
-* fetches the Arabic font (Tajawal, SIL OFL 1.1) at build time rather than
-  bundling any font file.
+ولا يُوزَّع هنا أي ملف تحت رخصة LaTeX Project Public License، فملف `awesome-cv.cls`
+من المشروع الأصلي **غير** مضمَّن عن قصد: فتخطيطه مبنيّ على جداول من اليسار إلى اليمين،
+والمستندات العربية لا تستخدمه، وبإغفاله لا يبقى أي مكوّن تحت LPPL يلزم الالتزام به. وإن
+أردته فخذه من [المشروع الأصلي](https://github.com/posquit0/Awesome-CV).
 
 
-## Upstream policy
+## ما تغيّر عن المشروع الأصلي
 
-The upstream author asks that his own résumé not be reused:
+بالمقارنة مع [Awesome CV](https://github.com/posquit0/Awesome-CV)، هذا المستودع:
+
+* يعيد كتابة السيرة الذاتية ورسالة التغطية كمستندين قائمين بذاتهما بـ XeLaTeX ومن
+  اليمين إلى اليسار عبر [polyglossia](https://ctan.org/pkg/polyglossia)، بدل البناء
+  على الصنف وتخطيطه من اليسار إلى اليمين؛
+* يحذف ملف الصنف `awesome-cv.cls` كليًا؛
+* يستبدل الأمثلة الإنجليزية بالزوج العربي، فيشحن المستودع سيرة ذاتية واحدة ورسالة
+  تغطية واحدة بدل أمثلة متعددة؛
+* يستخدم Font Awesome 7 بدلًا من Font Awesome 6؛
+* يُبقي الورقة بيضاء لكنه يشحن صبغة ورق شامواه اختيارية، على بعد سطرين معلَّقين في كل
+  مستند؛
+* يجلب الخط العربي (Tajawal، برخصة SIL OFL 1.1) عند البناء بدل تضمين أي ملف خط.
+
+
+## سياسة المشروع الأصلي
+
+يطلب صاحب المشروع الأصلي عدم إعادة استخدام سيرته الذاتية، ونصّ طلبه:
 
 > You are free to take my `.tex` file and modify it to create your own resume.
 > Please don't use my resume for anything else without my permission, though!
 
-This repository respects that request. The upstream author's personal content —
-his name, address, contact details and résumé content — is not part
-of the Arabic examples, which describe a fictional placeholder person instead.
+ويحترم هذا المستودع ذلك الطلب؛ فمحتوى صاحب المشروع الأصلي الشخصي — اسمه وعنوانه
+وبيانات اتصاله ومحتوى سيرته — ليس جزءًا من الأمثلة العربية، التي تصف شخصًا وهميًا
+بدلًا منه.
 
-The attribution comments naming the original author in the source-file headers
-are kept deliberately, as the licence requires the notices to be preserved.
+وتبقى تعليقات النَسب التي تذكر المؤلف الأصلي في رؤوس ملفات المصدر عن قصد، لأن الرخصة
+توجب حفظ الإشعارات.
 
 
-## See Also
+## انظر أيضًا
 
-* [Awesome Identity](https://github.com/posquit0/hugo-awesome-identity) - A single-page Hugo theme to introduce yourself.
+* [Awesome Identity](https://github.com/posquit0/hugo-awesome-identity) — قالب Hugo لصفحة واحدة للتعريف بنفسك.
