@@ -43,14 +43,6 @@ If you want the original English template, use
 * [Arabic CV (PDF)](examples/cv-ar.pdf)
 * [Arabic cover letter (PDF)](examples/coverletter-ar.pdf)
 
-#### Résumé (upstream example)
-
-You can see [PDF](examples/resume.pdf)
-
-| Page. 1 | Page. 2 |
-|:---:|:---:|
-| [![Résumé](examples/resume-0.png)](examples/resume.pdf)  | [![Résumé](examples/resume-1.png)](examples/resume.pdf) |
-
 
 ## Requirements
 
@@ -65,9 +57,16 @@ The Arabic examples additionally need:
 * an **Arabic font** — the examples use **Tajawal**, referenced by family name
 * a **Latin font** — the examples use **Roboto**, referenced by family name
 
-No font files are bundled with this repository, so referencing fonts by family
-name means your system has to provide them (for example
-`sudo apt install fonts-tajawal fonts-roboto`).
+No font files are bundled with this repository, so the fonts are referenced by
+family name and your system has to provide them:
+
+* **Roboto** is packaged on most distributions: `sudo apt install fonts-roboto`.
+* **Tajawal** is *not* in the usual distribution repositories. Download it from
+  [Google Fonts](https://fonts.google.com/specimen/Tajawal), install the TTFs
+  into `~/.local/share/fonts` and run `fc-cache -f`. Alternatively, change the
+  family name in the preamble of the two documents to an Arabic font you already
+  have — **Amiri** (`fonts-hosny-amiri`) and **Noto Naskh Arabic**
+  (`fonts-noto-core`) are both packaged.
 
 
 ## Usage
@@ -91,7 +90,15 @@ In either case this produces `examples/cv-ar.pdf` or
 cd examples && xelatex cv-ar.tex
 ```
 
-The upstream résumé example still builds with LuaLaTeX through `make examples`.
+`make` on its own builds both documents.
+
+
+## No photo
+
+These templates are deliberately **photo-free**: the header carries your name,
+title, location and contact details only. There is no `\photo` command and no
+image file to supply, which keeps the layout stable and avoids the print-versus-online
+photo conventions that differ between countries.
 
 
 ## Customising

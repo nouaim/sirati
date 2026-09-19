@@ -332,6 +332,31 @@ else
 fi
 
 # ---------------------------------------------------------------------------
+printf '\n== no photo support ==\n'
+# The templates are deliberately photo-free: no image asset, and no \photo
+# command for anyone to reach for.
+if git ls-files | grep -qi 'profile\.png'; then
+  bad "a photo asset is still tracked"
+else
+  pass "no photo asset is tracked"
+fi
+if grep -qE '\\newcommand\{\\photo\}|\\drawphoto|@photo' awesome-cv.cls; then
+  bad "awesome-cv.cls still defines the photo capability"
+else
+  pass "awesome-cv.cls defines no photo capability"
+fi
+if grep -qE 'tikzpicture|tcolorbox' awesome-cv.cls; then
+  bad "photo rendering machinery (tikz/tcolorbox) is still present"
+else
+  pass "no photo rendering machinery remains"
+fi
+if grep -rnE '\\photo\b' examples/*.tex; then
+  bad "an example document still calls \\photo"
+else
+  pass "no example document calls \\photo"
+fi
+
+# ---------------------------------------------------------------------------
 printf '\n== summary ==\n'
 if [ "$fail" = "0" ]; then echo "ALL CHECKS PASSED"; else echo "SOME CHECKS FAILED"; fi
 exit $fail
