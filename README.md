@@ -110,14 +110,6 @@ cd examples && xelatex cv-ar.tex
 `make` on its own builds both documents.
 
 
-## No photo
-
-These templates are deliberately **photo-free**: the header carries your name,
-title, location and contact details only. There is no `\photo` command and no
-image file to supply, which keeps the layout stable and avoids the print-versus-online
-photo conventions that differ between countries.
-
-
 ## Customising
 
 Both Arabic documents keep the person's details in one clearly marked block near
@@ -174,7 +166,6 @@ repository:
 * drops the class file `awesome-cv.cls` altogether;
 * replaces the English example documents with the Arabic pair, so the repository
   ships one CV and one cover letter rather than several examples;
-* removes photo support: there is no `\photo` command and no image asset;
 * uses Font Awesome 7 in place of Font Awesome 6;
 * fetches the Arabic font (Tajawal, SIL OFL 1.1) at build time rather than
   bundling any font file.
@@ -188,7 +179,7 @@ The upstream author asks that his own résumé not be reused:
 > Please don't use my resume for anything else without my permission, though!
 
 This repository respects that request. The upstream author's personal content —
-his name, photograph, address, contact details and résumé content — is not part
+his name, address, contact details and résumé content — is not part
 of the Arabic examples, which describe a fictional placeholder person instead.
 
 The attribution comments naming the original author in the source-file headers
