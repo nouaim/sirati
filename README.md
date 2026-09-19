@@ -186,14 +186,6 @@ The attribution comments naming the original author in the source-file headers
 are kept deliberately, as the licence requires the notices to be preserved.
 
 
-## A note on maintenance
-
-This repository is a derived work and is **not** maintained by the authors or
-maintainers of upstream [Awesome CV](https://github.com/posquit0/Awesome-CV).
-Please direct questions about *this* repository here; questions about the
-original class belong upstream.
-
-
 ## See Also
 
 * [Awesome Identity](https://github.com/posquit0/hugo-awesome-identity) - A single-page Hugo theme to introduce yourself.
