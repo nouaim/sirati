@@ -220,8 +220,8 @@ printf '\n== no dangling references to removed example files ==\n'
 python3 - <<'PY'
 import os, re, subprocess, glob
 files = []
-for pat in ["Makefile", "README.md", "*.md", ".github/**/*.yml", ".github/**/*.yaml",
-            "tests/*", "examples/*.tex", "examples/**/*.tex", "awesome-cv.cls"]:
+for pat in ["Makefile", "LICENSE", "README.md", "*.md", ".github/**/*.yml",
+            ".github/**/*.yaml", "tests/*", "examples/*.tex", "examples/**/*.tex"]:
     files += [p for p in glob.glob(pat, recursive=True) if os.path.isfile(p)]
 ref = re.compile(r"examples/[A-Za-z0-9_][A-Za-z0-9_./-]*\.(?:tex|pdf|png|cls|jpg)")
 # "exists" means present in the committed tree: `make clean` legitimately deletes
@@ -275,10 +275,16 @@ check(ar / max(len(txt), 1) < 0.01,
       f"README looks translated ({ar/len(txt)*100:.2f}% Arabic)")
 check("Claud D. Park" in txt and "posquit0/Awesome-CV" in txt,
       "credits the original project and author", "missing upstream credit")
-check(re.search(r"LPPL", txt) and re.search(r"CC BY-SA", txt),
-      "states the licences", "licence not stated")
-check(re.search(r"Font Awesome 7|FontAwesome7", txt) and not re.search(r"Font Awesome 6|fontawesome6", txt, re.I),
-      "presents Font Awesome 7 as the icon set", "Font Awesome version wrong")
+check(re.search(r"CC BY-SA 4\.0", txt) is not None,
+      "states the CC BY-SA 4.0 licence", "licence not stated")
+check(re.search(r"LICENSE", txt) is not None,
+      "points at the LICENSE file", "no reference to the LICENSE file")
+check(re.search(r"Font Awesome 7|FontAwesome7", txt) is not None,
+      "presents Font Awesome 7 as the icon set", "Font Awesome 7 not mentioned")
+# Prose may name the version we moved away from; what must never appear is
+# an actual dependency on the Font Awesome 6 package.
+check(re.search(r"fontawesome6", txt, re.I) is None,
+      "does not depend on the fontawesome6 package", "fontawesome6 referenced")
 removed = re.compile(r"examples/(?:cv\.tex|cv\.pdf|coverletter\.tex|coverletter\.pdf|coverletter-[01]\.png)")
 check(not removed.search(txt), "no link to a removed example file",
       "links to a removed example file")
@@ -309,13 +315,10 @@ if [ -f "$FA7_MAP" ]; then
   python3 - "$FA7_MAP" <<'PY'
 import sys, re, glob
 mapping = open(sys.argv[1], encoding="utf-8", errors="ignore").read()
-LOCAL = {"faAlt"}          # defined by awesome-cv.cls itself, not by Font Awesome
 bad, used = [], 0
-for p in glob.glob("**/*.cls", recursive=True) + glob.glob("**/*.tex", recursive=True):
+for p in glob.glob("**/*.tex", recursive=True):
     for i, line in enumerate(open(p, encoding="utf-8", errors="ignore"), 1):
         for name in re.findall(r"\\(fa[A-Z][A-Za-z0-9]*)", line.split("%")[0]):
-            if name in LOCAL:
-                continue
             used += 1
             if f"\\{name}" not in mapping and name not in mapping:
                 bad.append(f"{p}:{i}: \\{name}")
@@ -361,12 +364,12 @@ if git ls-files | grep -qi 'profile\.png'; then
 else
   pass "no photo asset is tracked"
 fi
-if grep -qE '\\newcommand\{\\photo\}|\\drawphoto|@photo' awesome-cv.cls; then
-  bad "awesome-cv.cls still defines the photo capability"
+if grep -rqE '\\newcommand\{\\photo\}|\\drawphoto|@photo' --include='*.tex' --include='*.cls' . ; then
+  bad "a source still defines the photo capability"
 else
-  pass "awesome-cv.cls defines no photo capability"
+  pass "no source defines the photo capability"
 fi
-if grep -qE 'tikzpicture|tcolorbox' awesome-cv.cls; then
+if grep -rqE 'tikzpicture|tcolorbox' --include='*.tex' --include='*.cls' . ; then
   bad "photo rendering machinery (tikz/tcolorbox) is still present"
 else
   pass "no photo rendering machinery remains"
@@ -375,6 +378,31 @@ if grep -rnE '\\photo\b' examples/*.tex; then
   bad "an example document still calls \\photo"
 else
   pass "no example document calls \\photo"
+fi
+
+# ---------------------------------------------------------------------------
+printf '\n== licence compliance ==\n'
+# This repository distributes no LPPL component: upstream's class is not shipped,
+# and everything here is our own work under CC BY-SA 4.0.
+cls_files=$(git ls-files | grep '\.cls$' || true)
+if [ -z "$cls_files" ]; then
+  pass "no .cls file is distributed, so there is no LPPL component"
+else
+  bad "a .cls file is still distributed: $cls_files"
+fi
+if [ -f LICENSE ] && grep -q "Attribution-ShareAlike 4.0 International" LICENSE; then
+  pass "LICENSE carries the CC BY-SA 4.0 legal code"
+else
+  bad "LICENSE is missing or is not the CC BY-SA 4.0 text"
+fi
+missing_notice=""
+for f in $(git ls-files | grep '^examples/.*\.tex$'); do
+  grep -q "CC BY-SA 4.0" "$f" || missing_notice="$missing_notice $f"
+done
+if [ -z "$missing_notice" ]; then
+  pass "every example source file states its licence and credits upstream"
+else
+  bad "no licence notice in:$missing_notice"
 fi
 
 # ---------------------------------------------------------------------------

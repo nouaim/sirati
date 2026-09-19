@@ -30,12 +30,13 @@
 
 The Arabic examples are **self-contained XeLaTeX documents** written for
 right-to-left typesetting with [polyglossia](https://ctan.org/pkg/polyglossia).
-They deliberately do not build on `awesome-cv.cls`, because that class lays pages
-out with left-to-right tables; the RTL layout comes from the language setting
-instead. Each document therefore also works on its own, without the class.
+This repository does not carry upstream's class file: its layout is built around
+left-to-right tables, and the RTL layout here comes from the language setting
+instead. The documents therefore compile on their own, with no class to install.
 
-If you want the original English template, use
-[upstream Awesome CV](https://github.com/posquit0/Awesome-CV).
+If you want the original English template and its class, use
+[upstream Awesome CV](https://github.com/posquit0/Awesome-CV) — it remains the
+authoritative source, and this repository is derived from it.
 
 
 ## Preview
@@ -134,14 +135,33 @@ The examples currently describe a **fictional person** using the reserved domain
 
 ## Licence
 
-* The class file `awesome-cv.cls` is published under the
-  [LaTeX Project Public License v1.3c](https://www.latex-project.org/lppl.txt),
-  as it is in the upstream project.
-* The template and example files are published under the
-  [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) licence, as
-  they are upstream.
+Everything in this repository — the Arabic CV and cover letter, their section
+files, and the build files — is published under the
+[Creative Commons Attribution-ShareAlike 4.0 International licence](https://creativecommons.org/licenses/by-sa/4.0/)
+(CC BY-SA 4.0). The full legal code is in [LICENSE](LICENSE).
 
-Both licences come from upstream Awesome CV and are kept here unchanged.
+No file under the LaTeX Project Public License is distributed here. Upstream's
+`awesome-cv.cls` is deliberately **not** included: its layout is built around
+left-to-right tables, the Arabic documents do not use it, and leaving the class
+out means there is no LPPL component to comply with. Fetch it from
+[upstream](https://github.com/posquit0/Awesome-CV) if you want it.
+
+
+## Changes from upstream
+
+Relative to [Awesome CV](https://github.com/posquit0/Awesome-CV), this
+repository:
+
+* rewrites the CV and the cover letter as standalone right-to-left XeLaTeX
+  documents using [polyglossia](https://ctan.org/pkg/polyglossia), instead of
+  building on the class and its left-to-right layout;
+* drops the class file `awesome-cv.cls` altogether;
+* replaces the English example documents with the Arabic pair, so the repository
+  ships one CV and one cover letter rather than several examples;
+* removes photo support: there is no `\photo` command and no image asset;
+* uses Font Awesome 7 in place of Font Awesome 6;
+* fetches the Arabic font (Tajawal, SIL OFL 1.1) at build time rather than
+  bundling any font file.
 
 
 ## Upstream policy
