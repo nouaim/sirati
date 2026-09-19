@@ -43,3 +43,22 @@ jobs:
       with:
         name: examples
         path: examples/*.pdf
+
+  docker:
+    # The second documented installation path: build the image the README tells
+    # readers to build, then compile and test inside it, exactly as documented.
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v7
+
+    - name: Build the documented image
+      run: docker build -t sirati .
+
+    - name: Compile inside the image
+      run: |
+        docker run --rm --user "$(id -u):$(id -g)" -v "$PWD":/doc -w /doc sirati make
+        ls -l examples/*.pdf
+
+    - name: Run the test suite inside the image
+      run: docker run --rm --user "$(id -u):$(id -g)" -v "$PWD":/doc -w /doc sirati tests/check-arabic-examples.sh

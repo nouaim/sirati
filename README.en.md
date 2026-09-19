@@ -67,27 +67,93 @@ regenerated with `make previews`.
 
 ## Requirements
 
-A full TeX distribution is assumed, with **XeLaTeX** and the
-**polyglossia** package. [TeX Live](https://tug.org/texlive/) is recommended.
+Two ways to get a working toolchain: install the pieces on your system, or use the
+Docker image this repository ships. Both are exercised by the test suite, and the
+Docker path works on any operating system.
 
-The Arabic examples additionally need:
+No font files are bundled: the documents reference their families by name, so the
+system has to provide them.
 
-* **Font Awesome 7** — the CTAN package
-  [`fontawesome7`](https://ctan.org/pkg/fontawesome7), which provides the
-  [Font Awesome 7](https://fontawesome.com/v7/icons) icon set
-* an **Arabic font** — the examples use **Tajawal**, referenced by family name
-* a **Latin font** — the examples use **Roboto**, referenced by family name
+### 1. Install on your system (Linux)
 
-No font files are bundled with this repository, so the fonts are referenced by
-family name and your system has to provide them:
+```bash
+sudo apt install -y texlive-xetex texlive-latex-recommended texlive-latex-extra \
+    texlive-fonts-recommended texlive-lang-arabic \
+    fonts-roboto fontconfig poppler-utils make git python3 curl unzip
+```
 
-* **Roboto** is packaged on most distributions: `sudo apt install fonts-roboto`.
-* **Tajawal** is *not* in the usual distribution repositories. Download it from
-  [Google Fonts](https://fonts.google.com/specimen/Tajawal), install the TTFs
-  into `~/.local/share/fonts` and run `fc-cache -f`. Alternatively, change the
-  family name in the preamble of the two documents to an Arabic font you already
-  have — **Amiri** (`fonts-hosny-amiri`) and **Noto Naskh Arabic**
-  (`fonts-noto-core`) are both packaged.
+Each piece earns its place. `texlive-xetex` brings the **XeLaTeX** engine;
+`texlive-lang-arabic` brings `bidi`, which **polyglossia** needs for
+right-to-left text; `texlive-latex-extra` brings `enumitem`;
+`texlive-fonts-recommended` brings the `pzdr` metrics that `hyperref` loads under
+XeLaTeX — without it the build stops at `Font \XeTeXLink@font=pzdr ... not
+loadable`; `poppler-utils` brings `pdftoppm`, `pdfinfo` and `pdftotext`, which
+`make previews` and the test suite need; and `fontconfig` brings `fc-cache` and
+`fc-match`.
+
+Two things no distribution packages, so add them by hand.
+
+**The Arabic font (Tajawal).**
+
+```bash
+mkdir -p ~/.local/share/fonts/tajawal && cd ~/.local/share/fonts/tajawal
+for f in Regular Bold Medium; do
+  curl -fsSLO "https://raw.githubusercontent.com/google/fonts/main/ofl/tajawal/Tajawal-$f.ttf"
+done
+fc-cache -f
+fc-match Tajawal     # must name Tajawal: a fallback name means it did not register
+```
+
+**The icon font (Font Awesome 7).** Debian and Ubuntu package Font Awesome 4 and 5
+but not 7, so take it from CTAN into your own TeX tree:
+
+```bash
+curl -fsSL -o /tmp/fontawesome7.zip https://mirrors.ctan.org/fonts/fontawesome7.zip
+unzip -q -o /tmp/fontawesome7.zip -d /tmp/fontawesome7
+cd /tmp/fontawesome7/fontawesome7
+mkdir -p ~/texmf/tex/latex/fontawesome7
+cp tex/* ~/texmf/tex/latex/fontawesome7/
+for d in opentype type1 tfm enc map; do
+  mkdir -p ~/texmf/fonts/$d/fontawesome7 && cp $d/* ~/texmf/fonts/$d/fontawesome7/
+done
+mktexlsr ~/texmf
+kpsewhich fontawesome7.sty    # must print the path under ~/texmf
+```
+
+If you would rather keep everything under TeX Live's own package manager, install
+[TeX Live from upstream](https://tug.org/texlive/) and run
+`tlmgr install fontawesome7` instead of that CTAN block.
+
+Any Arabic font works in place of Tajawal — **Amiri** (`fonts-hosny-amiri`) and
+**Noto Naskh Arabic** (`fonts-noto-core`) are both packaged; change the family
+names in the preamble of the two documents.
+
+### 2. Install with Docker (any operating system)
+
+The repository carries a `Dockerfile` based on the official `texlive/texlive`
+image with `poppler-utils` and the Arabic font added, so nothing is installed on
+your system. Build it once:
+
+```bash
+docker build -t sirati .
+```
+
+Then run any of the make targets inside it, with your working copy mounted:
+
+```bash
+docker run --rm --user "$(id -u):$(id -g)" -v "$PWD":/doc -w /doc sirati make
+docker run --rm --user "$(id -u):$(id -g)" -v "$PWD":/doc -w /doc sirati make cv-ar
+docker run --rm --user "$(id -u):$(id -g)" -v "$PWD":/doc -w /doc sirati make previews
+docker run --rm --user "$(id -u):$(id -g)" -v "$PWD":/doc -w /doc sirati tests/check-arabic-examples.sh
+```
+
+`--user "$(id -u):$(id -g)"` matters: without it the generated PDFs belong to root.
+
+Upstream's shorter recipe — `docker run … texlive/texlive:latest make` — is *not*
+enough here. That image has every LaTeX package these documents use, but neither
+Tajawal nor `poppler-utils`, so `make` fails on the Arabic font and `make previews`
+cannot run at all. The image is large (its TeX Live base is about 9 GB) and is
+pulled once.
 
 
 ## Usage

@@ -65,26 +65,90 @@
 
 ## المتطلبات
 
-يُفترض وجود توزيعة TeX كاملة تتضمّن **XeLaTeX** وحزمة **polyglossia**، ويُستحسن
-[TeX Live](https://tug.org/texlive/).
+هناك طريقتان للحصول على بيئة عمل كاملة: أن تثبّت المكوّنات على نظامك، أو أن تستخدم
+صورة Docker التي يشحنها هذا المستودع. والاختبارات تغطّي الطريقتين، وطريق Docker يعمل
+على أي نظام تشغيل.
 
-وتحتاج الأمثلة العربية فوق ذلك إلى:
+ولا يُضمّن المستودع أي ملف خط، بل تُستدعى الخطوط بأسمائها العائلية، فعلى النظام أن
+يوفّرها.
 
-* **Font Awesome 7** — حزمة CTAN
-  [`fontawesome7`](https://ctan.org/pkg/fontawesome7)، وهي توفّر أيقونات
-  [Font Awesome 7](https://fontawesome.com/v7/icons)
-* **خط عربي** — والأمثلة تستخدم **Tajawal** بالاسم العائلي
-* **خط لاتيني** — والأمثلة تستخدم **Roboto** بالاسم العائلي
+### ١. التثبيت على النظام (لينكس)
 
-لا يُضمّن هذا المستودع أي ملف خط، بل تُستدعى الخطوط بأسمائها العائلية، وعلى نظامك أن
-يوفّرها:
+```bash
+sudo apt install -y texlive-xetex texlive-latex-recommended texlive-latex-extra \
+    texlive-fonts-recommended texlive-lang-arabic \
+    fonts-roboto fontconfig poppler-utils make git python3 curl unzip
+```
 
-* **Roboto** متوفّر في معظم التوزيعات: `sudo apt install fonts-roboto`.
-* **Tajawal** *غير* متوفّر في مستودعات التوزيعات المعتادة. نزّله من
-  [Google Fonts](https://fonts.google.com/specimen/Tajawal)، وثبّت ملفات TTF في
-  `~/.local/share/fonts` ثم شغّل `fc-cache -f`. أو غيّر اسم العائلة في تمهيد
-  المستندين إلى خط عربي متوفّر لديك — **Amiri** (`fonts-hosny-amiri`) و
-  **Noto Naskh Arabic** (`fonts-noto-core`) كلاهما متوفّر كحزمة.
+ولكل حزمة هنا سبب: `texlive-xetex` يوفّر محرّك **XeLaTeX**؛ و`texlive-lang-arabic`
+يوفّر `bidi` التي تحتاجها **polyglossia** للنص من اليمين إلى اليسار؛
+و`texlive-latex-extra` يوفّر `enumitem`؛ و`texlive-fonts-recommended` يوفّر مقاييس
+الخط `pzdr` التي يحمّلها `hyperref` في XeLaTeX، وبدونه يتوقّف البناء عند
+`Font \XeTeXLink@font=pzdr ... not loadable`؛ و`poppler-utils` يوفّر `pdftoppm`
+و`pdfinfo` و`pdftotext` وهي لازمة للأمر `make previews` وللاختبارات؛ و`fontconfig`
+يوفّر `fc-cache` و`fc-match`.
+
+ويبقى أمران لا توفّرهما أي حزمة في التوزيعات، فأضفهما يدويًا.
+
+**الخط العربي (Tajawal).**
+
+```bash
+mkdir -p ~/.local/share/fonts/tajawal && cd ~/.local/share/fonts/tajawal
+for f in Regular Bold Medium; do
+  curl -fsSLO "https://raw.githubusercontent.com/google/fonts/main/ofl/tajawal/Tajawal-$f.ttf"
+done
+fc-cache -f
+fc-match Tajawal     # يجب أن يطبع Tajawal، فإن طبع خطًا آخر فلم يُسجَّل الخط
+```
+
+**خط الأيقونات (Font Awesome 7).** حزم Debian وUbuntu توفّر الإصدارين 4 و5 لا 7،
+فخذه من CTAN إلى شجرة TeX الخاصة بك:
+
+```bash
+curl -fsSL -o /tmp/fontawesome7.zip https://mirrors.ctan.org/fonts/fontawesome7.zip
+unzip -q -o /tmp/fontawesome7.zip -d /tmp/fontawesome7
+cd /tmp/fontawesome7/fontawesome7
+mkdir -p ~/texmf/tex/latex/fontawesome7
+cp tex/* ~/texmf/tex/latex/fontawesome7/
+for d in opentype type1 tfm enc map; do
+  mkdir -p ~/texmf/fonts/$d/fontawesome7 && cp $d/* ~/texmf/fonts/$d/fontawesome7/
+done
+mktexlsr ~/texmf
+kpsewhich fontawesome7.sty    # يجب أن يطبع المسار داخل ~/texmf
+```
+
+وإن كنت تفضّل أن يدير TeX Live حزمه بنفسه، فثبّت
+[TeX Live من مصدره](https://tug.org/texlive/) ثم نفّذ `tlmgr install fontawesome7`
+بدل كتلة CTAN أعلاه.
+
+وأي خط عربي يصلح مكان Tajawal — **Amiri** (`fonts-hosny-amiri`) و
+**Noto Naskh Arabic** (`fonts-noto-core`) كلاهما متوفّر كحزمة؛ غيّر اسم العائلة في
+تمهيد المستندين.
+
+### ٢. التثبيت عبر Docker (أي نظام تشغيل)
+
+يحتوي المستودع على ملف `Dockerfile` مبنيّ على صورة `texlive/texlive` الرسمية مع إضافة
+`poppler-utils` والخط العربي، فلا يُثبَّت شيء على نظامك. ابنِ الصورة مرة واحدة:
+
+```bash
+docker build -t sirati .
+```
+
+ثم نفّذ أي هدف من أهداف make داخلها مع وصل نسختك من المشروع:
+
+```bash
+docker run --rm --user "$(id -u):$(id -g)" -v "$PWD":/doc -w /doc sirati make
+docker run --rm --user "$(id -u):$(id -g)" -v "$PWD":/doc -w /doc sirati make cv-ar
+docker run --rm --user "$(id -u):$(id -g)" -v "$PWD":/doc -w /doc sirati make previews
+docker run --rm --user "$(id -u):$(id -g)" -v "$PWD":/doc -w /doc sirati tests/check-arabic-examples.sh
+```
+
+وخيار `--user "$(id -u):$(id -g)"` مهم: فبدونه تصبح ملفات PDF مملوكة للمستخدم root.
+
+أما وصفة المشروع الأصلي الأقصر — `docker run … texlive/texlive:latest make` — فلا
+تكفي هنا: فتلك الصورة تحوي كل حزمة LaTeX تستخدمها هذه المستندات، لكنها لا تحوي Tajawal
+ولا `poppler-utils`، فيفشل `make` على الخط العربي ولا يعمل `make previews` أصلًا.
+والصورة كبيرة (قاعدة TeX Live فيها نحو ٩ غيغابايت) وتُسحب مرة واحدة.
 
 
 ## الاستخدام

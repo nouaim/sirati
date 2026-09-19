@@ -186,8 +186,9 @@ check_document "cover letter" "coverletter-ar" "examples/coverletter-ar.pdf" \
 printf '\n== committed artefacts match the sources ==\n'
 # A PDF or preview restored by `git checkout` carries a newer mtime than the
 # .tex files, so `make` considers it up to date and skips the rebuild - a stale
-# document then ships unnoticed.  Force a genuine build from the sources and
-# compare with what is committed, rather than trusting the working tree.
+# document then ships unnoticed.  So: force a genuine build of the sources and
+# compare its text with the committed PDF, and separately check that the
+# committed preview really is the render of the committed PDF.
 for doc in cv-ar coverletter-ar; do
   pdf="examples/$doc.pdf"
   png="examples/$doc.png"
@@ -208,11 +209,17 @@ for doc in cv-ar coverletter-ar; do
   fi
   if git cat-file -e "HEAD:$png" 2>/dev/null; then
     git show "HEAD:$png" > "$tmp/committed.png"
-    pdftoppm -r 130 -png -f 1 -l 1 "$fresh" "$tmp/render" >/dev/null 2>&1
+    # Render the *committed* PDF rather than the fresh build: the preview is meant
+    # to be the render of what is committed, and a TeX Live version other than the
+    # one that produced the artefacts would otherwise fail this check for a reason
+    # that has nothing to do with a stale file.  pdftoppm's output is stable across
+    # its own versions, so comparing bytes stays meaningful.
+    git show "HEAD:$pdf" > "$tmp/committed.pdf" 2>/dev/null
+    pdftoppm -r 130 -png -f 1 -l 1 "$tmp/committed.pdf" "$tmp/render" >/dev/null 2>&1
     if cmp -s "$tmp/render-1.png" "$tmp/committed.png"; then
-      pass "committed $png is the current render of the document"
+      pass "committed $png is the render of the committed PDF"
     else
-      bad "committed $png is stale against the document - run 'make previews'"
+      bad "committed $png is not the render of the committed PDF - run 'make previews'"
     fi
   fi
   rm -rf "$tmp"
@@ -406,22 +413,82 @@ fi
 
 # ---------------------------------------------------------------------------
 printf '\n== CI provides the fonts the documents need ==\n'
-# The documents reference their fonts by family name, so CI has to make those
-# families available.  If the family in the document changes, CI must follow.
+# The documents reference their fonts by family name, so every build path has to
+# make those families available: if a family in the document changes, CI and the
+# Dockerfile must follow.
 python3 - <<'PY'
-import re, sys
+import os, re, sys
 doc = open("examples/cv-ar.tex", encoding="utf-8").read()
-ci = open(".github/workflows/main.yml", encoding="utf-8").read()
+providers = {"CI": open(".github/workflows/main.yml", encoding="utf-8").read()}
+if os.path.exists("Dockerfile"):
+    providers["the Dockerfile"] = open("Dockerfile", encoding="utf-8").read()
 ok = True
 for macro, what in (("arabicfont", "Arabic"), ("englishfont", "Latin")):
     m = re.search(r"\\newfontfamily\\%s\[[^\]]*\]\{([^}]*)\}" % macro, doc)
     family = m.group(1).strip() if m else ""
-    if family and family in ci:
-        print(f"PASS  CI provides the {what} family the documents use: {family}")
-    else:
-        print(f"FAIL  CI does not provide the {what} family {family!r}")
-        ok = False
+    for who, text in providers.items():
+        if family and family in text:
+            print(f"PASS  {who} provides the {what} family the documents use: {family}")
+        else:
+            print(f"FAIL  {who} does not provide the {what} family {family!r}")
+            ok = False
 sys.exit(0 if ok else 1)
+PY
+[ $? -eq 0 ] || fail=1
+
+# ---------------------------------------------------------------------------
+printf '\n== installation paths: documented and real ==\n'
+# The READMEs promise two ways to get a toolchain.  Keep those promises honest:
+# the Dockerfile has to exist and carry what the documents need, the apt list in
+# each README has to cover every package the build actually uses, and both files
+# have to spell the Docker commands out.
+python3 - <<'PY'
+import os, re, sys
+ok = True
+
+def check(cond, good, bad):
+    global ok
+    if cond: print(f"PASS  {good}")
+    else: print(f"FAIL  {bad}"); ok = False
+
+ci = open(".github/workflows/main.yml", encoding="utf-8").read()
+df = open("Dockerfile", encoding="utf-8").read() if os.path.exists("Dockerfile") else ""
+check(bool(df), "a Dockerfile is shipped", "no Dockerfile at the repository root")
+
+m = re.search(r"^FROM\s+(\S+)", df, re.M)
+base = m.group(1) if m else ""
+check(base.startswith("texlive/texlive"),
+      f"Dockerfile builds on the same TeX Live image as CI ({base or 'none'})",
+      f"Dockerfile base image is not the texlive/texlive one: {base!r}")
+check("poppler-utils" in df,
+      "Dockerfile installs poppler-utils, which `make previews` and the suite need",
+      "Dockerfile does not install poppler-utils")
+fonts_url = "raw.githubusercontent.com/google/fonts/main/ofl/tajawal"
+check(fonts_url in df and fonts_url in ci,
+      "Dockerfile and CI fetch the Arabic font from the same upstream source",
+      "Dockerfile and CI disagree about where the Arabic font comes from")
+check(re.search(r"fc-match\s+Tajawal", df) is not None,
+      "Dockerfile fails loudly when the Arabic family does not resolve",
+      "Dockerfile does not assert the Arabic family resolves")
+
+# A package dropped from a README's apt list would send readers into a broken
+# build, which is exactly how this section was wrong before.
+NEEDED = ["texlive-xetex", "texlive-latex-recommended", "texlive-latex-extra",
+          "texlive-fonts-recommended", "texlive-lang-arabic",
+          "fonts-roboto", "fontconfig", "poppler-utils"]
+for name in ("README.md", "README.en.md"):
+    txt = open(name, encoding="utf-8").read()
+    m = re.search(r"apt install(.*?)```", txt, re.S)
+    block = m.group(1) if m else ""
+    missing = [p for p in NEEDED if p not in block]
+    check(not missing, f"{name}: the apt list carries every package the build needs",
+          f"{name}: the apt list is missing {missing}")
+    check("docker build -t sirati ." in txt and "docker run --rm" in txt,
+          f"{name}: documents the Docker path, build and run",
+          f"{name}: the Docker path is not documented")
+    check("make previews" in txt,
+          f"{name}: documents `make previews`", f"{name}: `make previews` is undocumented")
+raise SystemExit(0 if ok else 1)
 PY
 [ $? -eq 0 ] || fail=1
 

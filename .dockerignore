@@ -1,0 +1,8 @@
+# Keep the build context small: nothing is copied into the image, so only the
+# files Docker actually needs should ever be sent.
+.git
+examples/*.pdf
+examples/*.png
+examples/*.log
+examples/*.aux
+examples/*.out
