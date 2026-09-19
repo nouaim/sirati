@@ -362,6 +362,11 @@ for name, lang in (("README.md", "ar"), ("README.en.md", "en")):
     check(re.search(r"##\s*Maintainers", txt) is None,
           f"{name}: does not present a Maintainers list for this repository",
           f"{name}: a Maintainers section is present")
+    # Upstream's README ends by advertising another of its author's projects.
+    # This repository documents its own templates, not other people's.
+    check("hugo-awesome-identity" not in txt,
+          f"{name}: advertises no unrelated upstream project",
+          f"{name}: links to upstream's unrelated project")
     # The class is gone, so nothing here may advertise LPPL - prose may mention
     # it only to say no LPPL component is shipped, never as a licence link or badge.
     check(re.search(r"latex-project\.org/lppl|badge/license-LPPL", txt, re.I) is None,

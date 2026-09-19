@@ -278,8 +278,3 @@ of the Arabic examples, which describe a fictional placeholder person instead.
 
 The attribution comments naming the original author in the source-file headers
 are kept deliberately, as the licence requires the notices to be preserved.
-
-
-## See Also
-
-* [Awesome Identity](https://github.com/posquit0/hugo-awesome-identity) - A single-page Hugo theme to introduce yourself.
