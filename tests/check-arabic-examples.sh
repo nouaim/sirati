@@ -503,24 +503,25 @@ NEEDED = ["texlive-xetex", "texlive-latex-recommended", "texlive-latex-extra",
 missing = [p for p in NEEDED if p not in inst]
 check(not missing, "install.sh installs every package the build needs",
       f"install.sh does not install {missing}")
+# The READMEs stay short on purpose: they point at the installer and the make
+# targets, and the reasoning - which packages, and why - lives in the comments in
+# install.sh and the Makefile.  So the package list must not reappear in the docs.
+check("docker build -t" in mk and "docker run --rm" in mk,
+      "Makefile documents the explicit Docker commands its targets wrap",
+      "Makefile does not show the explicit Docker commands")
 for name in ("README.md", "README.en.md"):
     txt = open(name, encoding="utf-8").read()
-    m = re.search(r"apt install(.*?)```", txt, re.S)
-    block = m.group(1) if m else ""
-    missing = [p for p in NEEDED if p not in block]
-    check(not missing, f"{name}: the apt list carries every package the build needs",
-          f"{name}: the apt list is missing {missing}")
     check("./install.sh" in txt and "install.sh | sh" in txt,
           f"{name}: documents the installer and the curl form",
           f"{name}: does not document install.sh")
     check("make docker" in txt and "make docker-test" in txt,
           f"{name}: documents the short Docker targets",
           f"{name}: `make docker` targets are not documented")
-    check("docker build -t sirati ." in txt and "docker run --rm" in txt,
-          f"{name}: still spells the Docker commands out",
-          f"{name}: the explicit Docker commands are not shown")
     check("make previews" in txt,
           f"{name}: documents `make previews`", f"{name}: `make previews` is undocumented")
+    check("texlive-" not in txt,
+          f"{name}: leaves the package list to install.sh, as intended",
+          f"{name}: restates the package list that belongs in install.sh")
 raise SystemExit(0 if ok else 1)
 PY
 [ $? -eq 0 ] || fail=1

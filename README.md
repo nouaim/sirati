@@ -65,110 +65,31 @@
 
 ## المتطلبات
 
-هناك طريقتان للحصول على بيئة عمل كاملة: أن تثبّت المكوّنات على نظامك، أو أن تستخدم
-صورة Docker التي يشحنها هذا المستودع. والاختبارات تغطّي الطريقتين، وطريق Docker يعمل
-على أي نظام تشغيل.
-
-ولا يُضمّن المستودع أي ملف خط، بل تُستدعى الخطوط بأسمائها العائلية، فعلى النظام أن
-يوفّرها.
+طريقتان للحصول على بيئة عمل كاملة، والاختبارات تغطّي الطريقتين، وطريق Docker يعمل على
+أي نظام تشغيل.
 
 ### ١. التثبيت على النظام (لينكس وmacOS)
 
-يشحن المستودع سكربت تثبيت يفعل كل ما في هذا القسم نيابةً عنك:
-
 ```bash
 ./install.sh
-```
-
-أو قبل الاستنساخ:
-
-```bash
+# أو قبل الاستنساخ:
 curl -fsSL https://raw.githubusercontent.com/nouaim/sirati/main/install.sh | sh
 ```
 
-والسكربت مكتوب بـ **POSIX sh**، فيتصرّف التصرّف نفسه سواء شغّلته بـ `sh` أو `bash`
-أو `zsh`، وإعادة تشغيله آمنة لأن كل خطوة فيه تتحقّق قبل أن تغيّر شيئًا. وهو على
-macOS يستخدم Homebrew وMacTeX، وعلى Debian وUbuntu يستخدم `apt`. ولم يُجرَّب فرع
-macOS على جهاز Mac حقيقي بعد؛ فإن فشل عندك فالخطوات اليدوية التالية تعمل هناك أيضًا.
-اقرأه قبل تمريره إلى صدفة: فالسكربت قصير ولا يفعل أكثر من الخطوات اليدوية التالية.
-
-```bash
-sudo apt install -y texlive-xetex texlive-latex-recommended texlive-latex-extra \
-    texlive-fonts-recommended texlive-lang-arabic \
-    fonts-roboto fontconfig poppler-utils make git python3 curl unzip
-```
-
-ولكل حزمة هنا سبب: `texlive-xetex` يوفّر محرّك **XeLaTeX**؛ و`texlive-lang-arabic`
-يوفّر `bidi` التي تحتاجها **polyglossia** للنص من اليمين إلى اليسار؛
-و`texlive-latex-extra` يوفّر `enumitem`؛ و`texlive-fonts-recommended` يوفّر مقاييس
-الخط `pzdr` التي يحمّلها `hyperref` في XeLaTeX، وبدونه يتوقّف البناء عند
-`Font \XeTeXLink@font=pzdr ... not loadable`؛ و`poppler-utils` يوفّر `pdftoppm`
-و`pdfinfo` و`pdftotext` وهي لازمة للأمر `make previews` وللاختبارات؛ و`fontconfig`
-يوفّر `fc-cache` و`fc-match`.
-
-ويبقى أمران لا توفّرهما أي حزمة في التوزيعات، فأضفهما يدويًا.
-
-**الخط العربي (Tajawal).**
-
-```bash
-mkdir -p ~/.local/share/fonts/tajawal && cd ~/.local/share/fonts/tajawal
-for f in Regular Bold Medium; do
-  curl -fsSLO "https://raw.githubusercontent.com/google/fonts/main/ofl/tajawal/Tajawal-$f.ttf"
-done
-fc-cache -f
-fc-match Tajawal     # يجب أن يطبع Tajawal، فإن طبع خطًا آخر فلم يُسجَّل الخط
-```
-
-**خط الأيقونات (Font Awesome 7).** حزم Debian وUbuntu توفّر الإصدارين 4 و5 لا 7،
-فخذه من CTAN إلى شجرة TeX الخاصة بك:
-
-```bash
-curl -fsSL -o /tmp/fontawesome7.zip https://mirrors.ctan.org/fonts/fontawesome7.zip
-unzip -q -o /tmp/fontawesome7.zip -d /tmp/fontawesome7
-cd /tmp/fontawesome7/fontawesome7
-mkdir -p ~/texmf/tex/latex/fontawesome7
-cp tex/* ~/texmf/tex/latex/fontawesome7/
-for d in opentype type1 tfm enc map; do
-  mkdir -p ~/texmf/fonts/$d/fontawesome7 && cp $d/* ~/texmf/fonts/$d/fontawesome7/
-done
-mktexlsr ~/texmf
-kpsewhich fontawesome7.sty    # يجب أن يطبع المسار داخل ~/texmf
-```
-
-وإن كنت تفضّل أن يدير TeX Live حزمه بنفسه، فثبّت
-[TeX Live من مصدره](https://tug.org/texlive/) ثم نفّذ `tlmgr install fontawesome7`
-بدل كتلة CTAN أعلاه.
-
-وأي خط عربي يصلح مكان Tajawal — **Amiri** (`fonts-hosny-amiri`) و
-**Noto Naskh Arabic** (`fonts-noto-core`) كلاهما متوفّر كحزمة؛ غيّر اسم العائلة في
-تمهيد المستندين.
+سكربت POSIX sh واحد: يتصرّف التصرّف نفسه بـ `sh` أو `bash` أو `zsh`، وإعادة تشغيله
+آمنة. وفرع macOS لم يُجرَّب على جهاز Mac حقيقي بعد. **وكل خطوة وكل حزمة يثبّتها مشروحة
+في التعليقات داخل السكربت نفسه.**
 
 ### ٢. التثبيت عبر Docker (أي نظام تشغيل)
 
-يحتوي المستودع على ملف `Dockerfile` مبنيّ على صورة `texlive/texlive` الرسمية مع إضافة
-`poppler-utils` والخط العربي، فلا يُثبَّت شيء على نظامك. وثلاثة أهداف تغطّي كل شيء:
-
 ```bash
-make docker            # بناء الصورة ثم تصريف المستندين داخلها
-make docker-previews   # إعادة توليد صور المعاينة
-make docker-test       # تشغيل الاختبارات
+make docker            # بناء الصورة ثم تصريف المستندين
+make docker-previews   # صور المعاينة
+make docker-test       # الاختبارات
 ```
 
-وهي أغلفة رقيقة حول هذين الأمرين، إن أردت رؤيتهما:
-
-```bash
-docker build -t sirati .
-docker run --rm --user "$(id -u):$(id -g)" -v "$PWD":/doc -w /doc sirati make
-```
-
-واستبدل `make` بـ `make cv-ar` أو `make coverletter-ar` أو
-`tests/check-arabic-examples.sh` لتشغيل شيء آخر داخل الصورة. وخيار
-`--user "$(id -u):$(id -g)"` مهم: فبدونه تصبح ملفات PDF مملوكة للمستخدم root.
-
-أما وصفة المشروع الأصلي الأقصر — `docker run … texlive/texlive:latest make` — فلا
-تكفي هنا: فتلك الصورة تحوي كل حزمة LaTeX تستخدمها هذه المستندات، لكنها لا تحوي Tajawal
-ولا `poppler-utils`، فيفشل `make` على الخط العربي ولا يعمل `make previews` أصلًا.
-والصورة كبيرة (قاعدة TeX Live فيها نحو ٩ غيغابايت) وتُسحب مرة واحدة.
+والأوامر الصريحة التي تغلّفها هذه الأهداف مكتوبة في تعليقات ملف `Makefile`. والصورة
+كبيرة (نحو ٩ غيغابايت من TeX Live) وتُسحب مرة واحدة.
 
 
 ## الاستخدام

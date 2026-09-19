@@ -67,114 +67,31 @@ regenerated with `make previews`.
 
 ## Requirements
 
-Two ways to get a working toolchain: install the pieces on your system, or use the
-Docker image this repository ships. Both are exercised by the test suite, and the
-Docker path works on any operating system.
-
-No font files are bundled: the documents reference their families by name, so the
-system has to provide them.
+Two ways to get a working toolchain. Both are exercised by the test suite, and the
+Docker one works on any operating system.
 
 ### 1. Install on your system (Linux and macOS)
 
-The repository ships an installer that does everything in this section for you:
-
 ```bash
 ./install.sh
-```
-
-Or, before cloning:
-
-```bash
+# or, before cloning:
 curl -fsSL https://raw.githubusercontent.com/nouaim/sirati/main/install.sh | sh
 ```
 
-It is **POSIX sh**, so it behaves the same whether you run it with `sh`, `bash` or
-`zsh`, and re-running it is safe — every step checks before it changes anything.
-On macOS it uses Homebrew and MacTeX; on Debian and Ubuntu it uses `apt`. The
-macOS branch has not been run on a real Mac yet — if it fails for you, the manual
-steps below work there too. Read it before piping it into a shell: the installer
-is short and does nothing beyond the manual steps below.
-
-```bash
-sudo apt install -y texlive-xetex texlive-latex-recommended texlive-latex-extra \
-    texlive-fonts-recommended texlive-lang-arabic \
-    fonts-roboto fontconfig poppler-utils make git python3 curl unzip
-```
-
-Each piece earns its place. `texlive-xetex` brings the **XeLaTeX** engine;
-`texlive-lang-arabic` brings `bidi`, which **polyglossia** needs for
-right-to-left text; `texlive-latex-extra` brings `enumitem`;
-`texlive-fonts-recommended` brings the `pzdr` metrics that `hyperref` loads under
-XeLaTeX — without it the build stops at `Font \XeTeXLink@font=pzdr ... not
-loadable`; `poppler-utils` brings `pdftoppm`, `pdfinfo` and `pdftotext`, which
-`make previews` and the test suite need; and `fontconfig` brings `fc-cache` and
-`fc-match`.
-
-Two things no distribution packages, so add them by hand.
-
-**The Arabic font (Tajawal).**
-
-```bash
-mkdir -p ~/.local/share/fonts/tajawal && cd ~/.local/share/fonts/tajawal
-for f in Regular Bold Medium; do
-  curl -fsSLO "https://raw.githubusercontent.com/google/fonts/main/ofl/tajawal/Tajawal-$f.ttf"
-done
-fc-cache -f
-fc-match Tajawal     # must name Tajawal: a fallback name means it did not register
-```
-
-**The icon font (Font Awesome 7).** Debian and Ubuntu package Font Awesome 4 and 5
-but not 7, so take it from CTAN into your own TeX tree:
-
-```bash
-curl -fsSL -o /tmp/fontawesome7.zip https://mirrors.ctan.org/fonts/fontawesome7.zip
-unzip -q -o /tmp/fontawesome7.zip -d /tmp/fontawesome7
-cd /tmp/fontawesome7/fontawesome7
-mkdir -p ~/texmf/tex/latex/fontawesome7
-cp tex/* ~/texmf/tex/latex/fontawesome7/
-for d in opentype type1 tfm enc map; do
-  mkdir -p ~/texmf/fonts/$d/fontawesome7 && cp $d/* ~/texmf/fonts/$d/fontawesome7/
-done
-mktexlsr ~/texmf
-kpsewhich fontawesome7.sty    # must print the path under ~/texmf
-```
-
-If you would rather keep everything under TeX Live's own package manager, install
-[TeX Live from upstream](https://tug.org/texlive/) and run
-`tlmgr install fontawesome7` instead of that CTAN block.
-
-Any Arabic font works in place of Tajawal — **Amiri** (`fonts-hosny-amiri`) and
-**Noto Naskh Arabic** (`fonts-noto-core`) are both packaged; change the family
-names in the preamble of the two documents.
+It is POSIX sh — the same under `sh`, `bash` and `zsh` — and safe to re-run. The
+macOS branch has not been run on a real Mac yet. **Every step and every package it
+installs is explained in the comments inside the script.**
 
 ### 2. Install with Docker (any operating system)
 
-The repository carries a `Dockerfile` based on the official `texlive/texlive`
-image with `poppler-utils` and the Arabic font added, so nothing is installed on
-your system. Three targets cover everything:
-
 ```bash
-make docker            # build the image, then compile both documents inside it
-make docker-previews   # regenerate the preview images
-make docker-test       # run the test suite
+make docker            # build the image, then compile both documents
+make docker-previews   # the preview images
+make docker-test       # the test suite
 ```
 
-They are thin wrappers around these two commands, if you would rather see them:
-
-```bash
-docker build -t sirati .
-docker run --rm --user "$(id -u):$(id -g)" -v "$PWD":/doc -w /doc sirati make
-```
-
-Swap `make` for `make cv-ar`, `make coverletter-ar` or
-`tests/check-arabic-examples.sh` to run something else inside the image.
-`--user "$(id -u):$(id -g)"` matters: without it the generated PDFs belong to root.
-
-Upstream's shorter recipe — `docker run … texlive/texlive:latest make` — is *not*
-enough here. That image has every LaTeX package these documents use, but neither
-Tajawal nor `poppler-utils`, so `make` fails on the Arabic font and `make previews`
-cannot run at all. The image is large (its TeX Live base is about 9 GB) and is
-pulled once.
+The explicit commands these wrap are in the comments in the `Makefile`. The image is
+large — about 9 GB of TeX Live — and is pulled once.
 
 
 ## Usage

@@ -47,13 +47,27 @@ if [ "$OS" = "Darwin" ]; then
   command -v fc-match >/dev/null 2>&1 || info "no fontconfig: macOS finds fonts in ~/Library/Fonts itself"
 elif [ "$OS" = "Linux" ]; then
   step "Linux: checking for apt"
-  command -v apt-get >/dev/null 2>&1 || die "only Debian and Ubuntu are covered here; other distributions: install the packages listed in the README by hand"
+  command -v apt-get >/dev/null 2>&1 || die "this script only covers Debian and Ubuntu. On other distributions, install the same packages by hand: $APT_PACKAGES"
   step "installing build packages (one apt transaction)"
   info "$APT_PACKAGES"
   as_root apt-get update -qq
-  # The package names are passed as arguments, not through a variable: zsh does
-  # not split unquoted expansions, and this script has to behave the same in any
-  # shell the reader happens to use.
+  # Why each of these, including the ones that are easy to leave out:
+  #   texlive-xetex              the XeLaTeX engine the documents are built with
+  #   texlive-lang-arabic        bidi, which polyglossia needs for right-to-left
+  #   texlive-latex-extra        enumitem
+  #   texlive-fonts-recommended  the pzdr metrics hyperref loads under XeLaTeX;
+  #                              without it the build stops at
+  #                              "Font \XeTeXLink@font=pzdr ... not loadable"
+  #   fontconfig                 fc-cache and fc-match, without which the Arabic
+  #                              font downloaded below never registers
+  #   poppler-utils              pdftoppm, pdfinfo and pdftotext, for
+  #                              `make previews` and for the test suite
+  #   fonts-roboto               the Latin family the documents reference
+  #   make git python3 curl unzip   the build, the suite, and this script
+  #
+  # The names are passed as arguments rather than through a variable: zsh does not
+  # split unquoted expansions, and this script has to behave the same in any shell
+  # the reader happens to use.
   as_root apt-get install -y \
     texlive-xetex texlive-latex-recommended texlive-latex-extra \
     texlive-fonts-recommended texlive-lang-arabic \
