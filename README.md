@@ -72,7 +72,26 @@
 ولا يُضمّن المستودع أي ملف خط، بل تُستدعى الخطوط بأسمائها العائلية، فعلى النظام أن
 يوفّرها.
 
-### ١. التثبيت على النظام (لينكس)
+### ١. التثبيت على النظام (لينكس وmacOS)
+
+يشحن المستودع سكربت تثبيت يفعل كل ما في هذا القسم نيابةً عنك:
+
+```bash
+./install.sh
+```
+
+أو قبل الاستنساخ:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/nouaim/sirati/main/install.sh | sh
+```
+
+والسكربت مكتوب بـ **POSIX sh**، فيتصرّف التصرّف نفسه سواء شغّلته بـ `sh` أو `bash`
+أو `zsh`، وإعادة تشغيله آمنة لأن كل خطوة فيه تتحقّق قبل أن تغيّر شيئًا. وهو على
+macOS يستخدم Homebrew وMacTeX، وعلى Debian وUbuntu يستخدم `apt`. اقرأه قبل تمريره
+إلى صدفة: فالسكربت قصير ولا يفعل أكثر من الخطوات اليدوية التالية.
+
+وإن أردت أن تفعلها بنفسك، فهذا ما يشغّله بالضبط.
 
 ```bash
 sudo apt install -y texlive-xetex texlive-latex-recommended texlive-latex-extra \
@@ -128,22 +147,24 @@ kpsewhich fontawesome7.sty    # يجب أن يطبع المسار داخل ~/tex
 ### ٢. التثبيت عبر Docker (أي نظام تشغيل)
 
 يحتوي المستودع على ملف `Dockerfile` مبنيّ على صورة `texlive/texlive` الرسمية مع إضافة
-`poppler-utils` والخط العربي، فلا يُثبَّت شيء على نظامك. ابنِ الصورة مرة واحدة:
+`poppler-utils` والخط العربي، فلا يُثبَّت شيء على نظامك. وثلاثة أهداف تغطّي كل شيء:
+
+```bash
+make docker            # بناء الصورة ثم تصريف المستندين داخلها
+make docker-previews   # إعادة توليد صور المعاينة
+make docker-test       # تشغيل الاختبارات
+```
+
+وهي أغلفة رقيقة حول هذين الأمرين، إن أردت رؤيتهما:
 
 ```bash
 docker build -t sirati .
-```
-
-ثم نفّذ أي هدف من أهداف make داخلها مع وصل نسختك من المشروع:
-
-```bash
 docker run --rm --user "$(id -u):$(id -g)" -v "$PWD":/doc -w /doc sirati make
-docker run --rm --user "$(id -u):$(id -g)" -v "$PWD":/doc -w /doc sirati make cv-ar
-docker run --rm --user "$(id -u):$(id -g)" -v "$PWD":/doc -w /doc sirati make previews
-docker run --rm --user "$(id -u):$(id -g)" -v "$PWD":/doc -w /doc sirati tests/check-arabic-examples.sh
 ```
 
-وخيار `--user "$(id -u):$(id -g)"` مهم: فبدونه تصبح ملفات PDF مملوكة للمستخدم root.
+واستبدل `make` بـ `make cv-ar` أو `make coverletter-ar` أو
+`tests/check-arabic-examples.sh` لتشغيل شيء آخر داخل الصورة. وخيار
+`--user "$(id -u):$(id -g)"` مهم: فبدونه تصبح ملفات PDF مملوكة للمستخدم root.
 
 أما وصفة المشروع الأصلي الأقصر — `docker run … texlive/texlive:latest make` — فلا
 تكفي هنا: فتلك الصورة تحوي كل حزمة LaTeX تستخدمها هذه المستندات، لكنها لا تحوي Tajawal

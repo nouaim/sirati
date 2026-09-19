@@ -476,11 +476,33 @@ check(re.search(r"fc-match\s+Tajawal", df) is not None,
       "Dockerfile fails loudly when the Arabic family does not resolve",
       "Dockerfile does not assert the Arabic family resolves")
 
-# A package dropped from a README's apt list would send readers into a broken
-# build, which is exactly how this section was wrong before.
+# The installer is the documented shortcut, so it has to exist, be runnable, and
+# install the same set the READMEs promise.  It must stay POSIX sh: zsh does not
+# split unquoted expansions, and the script has to behave the same in any shell.
+inst = open("install.sh", encoding="utf-8").read() if os.path.exists("install.sh") else ""
+check(bool(inst), "install.sh is shipped", "no install.sh at the repository root")
+check(os.access("install.sh", os.X_OK), "install.sh is executable",
+      "install.sh is not executable")
+check(inst.startswith("#!/bin/sh"),
+      "install.sh declares the POSIX sh shebang",
+      "install.sh does not start with #!/bin/sh")
+check("kpsewhich fontawesome7.sty" in inst and "mktexlsr" in inst,
+      "install.sh installs the icon font from CTAN into the user tree",
+      "install.sh does not handle fontawesome7")
+
+mk = open("Makefile", encoding="utf-8").read()
+absent = [t for t in ("docker:", "docker-previews:", "docker-test:") if t not in mk]
+check(not absent, "Makefile offers the Docker targets",
+      f"Makefile is missing Docker targets: {absent}")
+
+# A package dropped from a README's apt list, or from the installer, would send
+# readers into a broken build - which is exactly how this section was wrong before.
 NEEDED = ["texlive-xetex", "texlive-latex-recommended", "texlive-latex-extra",
           "texlive-fonts-recommended", "texlive-lang-arabic",
           "fonts-roboto", "fontconfig", "poppler-utils"]
+missing = [p for p in NEEDED if p not in inst]
+check(not missing, "install.sh installs every package the build needs",
+      f"install.sh does not install {missing}")
 for name in ("README.md", "README.en.md"):
     txt = open(name, encoding="utf-8").read()
     m = re.search(r"apt install(.*?)```", txt, re.S)
@@ -488,9 +510,15 @@ for name in ("README.md", "README.en.md"):
     missing = [p for p in NEEDED if p not in block]
     check(not missing, f"{name}: the apt list carries every package the build needs",
           f"{name}: the apt list is missing {missing}")
+    check("./install.sh" in txt and "install.sh | sh" in txt,
+          f"{name}: documents the installer and the curl form",
+          f"{name}: does not document install.sh")
+    check("make docker" in txt and "make docker-test" in txt,
+          f"{name}: documents the short Docker targets",
+          f"{name}: `make docker` targets are not documented")
     check("docker build -t sirati ." in txt and "docker run --rm" in txt,
-          f"{name}: documents the Docker path, build and run",
-          f"{name}: the Docker path is not documented")
+          f"{name}: still spells the Docker commands out",
+          f"{name}: the explicit Docker commands are not shown")
     check("make previews" in txt,
           f"{name}: documents `make previews`", f"{name}: `make previews` is undocumented")
 raise SystemExit(0 if ok else 1)

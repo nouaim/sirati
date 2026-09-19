@@ -1,4 +1,4 @@
-.PHONY: examples cv-ar coverletter-ar previews
+.PHONY: examples cv-ar coverletter-ar previews docker-image docker docker-previews docker-test clean
 
 EXAMPLES_DIR = examples
 
@@ -33,3 +33,26 @@ previews: $(EXAMPLES_DIR)/cv-ar.pdf $(EXAMPLES_DIR)/coverletter-ar.pdf
 
 clean:
 	rm -rf $(EXAMPLES_DIR)/*.pdf
+
+
+# The same build with nothing installed on this machine: these targets build the
+# image from the Dockerfile and run the build inside it.  The explicit form is
+#
+#   docker build -t sirati .
+#   docker run --rm --user $$(id -u):$$(id -g) -v "$$PWD":/doc -w /doc sirati make
+#
+# `--user` keeps the generated PDFs owned by you rather than root.
+IMAGE = sirati
+DOCKER_RUN = docker run --rm --user "$$(id -u):$$(id -g)" -v "$(CURDIR)":/doc -w /doc $(IMAGE)
+
+docker-image:
+	docker build -t $(IMAGE) .
+
+docker: docker-image
+	$(DOCKER_RUN) make
+
+docker-previews: docker-image
+	$(DOCKER_RUN) make previews
+
+docker-test: docker-image
+	$(DOCKER_RUN) tests/check-arabic-examples.sh

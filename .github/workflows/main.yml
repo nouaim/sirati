@@ -62,3 +62,21 @@ jobs:
 
     - name: Run the test suite inside the image
       run: docker run --rm --user "$(id -u):$(id -g)" -v "$PWD":/doc -w /doc sirati tests/check-arabic-examples.sh
+
+  install:
+    # And the first documented path: run install.sh on a clean machine, then
+    # build and test with what it produced.  This is the reader who has no TeX.
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v7
+
+    - name: Install on a clean Ubuntu, then build and test
+      run: |
+        docker run --rm -v "$PWD":/src -w /src ubuntu:latest sh -c '
+          set -e
+          ./install.sh
+          git config --global --add safe.directory /src
+          make
+          tests/check-arabic-examples.sh
+        '

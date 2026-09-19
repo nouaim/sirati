@@ -74,7 +74,27 @@ Docker path works on any operating system.
 No font files are bundled: the documents reference their families by name, so the
 system has to provide them.
 
-### 1. Install on your system (Linux)
+### 1. Install on your system (Linux and macOS)
+
+The repository ships an installer that does everything in this section for you:
+
+```bash
+./install.sh
+```
+
+Or, before cloning:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/nouaim/sirati/main/install.sh | sh
+```
+
+It is **POSIX sh**, so it behaves the same whether you run it with `sh`, `bash` or
+`zsh`, and re-running it is safe — every step checks before it changes anything.
+On macOS it uses Homebrew and MacTeX; on Debian and Ubuntu it uses `apt`. Read it
+before piping it into a shell: the installer is short and does nothing beyond the
+manual steps below.
+
+If you would rather do it yourself, here is exactly what it runs.
 
 ```bash
 sudo apt install -y texlive-xetex texlive-latex-recommended texlive-latex-extra \
@@ -132,21 +152,23 @@ names in the preamble of the two documents.
 
 The repository carries a `Dockerfile` based on the official `texlive/texlive`
 image with `poppler-utils` and the Arabic font added, so nothing is installed on
-your system. Build it once:
+your system. Three targets cover everything:
+
+```bash
+make docker            # build the image, then compile both documents inside it
+make docker-previews   # regenerate the preview images
+make docker-test       # run the test suite
+```
+
+They are thin wrappers around these two commands, if you would rather see them:
 
 ```bash
 docker build -t sirati .
-```
-
-Then run any of the make targets inside it, with your working copy mounted:
-
-```bash
 docker run --rm --user "$(id -u):$(id -g)" -v "$PWD":/doc -w /doc sirati make
-docker run --rm --user "$(id -u):$(id -g)" -v "$PWD":/doc -w /doc sirati make cv-ar
-docker run --rm --user "$(id -u):$(id -g)" -v "$PWD":/doc -w /doc sirati make previews
-docker run --rm --user "$(id -u):$(id -g)" -v "$PWD":/doc -w /doc sirati tests/check-arabic-examples.sh
 ```
 
+Swap `make` for `make cv-ar`, `make coverletter-ar` or
+`tests/check-arabic-examples.sh` to run something else inside the image.
 `--user "$(id -u):$(id -g)"` matters: without it the generated PDFs belong to root.
 
 Upstream's shorter recipe — `docker run … texlive/texlive:latest make` — is *not*
