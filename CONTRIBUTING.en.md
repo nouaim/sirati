@@ -1,20 +1,11 @@
 # Contributing to سيرتي
 
-Thanks for looking. This is a small project, and contributions are welcome —
-especially running the installer on platforms nobody has tried yet.
+Thanks for looking. This is a small project, and contributions are welcome: a bug
+report, a fix, a documentation improvement, a better right-to-left layout.
 
 **Language:** write in English or Arabic, whichever is easier for you.
 
 [العربية](CONTRIBUTING.md)
-
-
-## Where help is wanted right now
-
-* **Run the installer on macOS** — the issue labelled `:apple: macOS`.
-* **Run it on Windows**, through WSL2 or Docker Desktop — the issue labelled
-  `:window: windows`.
-* Fixing a defect in the templates, or improving the right-to-left layout.
-* Improving the Arabic or English wording of the documentation.
 
 
 ## Before you write anything
@@ -63,8 +54,7 @@ issue with `Closes #<number>`.
   one, run it in a clean container (`docker run --rm -it ubuntu:latest`) before you
   write it down.
 * **No photos.** The templates do not support them; do not add an image asset.
-* **No publisher names and no donation links**, in any file, and not in commit
-  messages either.
+* **No publisher names**, in any file, and not in commit messages either.
 * The sheet is white by default, and the chamois tint stays commented out.
 * Do not bundle font files, and do not use `tikz` or `tcolorbox` — the tests forbid
   both.
@@ -77,7 +67,7 @@ issue with `Closes #<number>`.
 `tests/check-arabic-examples.sh` builds both documents with XeLaTeX and verifies that
 each is one page, with no errors, no missing glyphs and no bidi warnings; that the
 committed PDFs and previews match the sources; that the documentation follows the
-project policies (licence, credit, no donations); and that the documented installation
+project policies (licence and credit); and that the documented installation
 paths really work. Run it before every pull request.
 
 
