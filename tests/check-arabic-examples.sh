@@ -183,6 +183,39 @@ check_document "cover letter" "coverletter-ar" "examples/coverletter-ar.pdf" \
                "examples/coverletter-ar"
 
 # ---------------------------------------------------------------------------
+printf '\n== committed artefacts match the sources ==\n'
+# A PDF or preview restored by `git checkout` carries a newer mtime than the
+# .tex files, so `make` considers it up to date and skips the rebuild - a stale
+# document then ships unnoticed.  Force a genuine build from the sources and
+# compare with what is committed, rather than trusting the working tree.
+for doc in cv-ar coverletter-ar; do
+  pdf="examples/$doc.pdf"
+  png="examples/$doc.png"
+  tmp=$(mktemp -d)
+  git show "HEAD:$pdf" > "$tmp/committed.pdf" 2>/dev/null || true
+  make -B "$pdf" >/dev/null 2>&1
+  if [ -s "$tmp/committed.pdf" ]; then
+    old=$(pdftotext -layout "$tmp/committed.pdf" - 2>/dev/null | tr -d '[:space:]')
+    new=$(pdftotext -layout "$pdf" - 2>/dev/null | tr -d '[:space:]')
+    if [ "$old" = "$new" ]; then
+      pass "committed $pdf matches a fresh build of the sources"
+    else
+      bad "committed $pdf is stale against the sources - rebuild it and commit"
+    fi
+  fi
+  if git cat-file -e "HEAD:$png" 2>/dev/null; then
+    git show "HEAD:$png" > "$tmp/committed.png"
+    pdftoppm -r 130 -png -f 1 -l 1 "$pdf" "$tmp/fresh" >/dev/null 2>&1
+    if cmp -s "$tmp/fresh-1.png" "$tmp/committed.png"; then
+      pass "committed $png is the current render of the document"
+    else
+      bad "committed $png is stale against the document - run 'make previews'"
+    fi
+  fi
+  rm -rf "$tmp"
+done
+
+# ---------------------------------------------------------------------------
 printf '\n== cover letter: letter shape ==\n'
 python3 - examples/coverletter-ar.tex examples/coverletter-ar.pdf <<'PY'
 import sys, re, subprocess, unicodedata
