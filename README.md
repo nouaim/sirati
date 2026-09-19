@@ -14,8 +14,8 @@
   <a href="https://github.com/posquit0/Awesome-CV">
     <img alt="Upstream" src="https://img.shields.io/badge/upstream-Awesome--CV-blue.svg" />
   </a>
-  <a href="https://www.latex-project.org/lppl.txt">
-    <img alt="License" src="https://img.shields.io/badge/license-LPPL%20v1.3c-blue.svg" />
+  <a href="https://creativecommons.org/licenses/by-sa/4.0/">
+    <img alt="License: CC BY-SA 4.0" src="https://img.shields.io/badge/license-CC%20BY--SA%204.0-blue.svg" />
   </a>
 </div>
 

@@ -293,6 +293,15 @@ check("make cv-ar" in txt and "make coverletter-ar" in txt,
 check(re.search(r"##\s*Maintainers", txt) is None,
       "does not present a Maintainers list for this repository",
       "a Maintainers section is present")
+# The class is gone, so nothing here may advertise LPPL - prose may mention it
+# only to say no LPPL component is shipped, never as a licence link or badge.
+check(re.search(r"latex-project\.org/lppl|badge/license-LPPL", txt, re.I) is None,
+      "advertises no LPPL licence link or badge",
+      "still advertises LPPL as the licence")
+licence_badges = re.findall(r"badge/license-([A-Za-z0-9%._-]+?)-[a-z]+\.svg", txt)
+check(all("cc" in b.lower() for b in licence_badges),
+      f"licence badge matches the stated licence ({licence_badges})",
+      f"licence badge disagrees with the licence text: {licence_badges}")
 # This project asks for no money: no donation, sponsorship or tipping links.
 DONATION = r"paypal|donat|sponsor|ko-?fi|buymeacoffee|patreon|opencollective|liberapay|flattr"
 check(re.search(DONATION, txt, re.I) is None,
