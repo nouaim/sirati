@@ -218,12 +218,16 @@ printf '\n== no dangling references to removed example files ==\n'
 # Generic: every examples/<path> referenced anywhere must exist on disk.  This
 # catches a reference to a deleted file without listing the deleted names.
 python3 - <<'PY'
-import os, re, subprocess
+import os, re, subprocess, glob
 files = []
 for pat in ["Makefile", "README.md", "*.md", ".github/**/*.yml", ".github/**/*.yaml",
             "tests/*", "examples/*.tex", "examples/**/*.tex", "awesome-cv.cls"]:
-    files += [p for p in __import__("glob").glob(pat, recursive=True) if os.path.isfile(p)]
+    files += [p for p in glob.glob(pat, recursive=True) if os.path.isfile(p)]
 ref = re.compile(r"examples/[A-Za-z0-9_][A-Za-z0-9_./-]*\.(?:tex|pdf|png|cls|jpg)")
+# "exists" means present in the committed tree: `make clean` legitimately deletes
+# built PDFs in the working tree, and a committed file is not a dangling target.
+tracked = set(subprocess.run(["git", "ls-files"], capture_output=True,
+                             text=True).stdout.split())
 missing, refs = {}, 0
 for f in sorted(set(files)):
     try:
@@ -232,14 +236,15 @@ for f in sorted(set(files)):
         continue
     for m in ref.findall(txt):
         refs += 1
-        if not os.path.exists(m):
-            missing.setdefault(m, []).append(f)
+        if m in tracked or os.path.exists(m):
+            continue
+        missing.setdefault(m, []).append(f)
 if missing:
-    print(f"FAIL  {len(missing)} referenced path(s) do not exist:")
+    print(f"FAIL  {len(missing)} referenced path(s) are neither committed nor on disk:")
     for path, where in missing.items():
         print(f"        {path}  (referenced in {', '.join(sorted(set(where))[:3])})")
     raise SystemExit(1)
-print(f"PASS  all {refs} 'examples/...' references resolve to existing files")
+print(f"PASS  all {refs} 'examples/...' references resolve to committed files")
 PY
 [ $? -eq 0 ] || fail=1
 
