@@ -287,6 +287,11 @@ check("make cv-ar" in txt and "make coverletter-ar" in txt,
 check(re.search(r"##\s*Maintainers", txt) is None,
       "does not present a Maintainers list for this repository",
       "a Maintainers section is present")
+# This project asks for no money: no donation, sponsorship or tipping links.
+DONATION = r"paypal|donat|sponsor|ko-?fi|buymeacoffee|patreon|opencollective|liberapay|flattr"
+check(re.search(DONATION, txt, re.I) is None,
+      "solicits no donations or sponsorship",
+      "contains a donation or sponsorship link")
 raise SystemExit(0 if ok else 1)
 PY
 [ $? -eq 0 ] || fail=1

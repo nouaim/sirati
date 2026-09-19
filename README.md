@@ -1,13 +1,13 @@
 <h1 align="center">
-  <a href="https://github.com/nouaim/awesome-arabic-cv" title="Awesome Arabic CV">
-    <img alt="Awesome CV" src="icon.png" width="200px" height="200px" />
+  <a href="https://github.com/nouaim/awesome-arabic-cv" title="سيرتي">
+    <img alt="سيرتي" src="icon.png" width="200px" height="200px" />
   </a>
   <br />
-  Awesome Arabic CV
+  سيرتي
 </h1>
 
 <p align="center">
-  An Arabic-first, right-to-left CV and cover-letter template for LaTeX — سبرتي
+  An Arabic-first, right-to-left CV and cover-letter template for LaTeX
 </p>
 
 <div align="center">
@@ -24,7 +24,7 @@
 
 ## What is this?
 
-**Awesome Arabic CV** is an Arabic-first take on
+**سيرتي** is an Arabic-first take on
 [Awesome CV](https://github.com/posquit0/Awesome-CV), the LaTeX template by
 [Claud D. Park](https://github.com/posquit0).
 
@@ -158,16 +158,6 @@ This repository is a derived work and is **not** maintained by the authors or
 maintainers of upstream [Awesome CV](https://github.com/posquit0/Awesome-CV).
 Please direct questions about *this* repository here; questions about the
 original class belong upstream.
-
-
-## Support the upstream project
-
-Upstream Awesome CV is kept alive by donations. If you find the original class
-useful, consider supporting it:
-
-    PayPal: paypal.me/posquit0
-
-*Thank you for your support!*
 
 
 ## See Also
