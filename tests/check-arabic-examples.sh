@@ -526,6 +526,62 @@ PY
 [ $? -eq 0 ] || fail=1
 
 # ---------------------------------------------------------------------------
+printf '\n== contribution path ==\n'
+# Contributors need a documented route from "something is wrong" to a merged pull
+# request, in both languages, and the GitHub side has to point at it.
+python3 - <<'PY'
+import os, sys
+ok = True
+
+def check(cond, good, bad):
+    global ok
+    if cond: print(f"PASS  {good}")
+    else: print(f"FAIL  {bad}"); ok = False
+
+for name, other in (("CONTRIBUTING.md", "CONTRIBUTING.en.md"),
+                    ("CONTRIBUTING.en.md", "CONTRIBUTING.md")):
+    if not os.path.exists(name):
+        check(False, "", f"{name} is missing")
+        continue
+    txt = open(name, encoding="utf-8").read()
+    check(other in txt, f"{name} links to its sibling {other}",
+          f"{name} does not link to {other}")
+    check("tests/check-arabic-examples.sh" in txt,
+          f"{name} tells contributors to run the suite",
+          f"{name} does not mention the test suite")
+    check("Closes #" in txt,
+          f"{name} explains how to reference the issue it closes",
+          f"{name} does not explain referencing the issue")
+
+for name, guide in (("README.md", "CONTRIBUTING.md"),
+                    ("README.en.md", "CONTRIBUTING.en.md")):
+    txt = open(name, encoding="utf-8").read()
+    check(guide in txt, f"{name} points at {guide}",
+          f"{name} does not link the contributing guide")
+
+config = ".github/ISSUE_TEMPLATE/config.yml"
+check(os.path.exists(config), "the issue chooser is configured",
+      f"{config} is missing")
+if os.path.exists(config):
+    txt = open(config, encoding="utf-8").read()
+    check("CONTRIBUTING.en.md" in txt and "CONTRIBUTING.md" in txt,
+          "the issue chooser offers the contributing guide in both languages",
+          "the issue chooser does not link both contributing guides")
+
+pr = ".github/pull_request_template.md"
+check(os.path.exists(pr) and "tests/check-arabic-examples.sh" in open(pr, encoding="utf-8").read(),
+      "the pull request template asks for the test suite",
+      f"{pr} is missing or does not mention the suite")
+
+labeler = open(".github/labeler.yaml", encoding="utf-8").read()
+check("CONTRIBUTING.md" in labeler and "CONTRIBUTING.en.md" in labeler,
+      "edits to the contributing guides get the docs label",
+      "the labeler ignores edits to the contributing guides")
+raise SystemExit(0 if ok else 1)
+PY
+[ $? -eq 0 ] || fail=1
+
+# ---------------------------------------------------------------------------
 printf '\n== no photo support ==\n'
 # The templates are deliberately photo-free: no image asset, and no \photo
 # command for anyone to reach for.

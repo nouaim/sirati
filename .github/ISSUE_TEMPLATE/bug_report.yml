@@ -1,0 +1,36 @@
+name: Bug report
+description: Something in the templates, the build or the installer is wrong.
+title: "bug: "
+labels: [":warning: bug"]
+body:
+  - type: textarea
+    id: happened
+    attributes:
+      label: What happened
+      description: What you expected, and what you got instead.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: How to reproduce it
+      description: The exact commands, starting from a fresh clone, and their output.
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: versions
+    attributes:
+      label: Versions
+      description: "`xelatex --version`, your system, and how you installed the toolchain (`./install.sh`, `make docker`, or by hand)."
+      render: shell
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before opening this
+      options:
+        - label: I ran `tests/check-arabic-examples.sh` and am including what it printed.
+        - label: I searched the open and closed issues for this problem.
+          required: true

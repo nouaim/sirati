@@ -13,3 +13,5 @@ docs:
   - any-glob-to-any-file:
     - 'README.md'
     - 'README.en.md'
+    - 'CONTRIBUTING.md'
+    - 'CONTRIBUTING.en.md'

@@ -49,3 +49,13 @@
 - color: "1d76db"
   description: "Changes to the documentation."
   name: "docs"
+
+# Platform
+# The documented installation is Linux, which is what was tested.  These mark the
+# platforms still waiting for someone to run the installer and report back.
+- color: "5319e7"
+  description: "macOS: install.sh and the documents have not been run on a Mac."
+  name: ":apple: macOS"
+- color: "5319e7"
+  description: "Windows: WSL2 and the Docker path have not been run on Windows."
+  name: ":window: windows"

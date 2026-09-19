@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Contributing guide (English)
+    url: https://github.com/nouaim/sirati/blob/main/CONTRIBUTING.en.md
+    about: How to report, test and open a pull request.
+  - name: دليل المساهمة (بالعربية)
+    url: https://github.com/nouaim/sirati/blob/main/CONTRIBUTING.md
+    about: كيف تُبلّغ عن مشكلة، وتختبر، وتفتح Pull Request.

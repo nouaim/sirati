@@ -256,6 +256,13 @@ paper.
 [**Source Sans Pro**](https://github.com/adobe-fonts/source-sans-pro) is a set of OpenType fonts that have been designed to work well in user interface (UI) environments.
 
 
+## Contributing
+
+Contributions are welcome, and what we need most right now is somebody running the
+installer on macOS or Windows. The whole flow — from opening an issue to a pull
+request — is in the [contributing guide](CONTRIBUTING.en.md).
+
+
 ## Licence
 
 Everything in this repository — the Arabic CV and cover letter, their section
