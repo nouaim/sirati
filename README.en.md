@@ -90,9 +90,10 @@ curl -fsSL https://raw.githubusercontent.com/nouaim/sirati/main/install.sh | sh
 
 It is **POSIX sh**, so it behaves the same whether you run it with `sh`, `bash` or
 `zsh`, and re-running it is safe — every step checks before it changes anything.
-On macOS it uses Homebrew and MacTeX; on Debian and Ubuntu it uses `apt`. Read it
-before piping it into a shell: the installer is short and does nothing beyond the
-manual steps below.
+On macOS it uses Homebrew and MacTeX; on Debian and Ubuntu it uses `apt`. The
+macOS branch has not been run on a real Mac yet — if it fails for you, the manual
+steps below work there too. Read it before piping it into a shell: the installer
+is short and does nothing beyond the manual steps below.
 
 If you would rather do it yourself, here is exactly what it runs.
 
