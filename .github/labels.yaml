@@ -1,3 +1,5 @@
+# Synced to GitHub by .github/workflows/sync-labels.yaml, which needs the
+# `issues: write` permission the workflow now declares.
 # Warning
 - color: "ee0701"
   description: "Categorize bug reports."

@@ -3,54 +3,54 @@ description: You ran the installer or the Docker path on a platform we have not 
 title: "platform: "
 labels: [":fire: help wanted"]
 body:
-  - type: markdown
-    attributes:
-      value: |
-        Thank you — the documented installation path is Linux, which is what has
-        actually been tested. A report from macOS or Windows is the most useful
-        thing you can send. `CONTRIBUTING.en.md` explains the full flow, and
-        `CONTRIBUTING.md` explains it in Arabic.
-  - type: dropdown
-    id: platform
-    attributes:
-      label: Platform
-      options:
-        - macOS (Apple silicon)
-        - macOS (Intel)
-        - Windows + WSL2
-        - Windows + Docker Desktop
-        - Other Linux distribution
-    validations:
-      required: true
-  - type: dropdown
-    id: path
-    attributes:
-      label: Which installation path did you try?
-      options:
-        - ./install.sh
-        - curl -fsSL .../main/install.sh | sh
-        - docker build . / make docker
-        - the manual steps in the README
-    validations:
-      required: true
-  - type: textarea
-    id: versions
-    attributes:
-      label: Versions
-      description: "`xelatex --version`, plus `sw_vers` on macOS or `wsl --version` on Windows."
-      render: shell
-    validations:
-      required: true
-  - type: textarea
-    id: happened
-    attributes:
-      label: What happened
-      description: The exact command you ran and what it printed, including any error.
-      render: shell
-    validations:
-      required: true
-  - type: textarea
-    id: worked
-    attributes:
-      label: What worked, if anything
-      description: If the documents built, please say so and attach the PDF — a success report matters too.
+- type: markdown
+  attributes:
+    value: |
+      Thank you — the documented installation path is Linux, which is what has
+      actually been tested. A report from macOS or Windows is the most useful
+      thing you can send. `CONTRIBUTING.en.md` explains the full flow, and
+      `CONTRIBUTING.md` explains it in Arabic.
+- type: dropdown
+  id: platform
+  attributes:
+    label: Platform
+    options:
+    - macOS (Apple silicon)
+    - macOS (Intel)
+    - Windows + WSL2
+    - Windows + Docker Desktop
+    - Other Linux distribution
+  validations:
+    required: true
+- type: dropdown
+  id: path
+  attributes:
+    label: Which installation path did you try?
+    options:
+    - ./install.sh
+    - curl -fsSL .../main/install.sh | sh
+    - docker build . / make docker
+    - the manual steps in the README
+  validations:
+    required: true
+- type: textarea
+  id: versions
+  attributes:
+    label: Versions
+    description: "`xelatex --version`, plus `sw_vers` on macOS or `wsl --version` on Windows."
+    render: shell
+  validations:
+    required: true
+- type: textarea
+  id: happened
+  attributes:
+    label: What happened
+    description: The exact command you ran and what it printed, including any error.
+    render: shell
+  validations:
+    required: true
+- type: textarea
+  id: worked
+  attributes:
+    label: What worked, if anything
+    description: If the documents built, please say so and attach the PDF — a success report matters too.
