@@ -332,6 +332,27 @@ else
 fi
 
 # ---------------------------------------------------------------------------
+printf '\n== CI provides the fonts the documents need ==\n'
+# The documents reference their fonts by family name, so CI has to make those
+# families available.  If the family in the document changes, CI must follow.
+python3 - <<'PY'
+import re, sys
+doc = open("examples/cv-ar.tex", encoding="utf-8").read()
+ci = open(".github/workflows/main.yml", encoding="utf-8").read()
+ok = True
+for macro, what in (("arabicfont", "Arabic"), ("englishfont", "Latin")):
+    m = re.search(r"\\newfontfamily\\%s\[[^\]]*\]\{([^}]*)\}" % macro, doc)
+    family = m.group(1).strip() if m else ""
+    if family and family in ci:
+        print(f"PASS  CI provides the {what} family the documents use: {family}")
+    else:
+        print(f"FAIL  CI does not provide the {what} family {family!r}")
+        ok = False
+sys.exit(0 if ok else 1)
+PY
+[ $? -eq 0 ] || fail=1
+
+# ---------------------------------------------------------------------------
 printf '\n== no photo support ==\n'
 # The templates are deliberately photo-free: no image asset, and no \photo
 # command for anyone to reach for.

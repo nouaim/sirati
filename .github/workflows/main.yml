@@ -16,10 +16,25 @@ jobs:
     - name: Install fonts
       run: |
         apt update
-        apt install --yes \
-          fonts-roboto \
-          fonts-adobe-sourcesans3 \
-          ;
+        apt install --yes fonts-roboto
+        # Tajawal has no Debian/Ubuntu package, so fetch it from upstream Google
+        # Fonts (SIL OFL 1.1) and install it into the image's font path.  The
+        # image already ships everything else the documents need: polyglossia
+        # and fontawesome7 come with TeX Live 2026.
+        base=https://raw.githubusercontent.com/google/fonts/main/ofl/tajawal
+        mkdir -p /usr/share/fonts/truetype/tajawal
+        for f in Tajawal-Regular.ttf Tajawal-Bold.ttf Tajawal-Medium.ttf; do
+          curl -fsSL -o "/usr/share/fonts/truetype/tajawal/$f" "$base/$f"
+        done
+        fc-cache -f
+
+    - name: Verify fonts
+      run: |
+        # fc-match silently substitutes a fallback when a family is absent, so
+        # assert the family actually resolved.
+        fc-match Tajawal
+        fc-match Roboto
+        fc-match Tajawal | grep -qi tajawal
 
     - name: Compile
       run: make
