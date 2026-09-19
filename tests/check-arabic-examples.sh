@@ -192,11 +192,14 @@ for doc in cv-ar coverletter-ar; do
   pdf="examples/$doc.pdf"
   png="examples/$doc.png"
   tmp=$(mktemp -d)
-  git show "HEAD:$pdf" > "$tmp/committed.pdf" 2>/dev/null || true
-  make -B "$pdf" >/dev/null 2>&1
-  if [ -s "$tmp/committed.pdf" ]; then
+  # Build a copy, so the check never modifies the working tree.
+  cp -r examples "$tmp/"
+  ( cd "$tmp/examples" && xelatex -interaction=nonstopmode "$doc.tex" >/dev/null 2>&1 )
+  fresh="$tmp/examples/$doc.pdf"
+  if [ -s "$fresh" ] && git cat-file -e "HEAD:$pdf" 2>/dev/null; then
+    git show "HEAD:$pdf" > "$tmp/committed.pdf"
     old=$(pdftotext -layout "$tmp/committed.pdf" - 2>/dev/null | tr -d '[:space:]')
-    new=$(pdftotext -layout "$pdf" - 2>/dev/null | tr -d '[:space:]')
+    new=$(pdftotext -layout "$fresh" - 2>/dev/null | tr -d '[:space:]')
     if [ "$old" = "$new" ]; then
       pass "committed $pdf matches a fresh build of the sources"
     else
@@ -205,8 +208,8 @@ for doc in cv-ar coverletter-ar; do
   fi
   if git cat-file -e "HEAD:$png" 2>/dev/null; then
     git show "HEAD:$png" > "$tmp/committed.png"
-    pdftoppm -r 130 -png -f 1 -l 1 "$pdf" "$tmp/fresh" >/dev/null 2>&1
-    if cmp -s "$tmp/fresh-1.png" "$tmp/committed.png"; then
+    pdftoppm -r 130 -png -f 1 -l 1 "$fresh" "$tmp/render" >/dev/null 2>&1
+    if cmp -s "$tmp/render-1.png" "$tmp/committed.png"; then
       pass "committed $png is the current render of the document"
     else
       bad "committed $png is stale against the document - run 'make previews'"
