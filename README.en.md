@@ -208,18 +208,3 @@ repository:
   two commented lines away in each document;
 * fetches the Arabic font (Tajawal, SIL OFL 1.1) at build time rather than
   bundling any font file.
-
-
-## Upstream policy
-
-The upstream author asks that his own résumé not be reused:
-
-> You are free to take my `.tex` file and modify it to create your own resume.
-> Please don't use my resume for anything else without my permission, though!
-
-This repository respects that request. The upstream author's personal content —
-his name, address, contact details and résumé content — is not part
-of the Arabic examples, which describe a fictional placeholder person instead.
-
-The attribution comments naming the original author in the source-file headers
-are kept deliberately, as the licence requires the notices to be preserved.
