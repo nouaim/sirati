@@ -76,7 +76,9 @@
 % Needed to manage math fonts
 \RequirePackage{unicode-math}
 % Needed to use icons from font-awesome
-\RequirePackage{fontawesome6}
+% Font Awesome 7 (CTAN package `fontawesome7`).  The icon names used by this
+% class are all present in the Font Awesome 7 metadata.
+\RequirePackage{fontawesome7}
 \RequirePackage{accsupp}
 \defaultfontfeatures{
   Renderer=HarfBuzz,

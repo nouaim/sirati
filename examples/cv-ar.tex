@@ -1,0 +1,148 @@
+%!TEX TS-program = xelatex
+%!TEX encoding = UTF-8 Unicode
+%
+% Arabic (RTL) one-page CV example — Awesome Arabic CV
+%
+% Build:  make cv-ar        (from the repository root)
+%
+% This file is a self-contained RTL document: it does NOT load awesome-cv.cls,
+% because the class is built around LTR tabular layout. The RTL techniques used
+% here are: Arabic as the main language via polyglossia (\RTL paragraphs), an
+% Arabic font family, \textenglish{} around every Latin run so emails, URLs and
+% phone numbers keep left-to-right order, and \hfill-based two-column lines that
+% mirror automatically under RTL.
+%
+% Fonts are referenced by family name, so no font files need to be bundled:
+%   Arabic : Tajawal   (system)   Latin : Roboto (system)
+%   Icons  : Font Awesome 7 (CTAN package `fontawesome7`)
+
+\documentclass[10pt, a4paper]{article}
+
+\usepackage{fontspec}
+\usepackage{polyglossia}
+\setmainlanguage[numerals=maghrib]{arabic}
+\setotherlanguage{english}
+
+\defaultfontfeatures{Ligatures=TeX}
+\newfontfamily\arabicfont[Script=Arabic, Scale=0.96]{Tajawal}
+\newfontfamily\arabicfontsf[Script=Arabic, Scale=0.96]{Tajawal}
+\newfontfamily\englishfont[Scale=0.92]{Roboto}
+
+\usepackage[hidelinks,unicode]{hyperref}
+\usepackage{geometry}
+\geometry{left=1.8cm, top=1.4cm, right=1.8cm, bottom=1.4cm, footskip=.35cm}
+
+\usepackage{xcolor}
+\definecolor{awesome}{HTML}{0395DE}
+\definecolor{darktext}{HTML}{333333}
+\definecolor{graytext}{HTML}{5D5D5D}
+\definecolor{lighttext}{HTML}{999999}
+\definecolor{sectiondivider}{HTML}{CCCCCC}
+
+\usepackage{enumitem}
+\usepackage{setspace}
+\setstretch{1.08}
+\usepackage{fontawesome7}
+
+\pagestyle{empty}
+
+%-------------------------------------------------------------------------------
+%  Owner details — EDIT ONLY THIS BLOCK to make the CV yours.
+%  The values below belong to a fictional person and use the RFC 2606 reserved
+%  domain example.com, so nothing here identifies a real individual.
+%-------------------------------------------------------------------------------
+\newcommand{\cvname}{محمد الأمين}
+\newcommand{\cvtitle}{مهندس برمجيات}
+\newcommand{\cvlocation}{الرياض، المملكة العربية السعودية}
+\newcommand{\cvphone}{+000 000 000 000}
+\newcommand{\cvemail}{name@example.com}
+\newcommand{\cvgithub}{example}
+\newcommand{\cvlinkedin}{example}
+
+%-------------------------------------------------------------------------------
+%  Layout
+%-------------------------------------------------------------------------------
+\newcommand{\cvsection}[1]{%
+  \par\vspace{7.5mm}%
+  {\noindent\fontsize{14.5pt}{1.2em}\bfseries\color{awesome}#1\phantomsection}%
+  \hspace{0.6em}{\color{sectiondivider}\leaders\hrule height 0.8pt\hfill\kern0pt}\par%
+  \vspace{2.8mm}%
+}
+
+\newenvironment{cvparagraph}{%
+  \vspace{-1mm}%
+  \fontsize{10.2pt}{1.45em}\color{darktext}%
+}{%
+  \par\vspace{1.6mm}%
+}
+
+\newenvironment{cventries}{%
+  \vspace{0.4mm}%
+}{%
+  \vspace{1.4mm}%
+}
+
+% #1 position, #2 organisation, #3 location, #4 dates, #5 details
+\newcommand*{\cventry}[5]{%
+  \vspace{3.6mm}%
+  \noindent{\bfseries\fontsize{11pt}{1.2em}\color{darktext} #2}%
+  \hfill{\fontsize{9.4pt}{1.1em}\textcolor{awesome}{#3}}\\%
+  \noindent{\fontsize{9.6pt}{1.1em}\color{graytext} #1}%
+  \hfill{\fontsize{9pt}{1.1em}\color{graytext} #4}%
+  \par
+  \if\relax\detokenize{#5}\relax\else
+    \vspace{0.8mm}%
+    #5%
+  \fi
+  \vspace{0.6mm}%
+}
+
+\newenvironment{cvitems}{%
+  \vspace{-0.8mm}%
+  \begin{itemize}[leftmargin=1.5em, itemsep=0.28em, topsep=0.1em, parsep=0pt]
+  \fontsize{9.7pt}{1.35em}\color{darktext}%
+}{%
+  \end{itemize}%
+  \vspace{0.6mm}%
+}
+
+\newenvironment{cvskills}{%
+  \vspace{0.4mm}%
+}{%
+  \vspace{0.6mm}%
+}
+
+% Skill line: the ambient direction is already RTL, so the line is right-ragged
+% with no skip trickery.  The paragraph must close *outside* the group: a group
+% that spans \par leaves bidi with an unbalanced \endL and it warns about it.
+\newcommand*{\cvskill}[2]{%
+  \noindent{\fontsize{10.2pt}{1.4em}\selectfont
+    \textbf{\color{darktext}#1:~}\color{darktext}#2}%
+  \par\vspace{2.6mm}%
+}
+
+\begin{document}
+
+\begin{center}
+  {\fontsize{30pt}{1.1em}\bfseries\color{darktext} \cvname}\\[0.35em]
+  {\fontsize{10pt}{1em}\bfseries\color{awesome} \cvtitle}\\[0.4em]
+  {\fontsize{9pt}{1em}\color{lighttext} \cvlocation}\\[0.5em]
+  {\fontsize{8.2pt}{1em}\color{darktext}
+    \faMobile\ \textenglish{\cvphone}
+    \quad\textbar\quad
+    \faEnvelope\ \href{mailto:\cvemail}{\textenglish{\cvemail}}
+    \quad\textbar\quad
+    \faSquareGithub\ \href{https://github.com/\cvgithub}{\textenglish{\cvgithub}}
+    \quad\textbar\quad
+    \faLinkedin\ \href{https://www.linkedin.com/in/\cvlinkedin}{\textenglish{\cvlinkedin}}
+  }
+\end{center}
+
+\vspace{0.6em}
+
+\input{cv-ar/summary.tex}
+\input{cv-ar/experience.tex}
+\input{cv-ar/skills.tex}
+\input{cv-ar/education.tex}
+
+\end{document}
