@@ -73,7 +73,7 @@ previews — [teal](examples/colours/cv-teal.pdf),
 [bronze](examples/colours/cv-bronze.pdf),
 [graphite](examples/colours/cv-graphite.pdf) — and `make colours` regenerates them.
 
-| teal `#0F6E6E` | burgundy `#8C2F39` | bronze `#9A6B2F` | graphite `#37474F` |
+| teal `0F6E6E` | burgundy `8C2F39` | bronze `9A6B2F` | graphite `37474F` |
 |:---:|:---:|:---:|:---:|
 | [![teal](examples/colours/cv-teal.png)](examples/colours/cv-teal.pdf) | [![burgundy](examples/colours/cv-burgundy.png)](examples/colours/cv-burgundy.pdf) | [![bronze](examples/colours/cv-bronze.png)](examples/colours/cv-bronze.pdf) | [![graphite](examples/colours/cv-graphite.png)](examples/colours/cv-graphite.pdf) |
 
