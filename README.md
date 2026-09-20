@@ -70,7 +70,8 @@
 [برونزي](examples/colours/cv-bronze.pdf)، [جرافيت](examples/colours/cv-graphite.pdf) —
 ويُعيد `make colours` توليدها.
 
-| أزرق مخضرّ `0F6E6E` | عنّابي `8C2F39` | برونزي `9A6B2F` | جرافيت `37474F` |
+<!-- القيمة قبل الاسم عن قصد: عكس الترتيب يجعل الأرقام والرمز تنقلب في العرض؛ فالخانة لا تأخذ اتجاهًا خاصًا فتتبع الصفحة. -->
+| `0F6E6E` أزرق مخضرّ | `8C2F39` عنّابي | `9A6B2F` برونزي | `37474F` جرافيت |
 |:---:|:---:|:---:|:---:|
 | [![أزرق مخضرّ](examples/colours/cv-teal.png)](examples/colours/cv-teal.pdf) | [![عنّابي](examples/colours/cv-burgundy.png)](examples/colours/cv-burgundy.pdf) | [![برونزي](examples/colours/cv-bronze.png)](examples/colours/cv-bronze.pdf) | [![جرافيت](examples/colours/cv-graphite.png)](examples/colours/cv-graphite.pdf) |
 
