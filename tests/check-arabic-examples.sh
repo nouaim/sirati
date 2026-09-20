@@ -509,6 +509,9 @@ check(not missing, "install.sh installs every package the build needs",
 check("docker build -t" in mk and "docker run --rm" in mk,
       "Makefile documents the explicit Docker commands its targets wrap",
       "Makefile does not show the explicit Docker commands")
+check("TARGET ?=" in mk and "$(TARGET)" in mk,
+      "Makefile passes TARGET into the image, for building a single target",
+      "Makefile has no TARGET passthrough for the docker target")
 for name in ("README.md", "README.en.md"):
     txt = open(name, encoding="utf-8").read()
     check("./install.sh" in txt and "install.sh | sh" in txt,
@@ -517,6 +520,9 @@ for name in ("README.md", "README.en.md"):
     check("make docker" in txt and "make docker-test" in txt,
           f"{name}: documents the short Docker targets",
           f"{name}: `make docker` targets are not documented")
+    check("make docker TARGET=" in txt,
+          f"{name}: documents building a single target in Docker",
+          f"{name}: `make docker TARGET=` is not documented")
     check("make previews" in txt,
           f"{name}: documents `make previews`", f"{name}: `make previews` is undocumented")
     check("texlive-" not in txt,

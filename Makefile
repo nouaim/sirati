@@ -43,12 +43,17 @@ clean:
 #
 # That trailing `make` is this same Makefile, run inside the image, so replace it
 # with any target to build just that one - `make cv-ar` for the CV alone, or
-# `make previews`, or `tests/check-arabic-examples.sh`.
+# `make previews`.  The `docker` target does the same through a variable:
+#
+#   make docker                 # both documents
+#   make docker TARGET=cv-ar    # just cv-ar, inside the image
+#
 # `--user` keeps the generated PDFs owned by you rather than root.
 #
 # Note the split: `make`, `make cv-ar` and `make previews` run on this machine and
-# need XeLaTeX installed here.  The `docker-*` targets are what you run when it is
-# not installed, and they hand the work to the image.
+# need XeLaTeX installed here.  The `docker-*` targets and `TARGET=` are what you
+# use when it is not installed, and they hand the work to the image.
+TARGET ?=
 IMAGE = sirati
 DOCKER_RUN = docker run --rm --user "$$(id -u):$$(id -g)" -v "$(CURDIR)":/doc -w /doc $(IMAGE)
 
@@ -56,7 +61,7 @@ docker-image:
 	docker build -t $(IMAGE) .
 
 docker: docker-image
-	$(DOCKER_RUN) make
+	$(DOCKER_RUN) make $(TARGET)
 
 docker-previews: docker-image
 	$(DOCKER_RUN) make previews

@@ -85,9 +85,10 @@ installs is explained in the comments inside the script.**
 ### 2. Install with Docker (any operating system)
 
 ```bash
-make docker            # build the image, then compile both documents
-make docker-previews   # the preview images
-make docker-test       # the test suite
+make docker                  # build the image, then compile both documents
+make docker-previews         # the preview images
+make docker-test             # the test suite
+make docker TARGET=cv-ar     # or any single target, instead of both documents
 ```
 
 The explicit commands these wrap are in the comments in the `Makefile`. The image is

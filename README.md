@@ -83,9 +83,10 @@ curl -fsSL https://raw.githubusercontent.com/nouaim/sirati/main/install.sh | sh
 ### ٢. التثبيت عبر Docker (أي نظام تشغيل)
 
 ```bash
-make docker            # بناء الصورة ثم تصريف المستندين
-make docker-previews   # صور المعاينة
-make docker-test       # الاختبارات
+make docker                  # بناء الصورة ثم تصريف المستندين
+make docker-previews         # صور المعاينة
+make docker-test             # الاختبارات
+make docker TARGET=cv-ar     # أو أي هدف وحده بدل المستندين
 ```
 
 والأوامر الصريحة التي تغلّفها هذه الأهداف مكتوبة في تعليقات ملف `Makefile`. والصورة
