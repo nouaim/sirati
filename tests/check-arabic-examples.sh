@@ -344,6 +344,13 @@ for name, lang in (("README.md", "ar"), ("README.en.md", "en")):
           f"{name}: missing upstream credit")
     check(re.search(r"CC BY-SA 4\.0", txt) is not None,
           f"{name}: states the CC BY-SA 4.0 licence", f"{name}: licence not stated")
+    # The first question a reader has is whether their own CV must be CC BY-SA.
+    # Both READMEs answer it, and the answer has to stay there.
+    scope = {"README.md": "محتوى سيرتك فهو ملكك",
+             "README.en.md": "Your own CV content is yours"}
+    check(scope[name] in txt,
+          f"{name}: says the licence covers the template, not the reader's own CV",
+          f"{name}: does not say what the licence covers for the reader's own CV")
     check(re.search(r"LICENSE", txt) is not None,
           f"{name}: points at the LICENSE file", f"{name}: no reference to the LICENSE file")
     check(re.search(r"Font Awesome 7|FontAwesome7", txt) is not None,

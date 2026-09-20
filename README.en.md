@@ -186,6 +186,10 @@ files, and the build files — is published under the
 [Creative Commons Attribution-ShareAlike 4.0 International licence](https://creativecommons.org/licenses/by-sa/4.0/)
 (CC BY-SA 4.0). The full legal code is in [LICENSE](LICENSE).
 
+The licence covers the template: if you adapt it and redistribute your version,
+the same terms apply to it. Your own CV content is yours — the licence is about the
+template's files and design, not about what you write into them.
+
 No file under the LaTeX Project Public License is distributed here. Upstream's
 `awesome-cv.cls` is deliberately **not** included: its layout is built around
 left-to-right tables, the Arabic documents do not use it, and leaving the class
