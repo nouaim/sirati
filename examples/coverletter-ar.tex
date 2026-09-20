@@ -77,6 +77,11 @@
 \newcommand{\lettersalutation}{السيد مدير إدارة التوظيف المحترم،}
 \newcommand{\letterclosing}{وتفضلوا بقبول فائق الاحترام،}
 \newcommand{\letterenclosure}{السيرة الذاتية}
+% A fixed date keeps the shipped example reproducible.  With \today the committed
+% PDF and preview go stale the next day, and tests/check-arabic-examples.sh compares
+% them against a fresh build, so it would fail every day.  Set this to \today if you
+% want the letter dated on the day you build it.
+\newcommand{\letterdate}{19 سبتمبر 2026}
 
 %-------------------------------------------------------------------------------
 %  Layout
@@ -125,7 +130,7 @@
 %  Date (left) and recipient (right) — a mirrored two-column line
 %-------------------------------------------------------------------------------
 \noindent{\bfseries\fontsize{12pt}{1.25em}\color{darktext} \letterrecipient}%
-\hfill{\fontsize{10pt}{1.25em}\color{graytext} \today}\par
+\hfill{\fontsize{10pt}{1.25em}\color{graytext} \letterdate}\par
 \vspace{0.5mm}
 \noindent{\fontsize{10pt}{1.45em}\color{graytext} \letterrecipientaddress}\par
 
