@@ -65,6 +65,19 @@ Both documents are one page. The previews are rendered from the built PDFs and
 regenerated with `make previews`.
 
 
+### Accent colours
+
+The accent is one line in `examples/colours.tex`. Four variants are kept as
+previews — [teal](examples/colours/cv-teal.pdf),
+[burgundy](examples/colours/cv-burgundy.pdf),
+[bronze](examples/colours/cv-bronze.pdf),
+[graphite](examples/colours/cv-graphite.pdf) — and `make colours` regenerates them.
+
+| teal `#0F6E6E` | burgundy `#8C2F39` | bronze `#9A6B2F` | graphite `#37474F` |
+|:---:|:---:|:---:|:---:|
+| [![teal](examples/colours/cv-teal.png)](examples/colours/cv-teal.pdf) | [![burgundy](examples/colours/cv-burgundy.png)](examples/colours/cv-burgundy.pdf) | [![bronze](examples/colours/cv-bronze.png)](examples/colours/cv-bronze.pdf) | [![graphite](examples/colours/cv-graphite.png)](examples/colours/cv-graphite.pdf) |
+
+
 ## Requirements
 
 Two ways to get a working toolchain. Both are exercised by the test suite, and the
@@ -141,8 +154,8 @@ The sheet is **white by default**, and nothing has to be done to keep it that
 way. An optional tint is shipped with the documents: **ورق شامواه** (chamois),
 the cream book paper that Arabic books are commonly printed on.
 
-To switch the tint on, uncomment two lines in the preamble of each document —
-the `\pagecolor` line, and the warm section rule just above it:
+To switch the tint on, uncomment two lines in `examples/colours.tex` — the warm
+section rule, and the `\pagecolor` line just below it:
 
 ```latex
 \definecolor{sectiondivider}{HTML}{B9A87F}   % warm rule: a grey rule vanishes on the tint

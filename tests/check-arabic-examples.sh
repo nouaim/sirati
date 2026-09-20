@@ -424,19 +424,25 @@ else
 fi
 
 # ---------------------------------------------------------------------------
-printf '\n== fonts: one source of truth, provided by every build path ==\n'
+printf '\n== fonts and colours: one source of truth, provided by every build path ==\n'
 # The documents reference their fonts by family name, so every build path has to
 # make those families available: if a family changes, CI and the Dockerfile must
-# follow.  The families themselves live in examples/fonts.tex, so a swap cannot be
+# follow.  The families live in examples/fonts.tex and the palette in
+# examples/colours.tex, so neither a font swap nor an accent change can be
 # half-applied across two preambles.
 python3 - <<'PY'
 import os, re, sys
 fonts = open("examples/fonts.tex", encoding="utf-8").read() if os.path.exists("examples/fonts.tex") else ""
+colours = open("examples/colours.tex", encoding="utf-8").read() if os.path.exists("examples/colours.tex") else ""
 if not fonts:
     print("FAIL  examples/fonts.tex is missing"); sys.exit(1)
+if not colours:
+    print("FAIL  examples/colours.tex is missing"); sys.exit(1)
 providers = {"CI": open(".github/workflows/main.yml", encoding="utf-8").read()}
 if os.path.exists("Dockerfile"):
     providers["the Dockerfile"] = open("Dockerfile", encoding="utf-8").read()
+if os.path.exists(".github/workflows/refresh-previews.yaml"):
+    providers["the preview refresh job"] = open(".github/workflows/refresh-previews.yaml", encoding="utf-8").read()
 ok = True
 for macro, what in (("arabicfont", "Arabic"), ("englishfont", "Latin")):
     m = re.search(r"\\newfontfamily\\%s\[[^\]]*\]\{([^}]*)\}" % macro, fonts)
@@ -453,6 +459,42 @@ for name in ("examples/cv-ar.tex", "examples/coverletter-ar.tex"):
         print(f"PASS  {name} takes its fonts from examples/fonts.tex")
     else:
         print(f"FAIL  {name} should input fonts.tex and name no family itself")
+        ok = False
+    if "\\input{colours.tex}" in txt and "\\definecolor" not in txt:
+        print(f"PASS  {name} takes its palette from examples/colours.tex")
+    else:
+        print(f"FAIL  {name} should input colours.tex and define no colour itself")
+        ok = False
+if re.search(r"\\definecolor\{awesome\}", colours):
+    print("PASS  the accent is defined once, in examples/colours.tex")
+else:
+    print("FAIL  examples/colours.tex does not define the accent colour")
+    ok = False
+
+# The colour previews are generated, committed and refreshed by CI, so a missing
+# or ungenerated set is a broken promise to the reader.
+if os.access("scripts/make-colours.sh", os.X_OK):
+    print("PASS  scripts/make-colours.sh is present and executable")
+else:
+    print("FAIL  scripts/make-colours.sh is missing or not executable")
+    ok = False
+if "colours:" in open("Makefile", encoding="utf-8").read():
+    print("PASS  the Makefile offers `make colours`")
+else:
+    print("FAIL  the Makefile has no colours target")
+    ok = False
+absent = [n for n in ("teal", "burgundy", "bronze", "graphite")
+          if not (os.path.exists(f"examples/colours/cv-{n}.pdf") and os.path.exists(f"examples/colours/cv-{n}.png"))]
+if not absent:
+    print("PASS  all four colour previews are present, as PDF and PNG")
+else:
+    print(f"FAIL  missing colour previews for: {absent}")
+    ok = False
+for name in ("README.md", "README.en.md"):
+    if "examples/colours/" in open(name, encoding="utf-8").read():
+        print(f"PASS  {name} shows the colour previews")
+    else:
+        print(f"FAIL  {name} does not mention the colour previews")
         ok = False
 sys.exit(0 if ok else 1)
 PY

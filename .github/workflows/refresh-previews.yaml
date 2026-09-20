@@ -1,0 +1,62 @@
+name: Refresh colour previews
+
+# The four colour previews in examples/colours/ are generated from the sources, so
+# they must not drift: this regenerates them on every push to main and commits the
+# result when it differs.  The commit is authored as the repository owner rather
+# than the bot, so the contributors list is unaffected, and `[skip ci]` keeps the
+# push from starting a second round of every workflow.
+
+on:
+  push:
+    branches:
+    - main
+    paths:
+    - 'examples/**'
+    - 'scripts/**'
+    - 'Makefile'
+    - '.github/workflows/refresh-previews.yaml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh-colour-previews
+  cancel-in-progress: true
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    container: texlive/texlive:latest
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v7
+
+    - name: Install the fonts and poppler-utils
+      run: |
+        apt-get update -qq
+        apt-get install -y -qq fonts-roboto poppler-utils
+        base=https://raw.githubusercontent.com/google/fonts/main/ofl/tajawal
+        mkdir -p /usr/share/fonts/truetype/tajawal
+        for f in Tajawal-Regular.ttf Tajawal-Bold.ttf Tajawal-Medium.ttf; do
+          curl -fsSL -o "/usr/share/fonts/truetype/tajawal/$f" "$base/$f"
+        done
+        fc-cache -f
+        # Assert both families resolve, as the other two build paths do: fc-match
+        # substitutes a fallback silently, which would only surface as a wrong render.
+        fc-match Tajawal | grep -qi tajawal
+        fc-match Roboto | grep -qi roboto
+
+    - name: Regenerate them
+      run: make colours
+
+    - name: Commit them when they changed
+      run: |
+        git config user.name "nouaim"
+        git config user.email "29921701+nouaim@users.noreply.github.com"
+        if git diff --quiet -- examples/colours; then
+          echo "the colour previews already match the sources"
+          exit 0
+        fi
+        git add examples/colours
+        git commit -m "Refresh the colour previews [skip ci]"
+        git push || { git pull --rebase && git push; }

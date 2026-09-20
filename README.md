@@ -63,6 +63,18 @@
 `make previews`.
 
 
+### ألوان التمييز
+
+اللون في سطر واحد داخل `examples/colours.tex`. وتُحفظ أربع صبغات كمعاينات —
+[أزرق مخضرّ](examples/colours/cv-teal.pdf)، [عنّابي](examples/colours/cv-burgundy.pdf)،
+[برونزي](examples/colours/cv-bronze.pdf)، [جرافيت](examples/colours/cv-graphite.pdf) —
+ويُعيد `make colours` توليدها.
+
+| أزرق مخضرّ `#0F6E6E` | عنّابي `#8C2F39` | برونزي `#9A6B2F` | جرافيت `#37474F` |
+|:---:|:---:|:---:|:---:|
+| [![أزرق مخضرّ](examples/colours/cv-teal.png)](examples/colours/cv-teal.pdf) | [![عنّابي](examples/colours/cv-burgundy.png)](examples/colours/cv-burgundy.pdf) | [![برونزي](examples/colours/cv-bronze.png)](examples/colours/cv-bronze.pdf) | [![جرافيت](examples/colours/cv-graphite.png)](examples/colours/cv-graphite.pdf) |
+
+
 ## المتطلبات
 
 طريقتان للحصول على بيئة عمل كاملة، والاختبارات تغطّي الطريقتين، وطريق Docker يعمل على
@@ -137,8 +149,8 @@ cd examples && xelatex cv-ar.tex
 الورقة **بيضاء افتراضيًا**، ولا يلزم فعل شيء للبقاء عليها. وتأتي مع المستندين صبغة
 اختيارية هي **ورق شامواه**، الورق الكريمي الذي تُطبع عليه الكتب العربية عادةً.
 
-ولتشغيل الصبغة أزل التعليق عن سطرين في تمهيد كل مستند: سطر `\pagecolor`، وسطر خط
-الأقسام الدافئ الذي يسبقه مباشرة:
+ولتشغيل الصبغة أزل التعليق عن سطرين في `examples/colours.tex`: سطر خط الأقسام الدافئ،
+وسطر `\pagecolor` الذي يليه:
 
 ```latex
 \definecolor{sectiondivider}{HTML}{B9A87F}   % خط دافئ: الخط الرمادي يختفي على الصبغة

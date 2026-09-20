@@ -1,4 +1,4 @@
-.PHONY: examples cv-ar coverletter-ar previews docker-image docker docker-previews docker-test clean
+.PHONY: examples cv-ar coverletter-ar previews colours docker-image docker docker-previews docker-test clean
 
 EXAMPLES_DIR = examples
 
@@ -30,6 +30,14 @@ previews: $(EXAMPLES_DIR)/cv-ar.pdf $(EXAMPLES_DIR)/coverletter-ar.pdf
 	cd $(EXAMPLES_DIR) && for d in cv-ar coverletter-ar; do \
 	  pdftoppm -r 130 -png -f 1 -l 1 $$d.pdf $$d && mv $$d-1.png $$d.png; \
 	done
+
+# The same document in four other accents, for the README.  They are committed,
+# and the Refresh colour previews workflow regenerates them whenever the sources
+# change, so they have one owner: a rendering made here would differ from the
+# container's by a fraction of a percent and cause a commit every time.  This
+# target is for looking at a colour you are considering.
+colours:
+	scripts/make-colours.sh
 
 clean:
 	rm -rf $(EXAMPLES_DIR)/*.pdf
