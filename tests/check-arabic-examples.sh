@@ -424,19 +424,22 @@ else
 fi
 
 # ---------------------------------------------------------------------------
-printf '\n== CI provides the fonts the documents need ==\n'
+printf '\n== fonts: one source of truth, provided by every build path ==\n'
 # The documents reference their fonts by family name, so every build path has to
-# make those families available: if a family in the document changes, CI and the
-# Dockerfile must follow.
+# make those families available: if a family changes, CI and the Dockerfile must
+# follow.  The families themselves live in examples/fonts.tex, so a swap cannot be
+# half-applied across two preambles.
 python3 - <<'PY'
 import os, re, sys
-doc = open("examples/cv-ar.tex", encoding="utf-8").read()
+fonts = open("examples/fonts.tex", encoding="utf-8").read() if os.path.exists("examples/fonts.tex") else ""
+if not fonts:
+    print("FAIL  examples/fonts.tex is missing"); sys.exit(1)
 providers = {"CI": open(".github/workflows/main.yml", encoding="utf-8").read()}
 if os.path.exists("Dockerfile"):
     providers["the Dockerfile"] = open("Dockerfile", encoding="utf-8").read()
 ok = True
 for macro, what in (("arabicfont", "Arabic"), ("englishfont", "Latin")):
-    m = re.search(r"\\newfontfamily\\%s\[[^\]]*\]\{([^}]*)\}" % macro, doc)
+    m = re.search(r"\\newfontfamily\\%s\[[^\]]*\]\{([^}]*)\}" % macro, fonts)
     family = m.group(1).strip() if m else ""
     for who, text in providers.items():
         if family and family in text:
@@ -444,6 +447,13 @@ for macro, what in (("arabicfont", "Arabic"), ("englishfont", "Latin")):
         else:
             print(f"FAIL  {who} does not provide the {what} family {family!r}")
             ok = False
+for name in ("examples/cv-ar.tex", "examples/coverletter-ar.tex"):
+    txt = open(name, encoding="utf-8").read()
+    if "\\input{fonts.tex}" in txt and "\\newfontfamily" not in txt:
+        print(f"PASS  {name} takes its fonts from examples/fonts.tex")
+    else:
+        print(f"FAIL  {name} should input fonts.tex and name no family itself")
+        ok = False
 sys.exit(0 if ok else 1)
 PY
 [ $? -eq 0 ] || fail=1

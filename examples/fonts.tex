@@ -1,0 +1,27 @@
+%-------------------------------------------------------------------------------
+% سيرتي — fonts
+%
+% The only place in this repository where the font families are named.  Both
+% documents input this file, so changing a font is one line here rather than two
+% near-identical preambles.
+%
+% The families are referenced by name and no font files are bundled, so they have
+% to be installed on the system: apt provides Roboto through fonts-roboto, while
+% the Arabic family here has no distribution package and is downloaded by
+% install.sh and by the Dockerfile.
+%
+% If you change the Arabic family, expect to revisit its Scale= too: 0.96
+% compensates for Tajawal's metrics, and another face will sit differently against
+% the Latin text and the 10pt grid.
+%
+% Any change must leave both documents on one page, with no missing glyphs and no
+% bidi warnings — tests/check-arabic-examples.sh measures all three, and the CI
+% and Docker jobs must be given the new family as well.
+%
+% Packaged Arabic faces worth testing: Amiri (fonts-hosny-amiri) and Noto Naskh
+% Arabic (fonts-noto-core).  Neither has been built here yet.
+%-------------------------------------------------------------------------------
+\defaultfontfeatures{Ligatures=TeX}
+\newfontfamily\arabicfont[Script=Arabic, Scale=0.96]{Tajawal}
+\newfontfamily\arabicfontsf[Script=Arabic, Scale=0.96]{Tajawal}
+\newfontfamily\englishfont[Scale=0.92]{Roboto}
