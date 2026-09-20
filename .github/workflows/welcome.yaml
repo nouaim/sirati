@@ -21,12 +21,22 @@ jobs:
     - name: Welcome for First Issue or Pull Request
       uses: actions/first-interaction@v3
       with:
-        repo-token: ${{ secrets.GITHUB_TOKEN }}
-        issue-message: |
+        # v3 declares these with underscores, and reads them as required inputs:
+        # hyphenated names arrive as empty and the step fails.
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        issue_message: |
+          ### :wave: أهلًا بك! يبدو أن هذه أول قضية لك.
+
+          شكرًا لمساهمتك. امنحنا وقتًا قصيرًا لمراجعتها. 😄
+
           ### :wave: Welcome! Looks like this is your first issue.
 
           Hey, thanks for your contribution! Please give us a bit of time to review it. 😄
-        pr-message: |
+        pr_message: |
+          ### :wave: أهلًا بك! يبدو أن هذا أول طلب سحب لك.
+
+          شكرًا لمساهمتك. امنحنا وقتًا قصيرًا لمراجعته. 😄
+
           ### :wave: Welcome! Looks like this is your first pull request.
 
           Hey, thanks for your contribution! Please give us a bit of time to review it. 😄
