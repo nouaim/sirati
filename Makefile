@@ -41,7 +41,14 @@ clean:
 #   docker build -t sirati .
 #   docker run --rm --user $$(id -u):$$(id -g) -v "$$PWD":/doc -w /doc sirati make
 #
+# That trailing `make` is this same Makefile, run inside the image, so replace it
+# with any target to build just that one - `make cv-ar` for the CV alone, or
+# `make previews`, or `tests/check-arabic-examples.sh`.
 # `--user` keeps the generated PDFs owned by you rather than root.
+#
+# Note the split: `make`, `make cv-ar` and `make previews` run on this machine and
+# need XeLaTeX installed here.  The `docker-*` targets are what you run when it is
+# not installed, and they hand the work to the image.
 IMAGE = sirati
 DOCKER_RUN = docker run --rm --user "$$(id -u):$$(id -g)" -v "$(CURDIR)":/doc -w /doc $(IMAGE)
 
