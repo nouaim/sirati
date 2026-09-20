@@ -123,10 +123,10 @@ cd examples && xelatex cv-ar.tex
 التغطية في ملف منفصل (`examples/coverletter-ar/body.tex`) حتى يمكن تغيير الصياغة دون
 المساس بالتخطيط:
 
-* `examples/cv-ar.tex` — تخطيط السيرة الذاتية وبياناتها
-* `examples/cv-ar/*.tex` — أقسام السيرة الذاتية
-* `examples/coverletter-ar.tex` — تخطيط الرسالة وبياناتها
-* `examples/coverletter-ar/body.tex` — نص الرسالة
+* &rlm;`examples/cv-ar.tex` — تخطيط السيرة الذاتية وبياناتها
+* &rlm;`examples/cv-ar/*.tex` — أقسام السيرة الذاتية
+* &rlm;`examples/coverletter-ar.tex` — تخطيط الرسالة وبياناتها
+* &rlm;`examples/coverletter-ar/body.tex` — نص الرسالة
 
 والأمثلة تصف حاليًا **شخصًا وهميًا** يستخدم النطاق المحجوز `example.com`. استبدل تلك
 القيم بقيمك.
@@ -154,23 +154,23 @@ cd examples && xelatex cv-ar.tex
 
 ## شكر وتقدير
 
-[**LaTeX**](https://www.latex-project.org) برنامج تنضيد رائع يستخدمه كثيرون، ولا سيما
+&rlm;[**LaTeX**](https://www.latex-project.org) برنامج تنضيد رائع يستخدمه كثيرون، ولا سيما
 في الرياضيات وعلوم الحاسوب في الأوساط الأكاديمية.
 
-[**Awesome CV**](https://github.com/posquit0/Awesome-CV) المشروع الأصلي الذي اشتُقّ
+&rlm;[**Awesome CV**](https://github.com/posquit0/Awesome-CV) المشروع الأصلي الذي اشتُقّ
 منه هذا المستودع، أنشأه [Claud D. Park](https://github.com/posquit0) بمساهمات من
 مجتمعه.
 
-[**FontAwesome7 LaTeX Package**](https://ctan.org/pkg/fontawesome7) حزمة LaTeX توفّر
+&rlm;[**FontAwesome7 LaTeX Package**](https://ctan.org/pkg/fontawesome7) حزمة LaTeX توفّر
 أيقونات [Font Awesome 7](https://fontawesome.com/v7/icons).
 
-[**Tajawal**](https://github.com/googlefonts/tajawal) الخط العربي المستخدم في الأمثلة
+&rlm;[**Tajawal**](https://github.com/googlefonts/tajawal) الخط العربي المستخدم في الأمثلة
 العربية.
 
-[**Roboto**](https://github.com/google/roboto) الخط الافتراضي في أندرويد وChromeOS،
+&rlm;[**Roboto**](https://github.com/google/roboto) الخط الافتراضي في أندرويد وChromeOS،
 والخط الموصى به للغة Google البصرية، Material Design.
 
-[**Source Sans Pro**](https://github.com/adobe-fonts/source-sans-pro) مجموعة خطوط
+&rlm;[**Source Sans Pro**](https://github.com/adobe-fonts/source-sans-pro) مجموعة خطوط
 OpenType مصمّمة للعمل جيدًا في واجهات المستخدم.
 
 
