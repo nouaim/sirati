@@ -51,6 +51,11 @@ jobs:
 
     - name: Commit them when they changed
       run: |
+        # This job runs as root inside the container on a workspace owned by the
+        # runner, and git refuses a repository it does not own: without this the
+        # diff below reports "Not a git repository" and the job fails before it
+        # ever gets to commit anything.
+        git config --global --add safe.directory '*'
         git config user.name "nouaim"
         git config user.email "29921701+nouaim@users.noreply.github.com"
         if git diff --quiet -- examples/colours; then
