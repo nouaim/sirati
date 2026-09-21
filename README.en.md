@@ -118,16 +118,20 @@ cd examples && xelatex cv-ar.tex
 
 `make` on its own builds both documents.
 
-To build the same documents with Google's Material Icons instead of Font Awesome:
+To build the same documents with another icon set, or another style of one:
 
 ```bash
-make material-cv            # the CV
-make material-coverletter   # the cover letter
-make material               # both
+make material-cv                              # filled Material Icons
+make material-coverletter                     # the cover letter likewise
+make material                                 # both
+
+make icons-cv ICONS=material STYLE=outlined   # outlined, round, sharp, twotone
+make icons-cv ICONS=fa STYLE=outlined         # Font Awesome in its regular style
 ```
 
-The icon set is chosen on the command line, so no file changes: the output is
-`examples/cv-ar-material.pdf` and its like.
+Both switches are chosen on the command line, so no file changes: the output is
+`examples/cv-ar-material-outlined.pdf` and its like. The styles are `filled`,
+`outlined`, `round`, `sharp` and `twotone`.
 
 
 ## Customising

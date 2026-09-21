@@ -24,11 +24,16 @@
 % Packaged Arabic faces worth testing: Amiri (fonts-hosny-amiri) and Noto Naskh
 % Arabic (fonts-noto-core).  Neither has been built here yet.
 %
-% The icon family is the one exception to "always named here": it is defined only
-% when the document was started with `\def\cvIconSet{material}`, which is what
-% `make material-cv` does, so a Font Awesome build never needs it installed.
-% icons.tex picks the glyphs; this switch is here because this is the file that
-% names families.
+% The icon set and its style are the exception to "families are named here and
+% nowhere else": they are chosen before the document is read, by
+%
+%   make icons-cv ICONS=material STYLE=outlined
+%
+% or by the same two \def lines on the XeLaTeX command line.  Font Awesome arrives
+% with its CTAN package, so the default set names no family at all; Material Icons
+% is Google's set, installed by install.sh, and carries one family per style —
+% only the style in use is defined, so a machine needs the family it builds rather
+% than all five.  icons.tex holds the glyphs each set draws with.
 %-------------------------------------------------------------------------------
 \defaultfontfeatures{Ligatures=TeX}
 \newfontfamily\arabicfont[Script=Arabic, Scale=0.96]{Tajawal}
@@ -36,13 +41,31 @@
 \newfontfamily\englishfont[Scale=0.92]{Roboto}
 
 \providecommand*{\cvIconSet}{fa}
+\providecommand*{\cvIconStyle}{filled}
 \def\cvIconSetMaterial{material}
+\def\cvIconStyleFilled{filled}
+\def\cvIconStyleOutlined{outlined}
+\def\cvIconStyleRound{round}
+\def\cvIconStyleSharp{sharp}
+\def\cvIconStyleTwoTone{twotone}
+% Font Awesome's names for the first two, accepted as aliases so either vocabulary
+% works on the command line.
+\def\cvIconStyleSolid{solid}
+\def\cvIconStyleRegular{regular}
+\ifx\cvIconStyle\cvIconStyleSolid\def\cvIconStyle{filled}\fi
+\ifx\cvIconStyle\cvIconStyleRegular\def\cvIconStyle{outlined}\fi
 \ifx\cvIconSet\cvIconSetMaterial
+  \def\cvIconFace{Material Icons}
+  \ifx\cvIconStyle\cvIconStyleOutlined\def\cvIconFace{Material Icons Outlined}\fi
+  \ifx\cvIconStyle\cvIconStyleRound\def\cvIconFace{Material Icons Round}\fi
+  \ifx\cvIconStyle\cvIconStyleSharp\def\cvIconFace{Material Icons Sharp}\fi
+  \ifx\cvIconStyle\cvIconStyleTwoTone\def\cvIconFace{Material Icons Two Tone}\fi
   % Material Icons has no space glyph, and fontspec typesets one while setting the
   % family up: that alone fills the log with "Missing character: There is no
   % (U+0020)".  Silence the parameter across the definition only, so a genuinely
-  % missing glyph anywhere else is still reported.
+  % missing glyph anywhere else is still reported.  Scale=1.10 and the shift in
+  % icons.tex were measured against the Font Awesome row at this size.
   \tracinglostchars=0
-  \newfontfamily\iconfont[Scale=1.3]{Material Icons}
+  \newfontfamily\iconfont[Scale=1.10]{\cvIconFace}
   \tracinglostchars=1
 \fi

@@ -185,8 +185,8 @@ check_document "cover letter" "coverletter-ar" "examples/coverletter-ar.pdf" \
 # defined on the command line, so it has to pass everything above unchanged - and
 # a build that silently lost its icons would show up as missing glyphs or a
 # broken header here.
-check_document "CV with Material Icons" "material-cv" "examples/cv-ar-material.pdf" \
-               "examples/cv-ar-material.log" "examples/cv-ar.tex" "examples/cv-ar"
+check_document "CV with Material Icons" "material-cv" "examples/cv-ar-material-filled.pdf" \
+               "examples/cv-ar-material-filled.log" "examples/cv-ar.tex" "examples/cv-ar"
 
 # ---------------------------------------------------------------------------
 printf '\n== committed artefacts match the sources ==\n'
@@ -276,6 +276,9 @@ for pat in ["Makefile", "LICENSE", "README.md", "*.md", ".github/**/*.yml",
             ".github/**/*.yaml", "tests/*", "examples/*.tex", "examples/**/*.tex"]:
     files += [p for p in glob.glob(pat, recursive=True) if os.path.isfile(p)]
 ref = re.compile(r"examples/[A-Za-z0-9_][A-Za-z0-9_./-]*\.(?:tex|pdf|png|cls|jpg)")
+# `make icons` writes examples/cv-ar-<set>-<style>.pdf and its like.  That is build
+# output and is never committed, so naming it is not a dangling reference.
+generated = re.compile(r"^examples/(?:cv-ar|coverletter-ar)-[a-z]+-[a-z]+\.pdf$")
 # "exists" means present in the committed tree: `make clean` legitimately deletes
 # built PDFs in the working tree, and a committed file is not a dangling target.
 tracked = set(subprocess.run(["git", "ls-files"], capture_output=True,
@@ -288,7 +291,7 @@ for f in sorted(set(files)):
         continue
     for m in ref.findall(txt):
         refs += 1
-        if m in tracked or os.path.exists(m):
+        if m in tracked or os.path.exists(m) or generated.match(m):
             continue
         missing.setdefault(m, []).append(f)
 if missing:
@@ -417,6 +420,8 @@ bad, used = [], 0
 for p in glob.glob("**/*.tex", recursive=True):
     for i, line in enumerate(open(p, encoding="utf-8", errors="ignore"), 1):
         for name in re.findall(r"\\(fa[A-Z][A-Za-z0-9]*)", line.split("%")[0]):
+            if name in ("faIcon", "faStyle", "faPreselectedIcon"):
+                continue          # the package's own commands, not icons
             used += 1
             if f"\\{name}" not in mapping and name not in mapping:
                 bad.append(f"{p}:{i}: \\{name}")
@@ -465,17 +470,24 @@ for macro, what in (("arabicfont", "Arabic"), ("englishfont", "Latin")):
 # The icon family is defined only for the material set, and only the two paths
 # that build or test that set need it: the colour previews are always drawn with
 # Font Awesome, so the refresh job does not carry it.
-m = re.search(r"\\newfontfamily\\iconfont\[[^\]]*\]\{([^}]*)\}", fonts)
-icon_family = m.group(1).strip() if m else ""
-if not icon_family:
-    print("FAIL  examples/fonts.tex does not name the icon family"); ok = False
-else:
+# One family per style, all named through \\cvIconFace so that adding a style means
+# touching this one file.
+faces = re.findall(r"\\def\\cvIconFace\{([^}]*)\}", fonts)
+if not faces:
+    print("FAIL  examples/fonts.tex does not name the icon families"); ok = False
+for family in faces:
     for who in ("CI", "the Dockerfile"):
-        if icon_family in providers.get(who, ""):
-            print(f"PASS  {who} provides the icon family the material build uses: {icon_family}")
+        if family in providers.get(who, ""):
+            print(f"PASS  {who} provides the icon family {family}")
         else:
-            print(f"FAIL  {who} does not provide the icon family {icon_family!r}")
+            print(f"FAIL  {who} does not provide the icon family {family!r}")
             ok = False
+for style in ("Filled", "Outlined", "Round", "Sharp", "TwoTone"):
+    if f"\\def\\cvIconStyle{style}" in fonts:
+        print(f"PASS  the {style.lower()} icon style is a name the switch accepts")
+    else:
+        print(f"FAIL  examples/fonts.tex does not define the {style} style")
+        ok = False
     switch = fonts.find("\\ifx\\cvIconSet\\cvIconSetMaterial")
     named = fonts.find("\\newfontfamily\\iconfont")
     if switch != -1 and switch < named:
@@ -596,52 +608,68 @@ for cmd in sorted(used):
         print(f"PASS  {cmd} is defined for both icon sets")
 
 mk = open("Makefile", encoding="utf-8").read()
-for target, doc in (("material-cv", "cv-ar"), ("material-coverletter", "coverletter-ar")):
+for target, doc in (("icons-cv", "cv-ar"), ("icons-coverletter", "coverletter-ar")):
     m = re.search(r"^%s:\n((?:\t.*\n)+)" % target, mk, re.M)
     recipe = m.group(1) if m else ""
-    if "\\def\\cvIconSet{material}" in recipe and f"\\input{{{doc}.tex}}" in recipe:
-        print(f"PASS  make {target} builds {doc} with the material set")
+    if "\\def\\cvIconSet{$(ICONS)}\\def\\cvIconStyle{$(STYLE)}" in recipe \
+       and f"\\input{{{doc}.tex}}" in recipe:
+        print(f"PASS  make {target} hands both switches to {doc}.tex")
     else:
-        print(f"FAIL  make {target} should pass the material switch to {doc}.tex")
+        print(f"FAIL  make {target} should pass the ICONS and STYLE switches to {doc}.tex")
+        ok = False
+for target in ("material-cv", "material-coverletter"):
+    if re.search(r"^%s: ICONS = material$" % target, mk, re.M):
+        print(f"PASS  make {target} is the material shorthand")
+    else:
+        print(f"FAIL  make {target} should select ICONS=material")
         ok = False
 
 for name in ("README.md", "README.en.md"):
     txt = open(name, encoding="utf-8").read()
-    if "make material-cv" in txt:
-        print(f"PASS  {name} documents the material command")
+    if "make material-cv" in txt and "STYLE=" in txt:
+        print(f"PASS  {name} documents the material command and the style switch")
     else:
-        print(f"FAIL  {name} does not document `make material-cv`")
+        print(f"FAIL  {name} does not document `make material-cv` and `STYLE=`")
         ok = False
 sys.exit(0 if ok else 1)
 PY
 [ $? -eq 0 ] || fail=1
 
-printf '\n== icon sets: every Material name draws a glyph ==\n'
+printf '\n== icon sets: every Material name draws a glyph in every style ==\n'
 # Material Icons draws a glyph from its *name* as a ligature, and a name it does
 # not know typesets as nothing at all: no error, no missing glyph, just a hole in
-# the header.  So each name is rendered next to a marker letter, and the row has to
-# carry more ink than the marker alone.
-python3 - "$TMP/probe.tex" "$TMP/names.txt" <<'PY'
+# the header.  So every name is rendered once per style, next to a marker letter,
+# and each row has to carry more ink than the marker alone.
+python3 - "$TMP/probe.tex" "$TMP/probe-list.txt" <<'PY'
 import re, sys
 icons = open("examples/icons.tex", encoding="utf-8").read()
 material = re.split(r"\\else", icons.split("\\ifx\\cvIconSet\\cvIconSetMaterial")[1], maxsplit=1)[0]
 names = re.findall(r"\\cviconglyph\{([a-z_]+)\}", material)
-family = re.search(r"\\newfontfamily\\iconfont\[[^\]]*\]\{([^}]*)\}",
-                   open("examples/fonts.tex", encoding="utf-8").read()).group(1)
+faces = re.findall(r"\\def\\cvIconFace\{([^}]*)\}",
+                   open("examples/fonts.tex", encoding="utf-8").read())
+# one letter per style: a control word cannot carry a digit
+decls = "".join("\\newfontfamily\\probeFace%s[Scale=1.6]{%s}\n" % (chr(65 + i), f)
+                for i, f in enumerate(faces))
+lines, rows = [], []
+for i, face in enumerate(faces):
+    for name in names:
+        lines.append("\\noindent M {\\probeFace%s %s}\\par\n" % (chr(65 + i), name))
+        rows.append("%s\t%s" % (face, name))
 with open(sys.argv[1], "w", encoding="utf-8") as fh:
     fh.write("\\documentclass[12pt]{article}\n\\usepackage{fontspec}\n"
              "\\usepackage[margin=1cm]{geometry}\n\\pagestyle{empty}\n"
-             f"\\newfontfamily\\probe[Scale=2]{{{family}}}\n\\begin{{document}}\n"
-             "\\noindent M\\par\n"
-             + "".join("\\noindent M {\\probe %s}\\par\n" % n for n in names)
-             + "\\end{document}\n")
-open(sys.argv[2], "w", encoding="utf-8").write("\n".join(names))
+             + decls + "\\begin{document}\n"
+             # A roomy baseline: the glyphs are taller than a normal line, and rows
+             # whose ink touches would be read as one.
+             + "\\fontsize{12pt}{26pt}\\selectfont\n\\noindent M\\par\n"
+             + "".join(lines) + "\\end{document}\n")
+open(sys.argv[2], "w", encoding="utf-8").write("\n".join(rows))
 PY
-if [ -z "$(cat "$TMP/names.txt")" ]; then
+if [ -z "$(cat "$TMP/probe-list.txt")" ]; then
   bad "examples/icons.tex names no Material glyph"
 elif (cd "$TMP" && xelatex -interaction=nonstopmode probe.tex >/dev/null 2>&1) && [ -s "$TMP/probe.pdf" ]; then
   pdftoppm -gray -r 100 -f 1 -l 1 "$TMP/probe.pdf" "$TMP/probe" >/dev/null 2>&1
-  python3 - "$TMP/probe-1.pgm" "$TMP/names.txt" <<'PY'
+  python3 - "$TMP/probe-1.pgm" "$TMP/probe-list.txt" <<'PY'
 import sys
 
 def read_pgm(path):
@@ -662,7 +690,7 @@ def read_pgm(path):
     return int(fields[1]), int(fields[2]), raw[i + 1:]
 
 w, h, px = read_pgm(sys.argv[1])
-names = open(sys.argv[2], encoding="utf-8").read().split()
+rows = [line.split("\t") for line in open(sys.argv[2], encoding="utf-8").read().splitlines()]
 bands, start = [], None
 for y in range(h):
     ink = any(px[y * w + x] < 200 for x in range(w))
@@ -670,25 +698,39 @@ for y in range(h):
         start = y
     if not ink and start is not None:
         bands.append((start, y)); start = None
-if len(bands) != len(names) + 1:
-    print(f"FAIL  the probe rendered {len(bands)} rows, expected {len(names) + 1}")
+if len(bands) != len(rows) + 1:
+    print(f"FAIL  the probe rendered {len(bands)} rows, expected {len(rows) + 1}")
     sys.exit(1)
 def ink(band):
     a, b = band
     return sum(1 for y in range(a, b) for x in range(w) if px[y * w + x] < 200)
 baseline = ink(bands[0])
 ok = True
-for band, name in zip(bands[1:], names):
+for band, (face, name) in zip(bands[1:], rows):
     if ink(band) > baseline:
-        print(f"PASS  the Material name `{name}` draws a glyph")
+        print(f"PASS  {face}: `{name}` draws a glyph")
     else:
-        print(f"FAIL  the Material name `{name}` draws nothing but space")
+        print(f"FAIL  {face}: `{name}` draws nothing but space")
         ok = False
 sys.exit(0 if ok else 1)
 PY
   [ $? -eq 0 ] || fail=1
 else
-  bad "the Material Icons family is not usable - run ./install.sh (or docker)"
+  bad "the Material Icons families are not usable - run ./install.sh (or docker)"
+fi
+
+# A style other than the default has to build through its real target, since that
+# is how a reader reaches it.
+printf '\n== icon sets: a non-default style builds ==\n'
+rm -f examples/cv-ar-material-outlined.pdf
+if make icons-cv ICONS=material STYLE=outlined >"$TMP/outlined.log" 2>&1 \
+   && [ -s examples/cv-ar-material-outlined.pdf ] \
+   && [ "$(pdfinfo examples/cv-ar-material-outlined.pdf | awk '/^Pages/{print $2}')" = "1" ] \
+   && [ "$(grep -c '^!' examples/cv-ar-material-outlined.log)" = "0" ] \
+   && [ "$(grep -c 'Missing character' examples/cv-ar-material-outlined.log)" = "0" ]; then
+  pass "make icons-cv ICONS=material STYLE=outlined gives one clean page"
+else
+  bad "the outlined Material style did not build cleanly"; tail -15 "$TMP/outlined.log"
 fi
 
 # ---------------------------------------------------------------------------

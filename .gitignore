@@ -23,5 +23,6 @@
 
 
 ### Build output that is never committed ###
-## The Material Icons builds of the examples (`make material`):
-examples/*-material.pdf
+## The other icon sets and styles of the examples (`make icons`, `make material`):
+examples/cv-ar-*.pdf
+examples/coverletter-ar-*.pdf

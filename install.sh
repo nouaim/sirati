@@ -132,25 +132,39 @@ fi
 
 # ---------------------------------------------------------------------------
 step "Icon font: Material Icons"
-# The other icon set the documents can draw with: `make material-cv` needs this
-# family, and having it installed keeps both sets available.  Google publishes it
-# for the web, so like Tajawal it is fetched rather than packaged.
-if command -v fc-match >/dev/null 2>&1 && fc-match "Material Icons" 2>/dev/null | grep -qi "material icons"; then
-  info "already registered: $(fc-match "Material Icons")"
+# The other icon set the documents can draw with: `make icons-cv ICONS=material`
+# needs it, and it ships one family per style, of which the documents pick one, so
+# all five are installed here and any style can be built afterwards.  Google
+# publishes it for the web, so like Tajawal it is fetched rather than packaged.
+missing=""
+if command -v fc-match >/dev/null 2>&1; then
+  for family in "Material Icons" "Material Icons Outlined" "Material Icons Round" "Material Icons Sharp" "Material Icons Two Tone"; do
+    fc-match "$family" 2>/dev/null | grep -qi "$family" || missing=1
+  done
+else
+  # No fontconfig: install the files and let the system find them itself.
+  missing=1
+fi
+if [ -z "$missing" ]; then
+  info "already registered: Material Icons, in all five styles"
 else
   mkdir -p "$FONT_DIR/materialicons"
-  if [ -s "$FONT_DIR/materialicons/MaterialIcons-Regular.ttf" ]; then
-    info "already downloaded: MaterialIcons-Regular.ttf"
-  else
-    info "downloading MaterialIcons-Regular.ttf"
-    curl -fsSL -o "$FONT_DIR/materialicons/MaterialIcons-Regular.ttf" \
-      "$MATERIALICONS_URL/MaterialIcons-Regular.ttf"
-  fi
+  for f in MaterialIcons-Regular.ttf MaterialIconsOutlined-Regular.otf \
+           MaterialIconsRound-Regular.otf MaterialIconsSharp-Regular.otf \
+           MaterialIconsTwoTone-Regular.otf; do
+    if [ -s "$FONT_DIR/materialicons/$f" ]; then
+      info "already downloaded: $f"
+    else
+      info "downloading $f"
+      curl -fsSL -o "$FONT_DIR/materialicons/$f" "$MATERIALICONS_URL/$f"
+    fi
+  done
   refresh_fonts
   if command -v fc-match >/dev/null 2>&1; then
-    fc-match "Material Icons" | grep -qi "material icons" \
-      || die "Material Icons did not register; check $FONT_DIR/materialicons"
-    info "registered: $(fc-match "Material Icons")"
+    for family in "Material Icons" "Material Icons Outlined" "Material Icons Round" "Material Icons Sharp" "Material Icons Two Tone"; do
+      fc-match "$family" | grep -qi "$family" || die "$family did not register; check $FONT_DIR/materialicons"
+    done
+    info "registered: Material Icons, in all five styles"
   fi
 fi
 
@@ -171,7 +185,7 @@ info "LaTeX packages: all present"
 if command -v fc-match >/dev/null 2>&1; then
   info "Arabic font:   $(fc-match Tajawal)"
   info "Latin font:    $(fc-match Roboto)"
-  info "Icons font:    $(fc-match "Material Icons")"
+  info "Icons font:    $(fc-match "Material Icons") and its four other styles"
 fi
 
 printf '\nDone. Now build the documents:\n\n    make\n\n'
