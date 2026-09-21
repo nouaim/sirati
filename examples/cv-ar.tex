@@ -109,22 +109,28 @@
   \vspace{0.6mm}%
 }
 
-% Skill line: the ambient direction is already RTL, so the line is right-ragged
-% with no skip trickery.  The paragraph must close *outside* the group: a group
-% that spans \par leaves bidi with an unbalanced \endL and it warns about it.
+% Skill line: a bold label in a column of its own, then a gap rather than a colon,
+% so the lists line up under one another the way the original project sets them.
+% The paragraph must close *outside* the group: a group that spans \par leaves bidi
+% with an unbalanced \endL and it warns about it.  A label wider than the column
+% would overflow it, and LaTeX reports that as an Overfull \hbox.
+\newlength{\cvskilllabel}
+\setlength{\cvskilllabel}{15em}
 \newcommand*{\cvskill}[2]{%
   \noindent{\fontsize{10.2pt}{1.4em}\selectfont
-    \textbf{\color{darktext}#1:~}\color{darktext}#2}%
+    \makebox[\cvskilllabel][r]{\textbf{\textcolor{darktext}{#1}}}%
+    \hspace{1.1em}%
+    \parbox[t]{\dimexpr\linewidth-\cvskilllabel-1.1em\relax}{\textcolor{graytext}{#2}}}%
   \par\vspace{2.6mm}%
 }
 
 \begin{document}
 
 \begin{center}
-  {\fontsize{30pt}{1.1em}\bfseries\color{darktext} \cvname}\\[0.35em]
-  {\fontsize{10pt}{1em}\bfseries\color{awesome} \cvtitle}\\[0.4em]
-  {\fontsize{9pt}{1em}\color{lighttext} \cvlocation}\\[0.5em]
-  {\fontsize{8.2pt}{1em}\color{darktext}
+  {\fontsize{30pt}{1.1em}\bfseries\textcolor{darktext}{\cvname}}\\[0.35em]
+  {\fontsize{10pt}{1em}\bfseries\textcolor{awesome}{\cvtitle}}\\[0.4em]
+  {\fontsize{9pt}{1em}\textcolor{lighttext}{\cvlocation}}\\[0.5em]
+  {\fontsize{8.2pt}{1em}\textcolor{darktext}{
     \cvIconPhone\ \textenglish{\cvphone}
     \quad\textbar\quad
     \cvIconMail\ \href{mailto:\cvemail}{\textenglish{\cvemail}}
@@ -132,7 +138,7 @@
     \cvIconGithub\ \href{https://github.com/\cvgithub}{\textenglish{\cvgithub}}
     \quad\textbar\quad
     \cvIconLinkedin\ \href{https://www.linkedin.com/in/\cvlinkedin}{\textenglish{\cvlinkedin}}
-  }
+  }}
 \end{center}
 
 \vspace{0.6em}
