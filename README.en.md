@@ -65,19 +65,6 @@ Both documents are one page. The previews are rendered from the built PDFs and
 regenerated with `make previews`.
 
 
-### Accent colours
-
-The accent is one line in `examples/colours.tex`. Four variants are kept as
-previews — [teal](examples/colours/cv-teal.pdf),
-[burgundy](examples/colours/cv-burgundy.pdf),
-[bronze](examples/colours/cv-bronze.pdf),
-[graphite](examples/colours/cv-graphite.pdf) — and `make colours` regenerates them.
-
-| teal `0F6E6E` | burgundy `8C2F39` | bronze `9A6B2F` | graphite `37474F` |
-|:---:|:---:|:---:|:---:|
-| [![teal](examples/colours/cv-teal.png)](examples/colours/cv-teal.pdf) | [![burgundy](examples/colours/cv-burgundy.png)](examples/colours/cv-burgundy.pdf) | [![bronze](examples/colours/cv-bronze.png)](examples/colours/cv-bronze.pdf) | [![graphite](examples/colours/cv-graphite.png)](examples/colours/cv-graphite.pdf) |
-
-
 ## Requirements
 
 Two ways to get a working toolchain. Both are exercised by the test suite, and the
@@ -168,6 +155,43 @@ xdvipdfmx graphics driver. The value of `shamwa` (`#F7F0DC`) is a definecolor, s
 the tone can be changed to taste. Because the tint covers the whole sheet edge to
 edge, a printer has to be set to print background colours for it to come out on
 paper.
+
+
+## Accent colours
+
+The accent is one line in `examples/colours.tex`; these are eight of them to compare, and `make colours` regenerates the previews.
+
+**teal** · `0F6E6E` · [PDF](examples/colours/cv-teal.pdf)
+
+<img src="examples/colours/cv-teal.png" width="520" alt="the CV in teal">
+
+**emerald** · `1B7F5A` · [PDF](examples/colours/cv-emerald.pdf)
+
+<img src="examples/colours/cv-emerald.png" width="520" alt="the CV in emerald">
+
+**navy** · `283593` · [PDF](examples/colours/cv-navy.pdf)
+
+<img src="examples/colours/cv-navy.png" width="520" alt="the CV in navy">
+
+**violet** · `6A4C93` · [PDF](examples/colours/cv-violet.pdf)
+
+<img src="examples/colours/cv-violet.png" width="520" alt="the CV in violet">
+
+**rose** · `B03060` · [PDF](examples/colours/cv-rose.pdf)
+
+<img src="examples/colours/cv-rose.png" width="520" alt="the CV in rose">
+
+**burgundy** · `8C2F39` · [PDF](examples/colours/cv-burgundy.pdf)
+
+<img src="examples/colours/cv-burgundy.png" width="520" alt="the CV in burgundy">
+
+**bronze** · `9A6B2F` · [PDF](examples/colours/cv-bronze.pdf)
+
+<img src="examples/colours/cv-bronze.png" width="520" alt="the CV in bronze">
+
+**graphite** · `37474F` · [PDF](examples/colours/cv-graphite.pdf)
+
+<img src="examples/colours/cv-graphite.png" width="520" alt="the CV in graphite">
 
 
 ## Credit

@@ -483,19 +483,27 @@ if "colours:" in open("Makefile", encoding="utf-8").read():
 else:
     print("FAIL  the Makefile has no colours target")
     ok = False
-absent = [n for n in ("teal", "burgundy", "bronze", "graphite")
+# The accent list lives in the generator, so adding a colour there is enough:
+# the suite reads it from there and then holds both READMEs to it.
+script = open("scripts/make-colours.sh", encoding="utf-8").read()
+accents = re.findall(r"^([a-z]+) ([0-9A-F]{6})$", script, re.M)
+if not accents:
+    print("FAIL  scripts/make-colours.sh lists no accents"); ok = False
+absent = [n for n, _ in accents
           if not (os.path.exists(f"examples/colours/cv-{n}.pdf") and os.path.exists(f"examples/colours/cv-{n}.png"))]
-if not absent:
-    print("PASS  all four colour previews are present, as PDF and PNG")
+if accents and not absent:
+    print(f"PASS  all {len(accents)} colour previews are present, as PDF and PNG")
 else:
     print(f"FAIL  missing colour previews for: {absent}")
     ok = False
 for name in ("README.md", "README.en.md"):
-    if "examples/colours/" in open(name, encoding="utf-8").read():
-        print(f"PASS  {name} shows the colour previews")
-    else:
-        print(f"FAIL  {name} does not mention the colour previews")
+    txt = open(name, encoding="utf-8").read()
+    missing = [n for n, _ in accents if f"cv-{n}." not in txt]
+    if missing:
+        print(f"FAIL  {name} does not show every colour preview (missing {missing})")
         ok = False
+    else:
+        print(f"PASS  {name} shows all {len(accents)} colour previews")
 sys.exit(0 if ok else 1)
 PY
 [ $? -eq 0 ] || fail=1

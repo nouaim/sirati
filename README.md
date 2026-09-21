@@ -63,19 +63,6 @@
 `make previews`.
 
 
-### ألوان التمييز
-
-اللون في سطر واحد داخل `examples/colours.tex`. وتُحفظ أربع صبغات كمعاينات —
-[أزرق مخضرّ](examples/colours/cv-teal.pdf)، [عنّابي](examples/colours/cv-burgundy.pdf)،
-[برونزي](examples/colours/cv-bronze.pdf)، [جرافيت](examples/colours/cv-graphite.pdf) —
-ويُعيد `make colours` توليدها.
-
-<!-- القيمة قبل الاسم عن قصد: عكس الترتيب يجعل الأرقام والرمز تنقلب في العرض؛ فالخانة لا تأخذ اتجاهًا خاصًا فتتبع الصفحة. -->
-| `0F6E6E` أزرق مخضرّ | `8C2F39` عنّابي | `9A6B2F` برونزي | `37474F` جرافيت |
-|:---:|:---:|:---:|:---:|
-| [![أزرق مخضرّ](examples/colours/cv-teal.png)](examples/colours/cv-teal.pdf) | [![عنّابي](examples/colours/cv-burgundy.png)](examples/colours/cv-burgundy.pdf) | [![برونزي](examples/colours/cv-bronze.png)](examples/colours/cv-bronze.pdf) | [![جرافيت](examples/colours/cv-graphite.png)](examples/colours/cv-graphite.pdf) |
-
-
 ## المتطلبات
 
 طريقتان للحصول على بيئة عمل كاملة، والاختبارات تغطّي الطريقتين، وطريق Docker يعمل على
@@ -163,6 +150,43 @@ cd examples && xelatex cv-ar.tex
 وقيمة `shamwa` (`#F7F0DC`) معرَّفة بـ `\definecolor` فيمكن تعديل الدرجة كما تحب.
 ولأن الصبغة تغطّي الورقة كاملةً من الحافة إلى الحافة، لا بد من ضبط الطابعة على طباعة
 ألوان الخلفية لتظهر على الورق.
+
+
+## ألوان التمييز
+
+اللون سطر واحد في `examples/colours.tex`، وهذه ثماني صبغات للمقارنة. و`make colours` يُعيد توليد المعاينات.
+
+**أزرق مخضرّ** · `0F6E6E` · [PDF](examples/colours/cv-teal.pdf)
+
+<img src="examples/colours/cv-teal.png" width="520" alt="سيرتي أزرق مخضرّ">
+
+**زمردي** · `1B7F5A` · [PDF](examples/colours/cv-emerald.pdf)
+
+<img src="examples/colours/cv-emerald.png" width="520" alt="سيرتي زمردي">
+
+**كحلي** · `283593` · [PDF](examples/colours/cv-navy.pdf)
+
+<img src="examples/colours/cv-navy.png" width="520" alt="سيرتي كحلي">
+
+**بنفسجي** · `6A4C93` · [PDF](examples/colours/cv-violet.pdf)
+
+<img src="examples/colours/cv-violet.png" width="520" alt="سيرتي بنفسجي">
+
+**وردي** · `B03060` · [PDF](examples/colours/cv-rose.pdf)
+
+<img src="examples/colours/cv-rose.png" width="520" alt="سيرتي وردي">
+
+**عنّابي** · `8C2F39` · [PDF](examples/colours/cv-burgundy.pdf)
+
+<img src="examples/colours/cv-burgundy.png" width="520" alt="سيرتي عنّابي">
+
+**برونزي** · `9A6B2F` · [PDF](examples/colours/cv-bronze.pdf)
+
+<img src="examples/colours/cv-bronze.png" width="520" alt="سيرتي برونزي">
+
+**جرافيت** · `37474F` · [PDF](examples/colours/cv-graphite.pdf)
+
+<img src="examples/colours/cv-graphite.png" width="520" alt="سيرتي جرافيت">
 
 
 ## شكر وتقدير
