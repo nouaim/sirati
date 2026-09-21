@@ -1,4 +1,4 @@
-.PHONY: examples cv-ar coverletter-ar icons icons-cv icons-coverletter material material-cv material-coverletter previews colours docker-image docker docker-previews docker-test clean
+.PHONY: examples cv-ar coverletter-ar previews colours docker-image docker docker-previews docker-test clean
 
 EXAMPLES_DIR = examples
 
@@ -15,41 +15,33 @@ COVERLETTER_AR_SRCS = $(shell find $(COVERLETTER_AR_DIR) -name '*.tex')
 
 examples: cv-ar coverletter-ar
 
-cv-ar: $(EXAMPLES_DIR)/cv-ar.pdf
-coverletter-ar: $(EXAMPLES_DIR)/coverletter-ar.pdf
-
-$(EXAMPLES_DIR)/cv-ar.pdf: $(EXAMPLES_DIR)/cv-ar.tex $(CV_AR_SRCS)
-	cd $(EXAMPLES_DIR) && $(CC) -interaction=nonstopmode cv-ar.tex
-
-$(EXAMPLES_DIR)/coverletter-ar.pdf: $(EXAMPLES_DIR)/coverletter-ar.tex $(COVERLETTER_AR_SRCS)
-	cd $(EXAMPLES_DIR) && $(CC) -interaction=nonstopmode coverletter-ar.tex
-
-# The same two documents drawn with another icon set or another style of it.
-# Nothing under examples/ changes: both switches go to XeLaTeX on the command line,
-# and -jobname keeps the result from overwriting the Font Awesome PDFs the READMEs
-# show.  ICONS is fa or material; STYLE is filled, outlined, round, sharp or
-# twotone, where outlined is Font Awesome's regular.  The Material families come
-# from install.sh.  These PDFs are build output and are never committed.
+# The icon set and its style are arguments to the document targets rather than
+# targets of their own:
+#
+#   make cv-ar                                  # Font Awesome, filled: the default
+#   make cv-ar ICONS=material STYLE=outlined    # Material Icons, outlined
+#   make ICONS=material                         # both documents, that set
+#
+# Nothing under examples/ changes: both switches go to XeLaTeX on the command
+# line.  The default pair keeps the plain names the READMEs, the previews and the
+# test suite use; any other pair lands beside them as
+# examples/cv-ar-<set>-<style>.pdf, which is build output and is never committed.
+# STYLE is filled, outlined, round, sharp or twotone, where outlined is Font
+# Awesome's regular; the Material families come from install.sh.
 ICONS ?= fa
 STYLE ?= filled
+ICON_SUFFIX = $(if $(filter-out fa-filled,$(ICONS)-$(STYLE)),-$(ICONS)-$(STYLE),)
 
-icons: icons-cv icons-coverletter
+cv-ar: $(EXAMPLES_DIR)/cv-ar$(ICON_SUFFIX).pdf
+coverletter-ar: $(EXAMPLES_DIR)/coverletter-ar$(ICON_SUFFIX).pdf
 
-icons-cv:
-	cd $(EXAMPLES_DIR) && $(CC) -interaction=nonstopmode -jobname=cv-ar-$(ICONS)-$(STYLE) \
+$(EXAMPLES_DIR)/cv-ar$(ICON_SUFFIX).pdf: $(EXAMPLES_DIR)/cv-ar.tex $(CV_AR_SRCS)
+	cd $(EXAMPLES_DIR) && $(CC) -interaction=nonstopmode -jobname=cv-ar$(ICON_SUFFIX) \
 	  '\def\cvIconSet{$(ICONS)}\def\cvIconStyle{$(STYLE)}\input{cv-ar.tex}'
 
-icons-coverletter:
-	cd $(EXAMPLES_DIR) && $(CC) -interaction=nonstopmode -jobname=coverletter-ar-$(ICONS)-$(STYLE) \
+$(EXAMPLES_DIR)/coverletter-ar$(ICON_SUFFIX).pdf: $(EXAMPLES_DIR)/coverletter-ar.tex $(COVERLETTER_AR_SRCS)
+	cd $(EXAMPLES_DIR) && $(CC) -interaction=nonstopmode -jobname=coverletter-ar$(ICON_SUFFIX) \
 	  '\def\cvIconSet{$(ICONS)}\def\cvIconStyle{$(STYLE)}\input{coverletter-ar.tex}'
-
-# The shorthand the READMEs lead with: Material Icons in their filled style.
-material: material-cv material-coverletter
-
-material-cv: ICONS = material
-material-coverletter: ICONS = material
-material-cv: icons-cv
-material-coverletter: icons-coverletter
 
 # Regenerate the README preview images from the built PDFs.
 # Needs poppler-utils for pdftoppm; not required by the normal build.
@@ -80,10 +72,12 @@ clean:
 #
 # That trailing `make` is this same Makefile, run inside the image, so replace it
 # with any target to build just that one - `make cv-ar` for the CV alone, or
-# `make previews`.  The `docker` target does the same through a variable:
+# `make previews`.  The `docker` target does the same through a variable, and the
+# icon arguments travel with it:
 #
-#   make docker                 # both documents
-#   make docker TARGET=cv-ar    # just cv-ar, inside the image
+#   make docker                              # both documents
+#   make docker TARGET=cv-ar                 # just cv-ar, inside the image
+#   make docker TARGET=cv-ar ICONS=material  # and with another icon set
 #
 # `--user` keeps the generated PDFs owned by you rather than root.
 #
@@ -98,7 +92,7 @@ docker-image:
 	docker build -t $(IMAGE) .
 
 docker: docker-image
-	$(DOCKER_RUN) make $(TARGET)
+	$(DOCKER_RUN) make $(TARGET) ICONS=$(ICONS) STYLE=$(STYLE)
 
 docker-previews: docker-image
 	$(DOCKER_RUN) make previews

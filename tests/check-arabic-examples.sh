@@ -24,14 +24,14 @@ UPSTREAM_RE='Claud|posquit0|10-9030-1843|\+82|Mapo-gu|posquit0\.com'
 # helper: build one document through its real make target, then assert
 # ---------------------------------------------------------------------------
 check_document() {
-  local label="$1" target="$2" pdf="$3" log="$4" src="$5" secdir="$6"
+  local label="$1" target="$2" pdf="$3" log="$4" src="$5" secdir="$6" icons="$7" style="$8"
 
-  printf '\n== %s: build through `make %s` ==\n' "$label" "$target"
+  printf '\n== %s: build through `make %s ICONS=%s STYLE=%s` ==\n' "$label" "$target" "$icons" "$style"
   rm -f "$pdf" "${pdf%.pdf}.aux" "$log" "${pdf%.pdf}.out"
-  if make "$target" >"$TMP/build-$target.log" 2>&1; then
+  if ICONS="$icons" STYLE="$style" make "$target" >"$TMP/build-$target-$icons-$style.log" 2>&1; then
     pass "make $target exited 0"
   else
-    bad "make $target failed"; tail -20 "$TMP/build-$target.log"; return
+    bad "make $target failed"; tail -20 "$TMP/build-$target-$icons-$style.log"; return
   fi
   [ -s "$pdf" ] && pass "PDF produced and non-empty" || { bad "no PDF"; return; }
 
@@ -177,16 +177,17 @@ PY
 # ---------------------------------------------------------------------------
 printf '########## Arabic examples ##########\n'
 check_document "CV" "cv-ar" "examples/cv-ar.pdf" "examples/cv-ar.log" \
-               "examples/cv-ar.tex" "examples/cv-ar"
+               "examples/cv-ar.tex" "examples/cv-ar" fa filled
 check_document "cover letter" "coverletter-ar" "examples/coverletter-ar.pdf" \
                "examples/coverletter-ar.log" "examples/coverletter-ar.tex" \
-               "examples/coverletter-ar"
-# The same CV through the other icon set.  It is the same document with one macro
-# defined on the command line, so it has to pass everything above unchanged - and
-# a build that silently lost its icons would show up as missing glyphs or a
-# broken header here.
-check_document "CV with Material Icons" "material-cv" "examples/cv-ar-material-filled.pdf" \
-               "examples/cv-ar-material-filled.log" "examples/cv-ar.tex" "examples/cv-ar"
+               "examples/coverletter-ar" fa filled
+# The same CV through the other icon set.  It is the same document with two macros
+# defined on the command line, so it has to pass everything above unchanged - and a
+# build that silently lost its icons would show up as missing glyphs or a broken
+# header here.
+check_document "CV with Material Icons" "cv-ar" "examples/cv-ar-material-filled.pdf" \
+               "examples/cv-ar-material-filled.log" "examples/cv-ar.tex" "examples/cv-ar" \
+               material filled
 
 # ---------------------------------------------------------------------------
 printf '\n== committed artefacts match the sources ==\n'
@@ -608,32 +609,46 @@ for cmd in sorted(used):
         print(f"PASS  {cmd} is defined for both icon sets")
 
 mk = open("Makefile", encoding="utf-8").read()
-for target, doc in (("icons-cv", "cv-ar"), ("icons-coverletter", "coverletter-ar")):
-    m = re.search(r"^%s:\n((?:\t.*\n)+)" % target, mk, re.M)
-    recipe = m.group(1) if m else ""
-    if "\\def\\cvIconSet{$(ICONS)}\\def\\cvIconStyle{$(STYLE)}" in recipe \
-       and f"\\input{{{doc}.tex}}" in recipe:
-        print(f"PASS  make {target} hands both switches to {doc}.tex")
+# One pair of names for one pair of documents: the set and style are arguments, so
+# a build of another set cannot quietly write over the committed Font Awesome PDF.
+for doc in ("cv-ar", "coverletter-ar"):
+    if re.search(r"^%s: \$\(EXAMPLES_DIR\)/%s\$\(ICON_SUFFIX\)\.pdf$" % (doc, doc), mk, re.M):
+        print(f"PASS  make {doc} takes the icon arguments, not a target of its own")
     else:
-        print(f"FAIL  make {target} should pass the ICONS and STYLE switches to {doc}.tex")
-        ok = False
-for target in ("material-cv", "material-coverletter"):
-    if re.search(r"^%s: ICONS = material$" % target, mk, re.M):
-        print(f"PASS  make {target} is the material shorthand")
-    else:
-        print(f"FAIL  make {target} should select ICONS=material")
+        print(f"FAIL  make {doc} should build through $(ICON_SUFFIX)")
         ok = False
 
 for name in ("README.md", "README.en.md"):
     txt = open(name, encoding="utf-8").read()
-    if "make material-cv" in txt and "STYLE=" in txt:
-        print(f"PASS  {name} documents the material command and the style switch")
+    if "ICONS=material" in txt and "STYLE=" in txt:
+        print(f"PASS  {name} documents the icon arguments")
     else:
-        print(f"FAIL  {name} does not document `make material-cv` and `STYLE=`")
+        print(f"FAIL  {name} does not document `ICONS=` and `STYLE=`")
         ok = False
 sys.exit(0 if ok else 1)
 PY
 [ $? -eq 0 ] || fail=1
+
+# The set and the style are arguments, so the default pair has to keep the plain
+# file names the READMEs, the previews and this suite depend on - and there must be
+# no second way to ask for another set.
+printf '\n== icon arguments: one way in, the plain names by default ==\n'
+default_recipe=$(make -Bn cv-ar 2>/dev/null)
+material_recipe=$(make -Bn cv-ar ICONS=material STYLE=outlined 2>/dev/null)
+if printf '%s\n' "$default_recipe" | grep -q -- '-jobname=cv-ar ' \
+   && printf '%s\n' "$default_recipe" | grep -q 'cvIconSet{fa}' \
+   && printf '%s\n' "$material_recipe" | grep -q -- '-jobname=cv-ar-material-outlined ' \
+   && printf '%s\n' "$material_recipe" | grep -q 'cvIconSet{material}' \
+   && printf '%s\n' "$material_recipe" | grep -q 'cvIconStyle{outlined}'; then
+  pass "make cv-ar keeps the plain name by default and takes both arguments otherwise"
+else
+  bad "make cv-ar does not route the icon arguments as expected"
+fi
+if make -Bn material-cv >/dev/null 2>&1 || make -Bn icons-cv >/dev/null 2>&1; then
+  bad "a separate target still builds the material set; the argument is the only way in"
+else
+  pass "the material set is reachable only through ICONS="
+fi
 
 printf '\n== icon sets: every Material name draws a glyph in every style ==\n'
 # Material Icons draws a glyph from its *name* as a ligature, and a name it does
@@ -723,12 +738,12 @@ fi
 # is how a reader reaches it.
 printf '\n== icon sets: a non-default style builds ==\n'
 rm -f examples/cv-ar-material-outlined.pdf
-if make icons-cv ICONS=material STYLE=outlined >"$TMP/outlined.log" 2>&1 \
+if make cv-ar ICONS=material STYLE=outlined >"$TMP/outlined.log" 2>&1 \
    && [ -s examples/cv-ar-material-outlined.pdf ] \
    && [ "$(pdfinfo examples/cv-ar-material-outlined.pdf | awk '/^Pages/{print $2}')" = "1" ] \
    && [ "$(grep -c '^!' examples/cv-ar-material-outlined.log)" = "0" ] \
    && [ "$(grep -c 'Missing character' examples/cv-ar-material-outlined.log)" = "0" ]; then
-  pass "make icons-cv ICONS=material STYLE=outlined gives one clean page"
+  pass "make cv-ar ICONS=material STYLE=outlined gives one clean page"
 else
   bad "the outlined Material style did not build cleanly"; tail -15 "$TMP/outlined.log"
 fi

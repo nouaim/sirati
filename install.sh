@@ -132,7 +132,7 @@ fi
 
 # ---------------------------------------------------------------------------
 step "Icon font: Material Icons"
-# The other icon set the documents can draw with: `make icons-cv ICONS=material`
+# The other icon set the documents can draw with: `make cv-ar ICONS=material`
 # needs it, and it ships one family per style, of which the documents pick one, so
 # all five are installed here and any style can be built afterwards.  Google
 # publishes it for the web, so like Tajawal it is fetched rather than packaged.

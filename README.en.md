@@ -118,18 +118,18 @@ cd examples && xelatex cv-ar.tex
 
 `make` on its own builds both documents.
 
-To build the same documents with another icon set, or another style of one:
+To build the same documents with another icon set, or another style of one, pass
+the set and the style as arguments:
 
 ```bash
-make material-cv                              # filled Material Icons
-make material-coverletter                     # the cover letter likewise
-make material                                 # both
-
-make icons-cv ICONS=material STYLE=outlined   # outlined, round, sharp, twotone
-make icons-cv ICONS=fa STYLE=outlined         # Font Awesome in its regular style
+make cv-ar                                       # filled Font Awesome: the default
+make cv-ar ICONS=material                        # Google's Material Icons
+make cv-ar ICONS=material STYLE=outlined         # or STYLE=round, sharp, twotone
+make coverletter-ar ICONS=material STYLE=outlined
+make ICONS=material                              # both documents together
 ```
 
-Both switches are chosen on the command line, so no file changes: the output is
+Nothing under `examples/` changes, and the output is
 `examples/cv-ar-material-outlined.pdf` and its like. The styles are `filled`,
 `outlined`, `round`, `sharp` and `twotone`.
 
@@ -217,7 +217,7 @@ The accent is one line in `examples/colours.tex`; these are eight of them to com
 
 [**FontAwesome7 LaTeX Package**](https://ctan.org/pkg/fontawesome7) is a LaTeX package that provides access to the [Font Awesome 7](https://fontawesome.com/v7/icons) icon set.
 
-[**Material Icons**](https://github.com/google/material-design-icons) is Google's icon set, the other one `make material-cv` can build with.
+[**Material Icons**](https://github.com/google/material-design-icons) is Google's icon set, the other one `make cv-ar ICONS=material` can build with.
 
 [**Tajawal**](https://github.com/googlefonts/tajawal) is the Arabic typeface used by the Arabic examples.
 

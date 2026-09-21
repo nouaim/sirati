@@ -19,7 +19,7 @@ jobs:
         apt install --yes fonts-roboto
         # Tajawal has no Debian/Ubuntu package, so fetch it from upstream Google
         # Fonts (SIL OFL 1.1) and install it into the image's font path.  Material
-        # Icons, the set `make icons-cv ICONS=material` draws with, comes from
+        # Icons, the set `make cv-ar ICONS=material` draws with, comes from
         # Google too, in one family per style.  The image already ships everything
         # else the documents need: polyglossia and fontawesome7 come with TeX Live
         # 2026.
@@ -52,11 +52,11 @@ jobs:
     - name: Compile
       run: make
 
-    - name: Compile with Material Icons
+    - name: Compile with the other icon set and style
       run: |
-        make material
-        make icons-cv ICONS=material STYLE=outlined
-        make icons-cv ICONS=fa STYLE=outlined
+        make ICONS=material
+        make ICONS=material STYLE=outlined
+        make ICONS=fa STYLE=outlined
 
     - uses: actions/upload-artifact@v7
       with:

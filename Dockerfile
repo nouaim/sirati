@@ -6,7 +6,7 @@
 # The plain `texlive/texlive:latest` image is not enough on its own: it carries
 # every LaTeX package these documents use (polyglossia, bidi and fontawesome7
 # included) and the Roboto family, but not the Arabic font, not the Material Icons
-# family `make material-cv` draws with, and no poppler-utils.
+# family `make cv-ar ICONS=material` draws with, and no poppler-utils.
 FROM texlive/texlive:latest
 
 # pdftoppm, pdfinfo and pdftotext come from poppler-utils: `make previews` and

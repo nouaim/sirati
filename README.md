@@ -116,20 +116,19 @@ cd examples && xelatex cv-ar.tex
 
 والأمر `make` وحده يبني المستندين.
 
-ولبناء المستندين نفسيهما بمجموعة أيقونات أخرى أو بنمط آخر من أنماطها:
+ولبناء المستندين نفسيهما بمجموعة أيقونات أخرى أو بنمط آخر من أنماطها، مرِّر
+المجموعة والنمط وسيطين:
 
 ```bash
-make material-cv                              # أيقونات Material المملوءة
-make material-coverletter                     # وكذلك رسالة التغطية
-make material                                 # كلاهما
-
-make icons-cv ICONS=material STYLE=outlined   # مملوءة، مبصّرة، مدوّرة، حادة، ثنائية
-make icons-cv ICONS=fa STYLE=outlined         # Font Awesome بنمطه العادي
+make cv-ar                                       # Font Awesome المملوء: الافتراضي
+make cv-ar ICONS=material                        # أيقونات Google Material
+make cv-ar ICONS=material STYLE=outlined         # أو STYLE=round أو sharp أو twotone
+make coverletter-ar ICONS=material STYLE=outlined
+make ICONS=material                              # المستندان معًا
 ```
 
-المجموعة والنمط يُختاران من سطر الأمر، فلا يتغيّر أي ملف، والمخرج مثلًا
-`examples/cv-ar-material-outlined.pdf`. والأنماط: `filled`، `outlined`، `round`،
-`sharp`، `twotone`.
+لا يتغيّر أي ملف في `examples/`، والمخرج مثلًا `examples/cv-ar-material-outlined.pdf`.
+والأنماط: `filled`، `outlined`، `round`، `sharp`، `twotone`.
 
 
 ## التخصيص
@@ -217,7 +216,7 @@ make icons-cv ICONS=fa STYLE=outlined         # Font Awesome بنمطه العا
 أيقونات [Font Awesome 7](https://fontawesome.com/v7/icons).
 
 &rlm;[**Material Icons**](https://github.com/google/material-design-icons) مجموعة أيقونات
-Google، وهي المجموعة الأخرى التي يبني بها `make material-cv`.
+Google، وهي المجموعة الأخرى التي يبني بها `make cv-ar ICONS=material`.
 
 &rlm;[**Tajawal**](https://github.com/googlefonts/tajawal) الخط العربي المستخدم في الأمثلة
 العربية.
