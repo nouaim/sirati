@@ -40,7 +40,9 @@ while read -r name hex; do
     exit 1
   fi
 
-  pdftoppm -r 130 -png -f 1 -l 1 "$build/cv-ar.pdf" "$build/preview"
+  # 200 dpi, matching `make previews`: the README shows a preview up to 820px
+  # wide, so the file has to carry 1640px to stay sharp on a 2x display.
+  pdftoppm -r 200 -png -f 1 -l 1 "$build/cv-ar.pdf" "$build/preview"
   cp "$build/cv-ar.pdf" "$OUT/cv-$name.pdf"
   cp "$build/preview-1.png" "$OUT/cv-$name.png"
   printf '  %-9s #%s  %s page, no errors\n' "$name" "$hex" \

@@ -189,6 +189,9 @@ printf '\n== committed artefacts match the sources ==\n'
 # document then ships unnoticed.  So: force a genuine build of the sources and
 # compare its text with the committed PDF, and separately check that the
 # committed preview really is the render of the committed PDF.
+# The resolution comes from the Makefile, which owns the previews: a preview
+# rendered at any other one could never equal the committed file.
+preview_dpi=$(sed -n 's/.*pdftoppm -r \([0-9][0-9]*\).*/\1/p' Makefile | head -1)
 for doc in cv-ar coverletter-ar; do
   pdf="examples/$doc.pdf"
   png="examples/$doc.png"
@@ -215,7 +218,7 @@ for doc in cv-ar coverletter-ar; do
     # that has nothing to do with a stale file.  pdftoppm's output is stable across
     # its own versions, so comparing bytes stays meaningful.
     git show "HEAD:$pdf" > "$tmp/committed.pdf" 2>/dev/null
-    pdftoppm -r 130 -png -f 1 -l 1 "$tmp/committed.pdf" "$tmp/render" >/dev/null 2>&1
+    pdftoppm -r "$preview_dpi" -png -f 1 -l 1 "$tmp/committed.pdf" "$tmp/render" >/dev/null 2>&1
     if cmp -s "$tmp/render-1.png" "$tmp/committed.png"; then
       pass "committed $png is the render of the committed PDF"
     else

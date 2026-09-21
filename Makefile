@@ -26,9 +26,11 @@ $(EXAMPLES_DIR)/coverletter-ar.pdf: $(EXAMPLES_DIR)/coverletter-ar.tex $(COVERLE
 
 # Regenerate the README preview images from the built PDFs.
 # Needs poppler-utils for pdftoppm; not required by the normal build.
+# 200 dpi: the README shows a preview up to 820px wide, so the file must carry
+# 1640px to stay sharp on a 2x display.  The test suite reads this number.
 previews: $(EXAMPLES_DIR)/cv-ar.pdf $(EXAMPLES_DIR)/coverletter-ar.pdf
 	cd $(EXAMPLES_DIR) && for d in cv-ar coverletter-ar; do \
-	  pdftoppm -r 130 -png -f 1 -l 1 $$d.pdf $$d && mv $$d-1.png $$d.png; \
+	  pdftoppm -r 200 -png -f 1 -l 1 $$d.pdf $$d && mv $$d-1.png $$d.png; \
 	done
 
 # The same document in four other accents, for the README.  They are committed,
