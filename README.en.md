@@ -213,6 +213,8 @@ The accent is one line in `examples/colours.tex`; these are eight of them to com
 
 [**FontAwesome7 LaTeX Package**](https://ctan.org/pkg/fontawesome7) is a LaTeX package that provides access to the [Font Awesome 7](https://fontawesome.com/v7/icons) icon set.
 
+[**Material Icons**](https://github.com/google/material-design-icons) is Google's icon set, the other one `make material-cv` can build with.
+
 [**Tajawal**](https://github.com/googlefonts/tajawal) is the Arabic typeface used by the Arabic examples.
 
 [**Roboto**](https://github.com/google/roboto) is the default font on Android and ChromeOS, and the recommended font for Google’s visual language, Material Design.

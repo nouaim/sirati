@@ -212,6 +212,9 @@ make material               # كلاهما
 &rlm;[**FontAwesome7 LaTeX Package**](https://ctan.org/pkg/fontawesome7) حزمة LaTeX توفّر
 أيقونات [Font Awesome 7](https://fontawesome.com/v7/icons).
 
+&rlm;[**Material Icons**](https://github.com/google/material-design-icons) مجموعة أيقونات
+Google، وهي المجموعة الأخرى التي يبني بها `make material-cv`.
+
 &rlm;[**Tajawal**](https://github.com/googlefonts/tajawal) الخط العربي المستخدم في الأمثلة
 العربية.
 
