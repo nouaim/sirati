@@ -161,10 +161,6 @@ paper.
 
 The accent is one line in `examples/colours.tex`; these are eight of them to compare, and `make colours` regenerates the previews.
 
-<p align="center"><strong>teal</strong> · <code>0F6E6E</code> · <a href="examples/colours/cv-teal.pdf">PDF</a></p>
-
-<p align="center"><a href="examples/colours/cv-teal.pdf"><img src="examples/colours/cv-teal.png" width="820" alt="the CV in teal"></a></p>
-
 <p align="center"><strong>emerald</strong> · <code>1B7F5A</code> · <a href="examples/colours/cv-emerald.pdf">PDF</a></p>
 
 <p align="center"><a href="examples/colours/cv-emerald.pdf"><img src="examples/colours/cv-emerald.png" width="820" alt="the CV in emerald"></a></p>
@@ -192,6 +188,10 @@ The accent is one line in `examples/colours.tex`; these are eight of them to com
 <p align="center"><strong>graphite</strong> · <code>37474F</code> · <a href="examples/colours/cv-graphite.pdf">PDF</a></p>
 
 <p align="center"><a href="examples/colours/cv-graphite.pdf"><img src="examples/colours/cv-graphite.png" width="820" alt="the CV in graphite"></a></p>
+
+<p align="center"><strong>teal</strong> · <code>0F6E6E</code> · <a href="examples/colours/cv-teal.pdf">PDF</a></p>
+
+<p align="center"><a href="examples/colours/cv-teal.pdf"><img src="examples/colours/cv-teal.png" width="820" alt="the CV in teal"></a></p>
 
 
 ## Credit

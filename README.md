@@ -156,10 +156,6 @@ cd examples && xelatex cv-ar.tex
 
 اللون سطر واحد في `examples/colours.tex`، وهذه ثماني صبغات للمقارنة. و`make colours` يُعيد توليد المعاينات.
 
-<p align="center"><strong>أزرق مخضرّ</strong> · <code>0F6E6E</code> · <a href="examples/colours/cv-teal.pdf">PDF</a></p>
-
-<p align="center"><a href="examples/colours/cv-teal.pdf"><img src="examples/colours/cv-teal.png" width="820" alt="سيرتي أزرق مخضرّ"></a></p>
-
 <p align="center"><strong>زمردي</strong> · <code>1B7F5A</code> · <a href="examples/colours/cv-emerald.pdf">PDF</a></p>
 
 <p align="center"><a href="examples/colours/cv-emerald.pdf"><img src="examples/colours/cv-emerald.png" width="820" alt="سيرتي زمردي"></a></p>
@@ -187,6 +183,10 @@ cd examples && xelatex cv-ar.tex
 <p align="center"><strong>جرافيت</strong> · <code>37474F</code> · <a href="examples/colours/cv-graphite.pdf">PDF</a></p>
 
 <p align="center"><a href="examples/colours/cv-graphite.pdf"><img src="examples/colours/cv-graphite.png" width="820" alt="سيرتي جرافيت"></a></p>
+
+<p align="center"><strong>أزرق مخضرّ</strong> · <code>0F6E6E</code> · <a href="examples/colours/cv-teal.pdf">PDF</a></p>
+
+<p align="center"><a href="examples/colours/cv-teal.pdf"><img src="examples/colours/cv-teal.png" width="820" alt="سيرتي أزرق مخضرّ"></a></p>
 
 
 ## شكر وتقدير

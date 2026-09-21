@@ -48,7 +48,6 @@ while read -r name hex; do
   printf '  %-9s #%s  %s page, no errors\n' "$name" "$hex" \
     "$(pdfinfo "$build/cv-ar.pdf" | awk '/^Pages/{print $2}')"
 done <<'EOF'
-teal 0F6E6E
 emerald 1B7F5A
 navy 283593
 violet 6A4C93
@@ -56,6 +55,7 @@ rose B03060
 burgundy 8C2F39
 bronze 9A6B2F
 graphite 37474F
+teal 0F6E6E
 EOF
 
 printf 'wrote %s/cv-*.{pdf,png}\n' "$OUT"
