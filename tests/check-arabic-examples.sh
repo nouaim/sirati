@@ -177,17 +177,17 @@ PY
 # ---------------------------------------------------------------------------
 printf '########## Arabic examples ##########\n'
 check_document "CV" "cv-ar" "examples/cv-ar.pdf" "examples/cv-ar.log" \
-               "examples/cv-ar.tex" "examples/cv-ar" fa filled
+               "examples/cv-ar.tex" "examples/cv-ar" fa outlined
 check_document "cover letter" "coverletter-ar" "examples/coverletter-ar.pdf" \
                "examples/coverletter-ar.log" "examples/coverletter-ar.tex" \
-               "examples/coverletter-ar" fa filled
+               "examples/coverletter-ar" fa outlined
 # The same CV through the other icon set.  It is the same document with two macros
 # defined on the command line, so it has to pass everything above unchanged - and a
 # build that silently lost its icons would show up as missing glyphs or a broken
 # header here.
-check_document "CV with Material Icons" "cv-ar" "examples/cv-ar-material-filled.pdf" \
-               "examples/cv-ar-material-filled.log" "examples/cv-ar.tex" "examples/cv-ar" \
-               material filled
+check_document "CV with Material Icons" "cv-ar" "examples/cv-ar-material-outlined.pdf" \
+               "examples/cv-ar-material-outlined.log" "examples/cv-ar.tex" "examples/cv-ar" \
+               material outlined
 
 # ---------------------------------------------------------------------------
 printf '\n== committed artefacts match the sources ==\n'
@@ -637,6 +637,7 @@ default_recipe=$(make -Bn cv-ar 2>/dev/null)
 material_recipe=$(make -Bn cv-ar ICONS=material STYLE=outlined 2>/dev/null)
 if printf '%s\n' "$default_recipe" | grep -q -- '-jobname=cv-ar ' \
    && printf '%s\n' "$default_recipe" | grep -q 'cvIconSet{fa}' \
+   && printf '%s\n' "$default_recipe" | grep -q 'cvIconStyle{outlined}' \
    && printf '%s\n' "$material_recipe" | grep -q -- '-jobname=cv-ar-material-outlined ' \
    && printf '%s\n' "$material_recipe" | grep -q 'cvIconSet{material}' \
    && printf '%s\n' "$material_recipe" | grep -q 'cvIconStyle{outlined}'; then
@@ -737,15 +738,15 @@ fi
 # A style other than the default has to build through its real target, since that
 # is how a reader reaches it.
 printf '\n== icon sets: a non-default style builds ==\n'
-rm -f examples/cv-ar-material-outlined.pdf
-if make cv-ar ICONS=material STYLE=outlined >"$TMP/outlined.log" 2>&1 \
-   && [ -s examples/cv-ar-material-outlined.pdf ] \
-   && [ "$(pdfinfo examples/cv-ar-material-outlined.pdf | awk '/^Pages/{print $2}')" = "1" ] \
-   && [ "$(grep -c '^!' examples/cv-ar-material-outlined.log)" = "0" ] \
-   && [ "$(grep -c 'Missing character' examples/cv-ar-material-outlined.log)" = "0" ]; then
-  pass "make cv-ar ICONS=material STYLE=outlined gives one clean page"
+rm -f examples/cv-ar-material-twotone.pdf
+if make cv-ar ICONS=material STYLE=twotone >"$TMP/twotone.log" 2>&1 \
+   && [ -s examples/cv-ar-material-twotone.pdf ] \
+   && [ "$(pdfinfo examples/cv-ar-material-twotone.pdf | awk '/^Pages/{print $2}')" = "1" ] \
+   && [ "$(grep -c '^!' examples/cv-ar-material-twotone.log)" = "0" ] \
+   && [ "$(grep -c 'Missing character' examples/cv-ar-material-twotone.log)" = "0" ]; then
+  pass "make cv-ar ICONS=material STYLE=twotone gives one clean page"
 else
-  bad "the outlined Material style did not build cleanly"; tail -15 "$TMP/outlined.log"
+  bad "the two-tone Material style did not build cleanly"; tail -15 "$TMP/twotone.log"
 fi
 
 # ---------------------------------------------------------------------------

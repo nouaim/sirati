@@ -55,8 +55,8 @@ jobs:
     - name: Compile with the other icon set and style
       run: |
         make ICONS=material
-        make ICONS=material STYLE=outlined
-        make ICONS=fa STYLE=outlined
+        make ICONS=material STYLE=twotone
+        make ICONS=fa STYLE=filled
 
     - uses: actions/upload-artifact@v7
       with:

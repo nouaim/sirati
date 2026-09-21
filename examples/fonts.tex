@@ -29,6 +29,9 @@
 %
 %   make cv-ar ICONS=material STYLE=outlined
 %
+% and default to Font Awesome in its regular, outlined style.  The suite and the
+% previews both read these two defaults, so they have to agree with the Makefile.
+%
 % or by the same two \def lines on the XeLaTeX command line.  Font Awesome arrives
 % with its CTAN package, so the default set names no family at all; Material Icons
 % is Google's set, installed by install.sh, and carries one family per style —
@@ -41,7 +44,7 @@
 \newfontfamily\englishfont[Scale=0.92]{Roboto}
 
 \providecommand*{\cvIconSet}{fa}
-\providecommand*{\cvIconStyle}{filled}
+\providecommand*{\cvIconStyle}{outlined}
 \def\cvIconSetMaterial{material}
 \def\cvIconStyleFilled{filled}
 \def\cvIconStyleOutlined{outlined}

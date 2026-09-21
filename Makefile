@@ -18,19 +18,20 @@ examples: cv-ar coverletter-ar
 # The icon set and its style are arguments to the document targets rather than
 # targets of their own:
 #
-#   make cv-ar                                  # Font Awesome, filled: the default
-#   make cv-ar ICONS=material STYLE=outlined    # Material Icons, outlined
+#   make cv-ar                                  # the default: fa, outlined
+#   make cv-ar ICONS=material                   # Material Icons, same style
+#   make cv-ar ICONS=material STYLE=twotone     # or filled, round, sharp
 #   make ICONS=material                         # both documents, that set
 #
 # Nothing under examples/ changes: both switches go to XeLaTeX on the command
 # line.  The default pair keeps the plain names the READMEs, the previews and the
 # test suite use; any other pair lands beside them as
 # examples/cv-ar-<set>-<style>.pdf, which is build output and is never committed.
-# STYLE is filled, outlined, round, sharp or twotone, where outlined is Font
+# STYLE is outlined, filled, round, sharp or twotone, where outlined is Font
 # Awesome's regular; the Material families come from install.sh.
 ICONS ?= fa
-STYLE ?= filled
-ICON_SUFFIX = $(if $(filter-out fa-filled,$(ICONS)-$(STYLE)),-$(ICONS)-$(STYLE),)
+STYLE ?= outlined
+ICON_SUFFIX = $(if $(filter-out fa-outlined,$(ICONS)-$(STYLE)),-$(ICONS)-$(STYLE),)
 
 cv-ar: $(EXAMPLES_DIR)/cv-ar$(ICON_SUFFIX).pdf
 coverletter-ar: $(EXAMPLES_DIR)/coverletter-ar$(ICON_SUFFIX).pdf

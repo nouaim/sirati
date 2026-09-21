@@ -116,19 +116,21 @@ cd examples && xelatex cv-ar.tex
 
 والأمر `make` وحده يبني المستندين.
 
-ولبناء المستندين نفسيهما بمجموعة أيقونات أخرى أو بنمط آخر من أنماطها، مرِّر
-المجموعة والنمط وسيطين:
+تأتي الأيقونات في مجموعتين — Font Awesome وGoogle Material — ولكل مجموعة عدة
+أنماط: مملوءة (`filled`) ومبصّرة (`outlined`) ومدوّرة (`round`) وحادة (`sharp`)
+وثنائية (`twotone`). والافتراضي أيقونات `fa` بنمط `outlined`.
+
+وللتبديل مرِّر المجموعة والنمط وسيطين على أي هدف:
 
 ```bash
-make cv-ar                                       # Font Awesome المملوء: الافتراضي
+make cv-ar                                       # الافتراضي: fa outlined
 make cv-ar ICONS=material                        # أيقونات Google Material
-make cv-ar ICONS=material STYLE=outlined         # أو STYLE=round أو sharp أو twotone
+make cv-ar ICONS=material STYLE=twotone          # أو filled أو round أو sharp
 make coverletter-ar ICONS=material STYLE=outlined
 make ICONS=material                              # المستندان معًا
 ```
 
-لا يتغيّر أي ملف في `examples/`، والمخرج مثلًا `examples/cv-ar-material-outlined.pdf`.
-والأنماط: `filled`، `outlined`، `round`، `sharp`، `twotone`.
+لا يتغيّر أي ملف في `examples/`، والمخرج مثلًا `examples/cv-ar-material-twotone.pdf`.
 
 
 ## التخصيص

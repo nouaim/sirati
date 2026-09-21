@@ -10,17 +10,17 @@
 % document is read:
 %
 %   \def\cvIconSet{material}       % fa (the default) or material
-%   \def\cvIconStyle{outlined}     % filled (the default), outlined, round, sharp, twotone
+%   \def\cvIconStyle{outlined}     % the default; or filled, round, sharp, twotone
 %
 % `make cv-ar ICONS=material STYLE=outlined` passes exactly those lines on the
 % XeLaTeX command line, so nothing in the sources changes to see another set or
 % style.  The family each set draws with is named in fonts.tex; this file only
 % picks the glyphs.
 %
-% Font Awesome arrives with its CTAN package, so it needs no font file.  Its two
-% styles here are solid and regular, and the package substitutes the solid glyph
-% wherever the requested style has no cut — the regular envelope is outlined,
-% while a brand mark, which only exists in brands, stays as it was.
+% Font Awesome arrives with its CTAN package, so it needs no font file, and it is
+% the default set: `outlined` is its regular style, and the package substitutes the
+% solid glyph wherever the requested style has no cut — a brand mark, which only
+% exists in brands, stays as it was.
 %
 % Material Icons is Google's set and install.sh installs all five of its families.
 % It draws an icon from its *name* as a ligature — type `mail` and an envelope
