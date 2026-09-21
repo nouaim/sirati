@@ -7,14 +7,16 @@
 # Written in POSIX sh on purpose: it behaves the same whether you run it with sh,
 # bash or zsh.  It installs a TeX distribution with XeLaTeX, polyglossia and the
 # metrics hyperref loads, poppler-utils for `make previews`, the Arabic font
-# (Tajawal), the Latin font (Roboto) and the icon font (Font Awesome 7, which no
-# distribution packages for TeX).  Re-running it is safe: every step checks first,
-# and nothing already in place is touched.
+# (Tajawal), the Latin font (Roboto) and both icon fonts the documents can draw
+# with (Font Awesome 7, which no distribution packages for TeX, and Material
+# Icons).  Re-running it is safe: every step checks first, and nothing already in
+# place is touched.
 set -eu
 
 APT_PACKAGES="texlive-xetex texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended texlive-lang-arabic fonts-roboto fontconfig poppler-utils make git python3 curl unzip"
 TAJAWAL_URL="https://raw.githubusercontent.com/google/fonts/main/ofl/tajawal"
 FONTAWESOME7_URL="https://mirrors.ctan.org/fonts/fontawesome7.zip"
+MATERIALICONS_URL="https://raw.githubusercontent.com/google/material-design-icons/master/font"
 
 step() { printf '\n== %s\n' "$*"; }
 info() { printf '   %s\n' "$*"; }
@@ -129,6 +131,30 @@ else
 fi
 
 # ---------------------------------------------------------------------------
+step "Icon font: Material Icons"
+# The other icon set the documents can draw with: `make material-cv` needs this
+# family, and having it installed keeps both sets available.  Google publishes it
+# for the web, so like Tajawal it is fetched rather than packaged.
+if command -v fc-match >/dev/null 2>&1 && fc-match "Material Icons" 2>/dev/null | grep -qi "material icons"; then
+  info "already registered: $(fc-match "Material Icons")"
+else
+  mkdir -p "$FONT_DIR/materialicons"
+  if [ -s "$FONT_DIR/materialicons/MaterialIcons-Regular.ttf" ]; then
+    info "already downloaded: MaterialIcons-Regular.ttf"
+  else
+    info "downloading MaterialIcons-Regular.ttf"
+    curl -fsSL -o "$FONT_DIR/materialicons/MaterialIcons-Regular.ttf" \
+      "$MATERIALICONS_URL/MaterialIcons-Regular.ttf"
+  fi
+  refresh_fonts
+  if command -v fc-match >/dev/null 2>&1; then
+    fc-match "Material Icons" | grep -qi "material icons" \
+      || die "Material Icons did not register; check $FONT_DIR/materialicons"
+    info "registered: $(fc-match "Material Icons")"
+  fi
+fi
+
+# ---------------------------------------------------------------------------
 step "verifying"
 missing=""
 # The packages the documents load, plus the ones polyglossia pulls in for RTL.
@@ -145,6 +171,7 @@ info "LaTeX packages: all present"
 if command -v fc-match >/dev/null 2>&1; then
   info "Arabic font:   $(fc-match Tajawal)"
   info "Latin font:    $(fc-match Roboto)"
+  info "Icons font:    $(fc-match "Material Icons")"
 fi
 
 printf '\nDone. Now build the documents:\n\n    make\n\n'

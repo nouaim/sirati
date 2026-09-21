@@ -21,3 +21,7 @@
 ## Mac OS X metadata files:
 *.DS_Store
 
+
+### Build output that is never committed ###
+## The Material Icons builds of the examples (`make material`):
+examples/*-material.pdf

@@ -18,14 +18,18 @@ jobs:
         apt update
         apt install --yes fonts-roboto
         # Tajawal has no Debian/Ubuntu package, so fetch it from upstream Google
-        # Fonts (SIL OFL 1.1) and install it into the image's font path.  The
-        # image already ships everything else the documents need: polyglossia
-        # and fontawesome7 come with TeX Live 2026.
+        # Fonts (SIL OFL 1.1) and install it into the image's font path.  Material
+        # Icons, the set `make material-cv` draws with, comes from Google too.  The
+        # image already ships everything else the documents need: polyglossia and
+        # fontawesome7 come with TeX Live 2026.
         base=https://raw.githubusercontent.com/google/fonts/main/ofl/tajawal
-        mkdir -p /usr/share/fonts/truetype/tajawal
+        icons=https://raw.githubusercontent.com/google/material-design-icons/master/font
+        mkdir -p /usr/share/fonts/truetype/tajawal /usr/share/fonts/truetype/materialicons
         for f in Tajawal-Regular.ttf Tajawal-Bold.ttf Tajawal-Medium.ttf; do
           curl -fsSL -o "/usr/share/fonts/truetype/tajawal/$f" "$base/$f"
         done
+        curl -fsSL -o /usr/share/fonts/truetype/materialicons/MaterialIcons-Regular.ttf \
+          "$icons/MaterialIcons-Regular.ttf"
         fc-cache -f
 
     - name: Verify fonts
@@ -34,10 +38,15 @@ jobs:
         # assert the family actually resolved.
         fc-match Tajawal
         fc-match Roboto
+        fc-match "Material Icons"
         fc-match Tajawal | grep -qi tajawal
+        fc-match "Material Icons" | grep -qi "material icons"
 
     - name: Compile
       run: make
+
+    - name: Compile with Material Icons
+      run: make material
 
     - uses: actions/upload-artifact@v7
       with:

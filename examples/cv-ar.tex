@@ -8,6 +8,7 @@
 % XeLaTeX document; see the repository README for the list of changes.
 %
 % Build:  make cv-ar        (from the repository root)
+%         make material-cv  for the same CV with Google's Material Icons instead
 %
 % The RTL techniques used here are: Arabic as the main language via polyglossia
 % (\RTL paragraphs), an Arabic font family, \textenglish{} around every Latin run
@@ -16,7 +17,8 @@
 %
 % Fonts are referenced by family name, so no font files need to be bundled:
 %   Arabic : Tajawal   (system)   Latin : Roboto (system)
-%   Icons  : Font Awesome 7 (CTAN package `fontawesome7`)
+%   Icons  : Font Awesome 7 (CTAN package `fontawesome7`), or Google's
+%            Material Icons; examples/icons.tex holds both sets.
 
 \documentclass[10pt, a4paper]{article}
 
@@ -37,7 +39,7 @@
 \usepackage{enumitem}
 \usepackage{setspace}
 \setstretch{1.08}
-\usepackage{fontawesome7}
+\input{icons.tex}
 
 \pagestyle{empty}
 
@@ -123,13 +125,13 @@
   {\fontsize{10pt}{1em}\bfseries\color{awesome} \cvtitle}\\[0.4em]
   {\fontsize{9pt}{1em}\color{lighttext} \cvlocation}\\[0.5em]
   {\fontsize{8.2pt}{1em}\color{darktext}
-    \faMobile\ \textenglish{\cvphone}
+    \cvIconPhone\ \textenglish{\cvphone}
     \quad\textbar\quad
-    \faEnvelope\ \href{mailto:\cvemail}{\textenglish{\cvemail}}
+    \cvIconMail\ \href{mailto:\cvemail}{\textenglish{\cvemail}}
     \quad\textbar\quad
-    \faSquareGithub\ \href{https://github.com/\cvgithub}{\textenglish{\cvgithub}}
+    \cvIconGithub\ \href{https://github.com/\cvgithub}{\textenglish{\cvgithub}}
     \quad\textbar\quad
-    \faLinkedin\ \href{https://www.linkedin.com/in/\cvlinkedin}{\textenglish{\cvlinkedin}}
+    \cvIconLinkedin\ \href{https://www.linkedin.com/in/\cvlinkedin}{\textenglish{\cvlinkedin}}
   }
 \end{center}
 

@@ -23,8 +23,26 @@
 %
 % Packaged Arabic faces worth testing: Amiri (fonts-hosny-amiri) and Noto Naskh
 % Arabic (fonts-noto-core).  Neither has been built here yet.
+%
+% The icon family is the one exception to "always named here": it is defined only
+% when the document was started with `\def\cvIconSet{material}`, which is what
+% `make material-cv` does, so a Font Awesome build never needs it installed.
+% icons.tex picks the glyphs; this switch is here because this is the file that
+% names families.
 %-------------------------------------------------------------------------------
 \defaultfontfeatures{Ligatures=TeX}
 \newfontfamily\arabicfont[Script=Arabic, Scale=0.96]{Tajawal}
 \newfontfamily\arabicfontsf[Script=Arabic, Scale=0.96]{Tajawal}
 \newfontfamily\englishfont[Scale=0.92]{Roboto}
+
+\providecommand*{\cvIconSet}{fa}
+\def\cvIconSetMaterial{material}
+\ifx\cvIconSet\cvIconSetMaterial
+  % Material Icons has no space glyph, and fontspec typesets one while setting the
+  % family up: that alone fills the log with "Missing character: There is no
+  % (U+0020)".  Silence the parameter across the definition only, so a genuinely
+  % missing glyph anywhere else is still reported.
+  \tracinglostchars=0
+  \newfontfamily\iconfont[Scale=1.3]{Material Icons}
+  \tracinglostchars=1
+\fi

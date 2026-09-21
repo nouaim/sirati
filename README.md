@@ -116,6 +116,17 @@ cd examples && xelatex cv-ar.tex
 
 والأمر `make` وحده يبني المستندين.
 
+ولبناء المستندين نفسيهما بأيقونات Google Material بدل Font Awesome:
+
+```bash
+make material-cv            # السيرة الذاتية
+make material-coverletter   # رسالة التغطية
+make material               # كلاهما
+```
+
+مجموعة الأيقونات تُختار من سطر الأمر، فلا يتغيّر أي ملف: المخرج هو
+`examples/cv-ar-material.pdf` ونظائره.
+
 
 ## التخصيص
 

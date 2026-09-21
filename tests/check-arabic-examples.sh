@@ -161,7 +161,7 @@ src = open(sys.argv[1], encoding="utf-8").read()
 checks = [
     (r"\\newcommand\{\\cvname\}\{[^}]*\S[^}]*\}", "defines a person's name"),
     (r"\\newcommand\{\\cvemail\}\{[^}]*@example\.com\}", "contact field on the reserved example.com domain"),
-    (r"fontawesome7", "loads fontawesome7"),
+    (r"\\input\{icons\.tex\}", "takes its icons from examples/icons.tex"),
 ]
 ok = True
 for pattern, label in checks:
@@ -181,6 +181,12 @@ check_document "CV" "cv-ar" "examples/cv-ar.pdf" "examples/cv-ar.log" \
 check_document "cover letter" "coverletter-ar" "examples/coverletter-ar.pdf" \
                "examples/coverletter-ar.log" "examples/coverletter-ar.tex" \
                "examples/coverletter-ar"
+# The same CV through the other icon set.  It is the same document with one macro
+# defined on the command line, so it has to pass everything above unchanged - and
+# a build that silently lost its icons would show up as missing glyphs or a
+# broken header here.
+check_document "CV with Material Icons" "material-cv" "examples/cv-ar-material.pdf" \
+               "examples/cv-ar-material.log" "examples/cv-ar.tex" "examples/cv-ar"
 
 # ---------------------------------------------------------------------------
 printf '\n== committed artefacts match the sources ==\n'
@@ -456,6 +462,27 @@ for macro, what in (("arabicfont", "Arabic"), ("englishfont", "Latin")):
         else:
             print(f"FAIL  {who} does not provide the {what} family {family!r}")
             ok = False
+# The icon family is defined only for the material set, and only the two paths
+# that build or test that set need it: the colour previews are always drawn with
+# Font Awesome, so the refresh job does not carry it.
+m = re.search(r"\\newfontfamily\\iconfont\[[^\]]*\]\{([^}]*)\}", fonts)
+icon_family = m.group(1).strip() if m else ""
+if not icon_family:
+    print("FAIL  examples/fonts.tex does not name the icon family"); ok = False
+else:
+    for who in ("CI", "the Dockerfile"):
+        if icon_family in providers.get(who, ""):
+            print(f"PASS  {who} provides the icon family the material build uses: {icon_family}")
+        else:
+            print(f"FAIL  {who} does not provide the icon family {icon_family!r}")
+            ok = False
+    switch = fonts.find("\\ifx\\cvIconSet\\cvIconSetMaterial")
+    named = fonts.find("\\newfontfamily\\iconfont")
+    if switch != -1 and switch < named:
+        print("PASS  the icon family is only defined when the material set is selected")
+    else:
+        print("FAIL  examples/fonts.tex should define the icon family under the material switch")
+        ok = False
 for name in ("examples/cv-ar.tex", "examples/coverletter-ar.tex"):
     txt = open(name, encoding="utf-8").read()
     if "\\input{fonts.tex}" in txt and "\\newfontfamily" not in txt:
@@ -529,6 +556,142 @@ PY
 [ $? -eq 0 ] || fail=1
 
 # ---------------------------------------------------------------------------
+printf '\n== icon sets: one switch, both sets complete ==\n'
+# The documents name their icons through examples/icons.tex, which holds one
+# branch per set, so the whole document moves to the other set with a macro on the
+# command line.  A command defined in one branch only would break the other build,
+# and a target that forgot the switch would quietly produce the wrong icons.
+python3 - <<'PY'
+import os, re, sys
+icons = open("examples/icons.tex", encoding="utf-8").read() if os.path.exists("examples/icons.tex") else ""
+if not icons:
+    print("FAIL  examples/icons.tex is missing"); sys.exit(1)
+ok = True
+
+used = set()
+for path in ("examples/cv-ar.tex", "examples/coverletter-ar.tex"):
+    txt = open(path, encoding="utf-8").read()
+    direct = re.findall(r"\\fa[A-Z]\w*", txt)
+    if "\\input{icons.tex}" in txt and "\\usepackage{fontawesome7}" not in txt and not direct:
+        print(f"PASS  {path} names its icons through examples/icons.tex")
+    else:
+        print(f"FAIL  {path} should input icons.tex and call no glyph directly: {direct}")
+        ok = False
+    used |= set(re.findall(r"\\(cvIcon[A-Z]\w*)", txt))
+
+parts = icons.split("\\ifx\\cvIconSet\\cvIconSetMaterial")
+if len(parts) != 2 or "\\else" not in parts[1]:
+    print("FAIL  examples/icons.tex should be one \\ifx ... \\else ... switch")
+    material = fa = ""
+    ok = False
+else:
+    material, fa = re.split(r"\\else", parts[1], maxsplit=1)
+
+for cmd in sorted(used):
+    missing = [side for side, text in (("material", material), ("Font Awesome", fa))
+               if not re.search(r"\\newcommand\*\{\\%s\}" % cmd, text)]
+    if missing:
+        print(f"FAIL  {cmd} is missing from: {', '.join(missing)}"); ok = False
+    else:
+        print(f"PASS  {cmd} is defined for both icon sets")
+
+mk = open("Makefile", encoding="utf-8").read()
+for target, doc in (("material-cv", "cv-ar"), ("material-coverletter", "coverletter-ar")):
+    m = re.search(r"^%s:\n((?:\t.*\n)+)" % target, mk, re.M)
+    recipe = m.group(1) if m else ""
+    if "\\def\\cvIconSet{material}" in recipe and f"\\input{{{doc}.tex}}" in recipe:
+        print(f"PASS  make {target} builds {doc} with the material set")
+    else:
+        print(f"FAIL  make {target} should pass the material switch to {doc}.tex")
+        ok = False
+
+for name in ("README.md", "README.en.md"):
+    txt = open(name, encoding="utf-8").read()
+    if "make material-cv" in txt:
+        print(f"PASS  {name} documents the material command")
+    else:
+        print(f"FAIL  {name} does not document `make material-cv`")
+        ok = False
+sys.exit(0 if ok else 1)
+PY
+[ $? -eq 0 ] || fail=1
+
+printf '\n== icon sets: every Material name draws a glyph ==\n'
+# Material Icons draws a glyph from its *name* as a ligature, and a name it does
+# not know typesets as nothing at all: no error, no missing glyph, just a hole in
+# the header.  So each name is rendered next to a marker letter, and the row has to
+# carry more ink than the marker alone.
+python3 - "$TMP/probe.tex" "$TMP/names.txt" <<'PY'
+import re, sys
+icons = open("examples/icons.tex", encoding="utf-8").read()
+material = re.split(r"\\else", icons.split("\\ifx\\cvIconSet\\cvIconSetMaterial")[1], maxsplit=1)[0]
+names = re.findall(r"\\cviconglyph\{([a-z_]+)\}", material)
+family = re.search(r"\\newfontfamily\\iconfont\[[^\]]*\]\{([^}]*)\}",
+                   open("examples/fonts.tex", encoding="utf-8").read()).group(1)
+with open(sys.argv[1], "w", encoding="utf-8") as fh:
+    fh.write("\\documentclass[12pt]{article}\n\\usepackage{fontspec}\n"
+             "\\usepackage[margin=1cm]{geometry}\n\\pagestyle{empty}\n"
+             f"\\newfontfamily\\probe[Scale=2]{{{family}}}\n\\begin{{document}}\n"
+             "\\noindent M\\par\n"
+             + "".join("\\noindent M {\\probe %s}\\par\n" % n for n in names)
+             + "\\end{document}\n")
+open(sys.argv[2], "w", encoding="utf-8").write("\n".join(names))
+PY
+if [ -z "$(cat "$TMP/names.txt")" ]; then
+  bad "examples/icons.tex names no Material glyph"
+elif (cd "$TMP" && xelatex -interaction=nonstopmode probe.tex >/dev/null 2>&1) && [ -s "$TMP/probe.pdf" ]; then
+  pdftoppm -gray -r 100 -f 1 -l 1 "$TMP/probe.pdf" "$TMP/probe" >/dev/null 2>&1
+  python3 - "$TMP/probe-1.pgm" "$TMP/names.txt" <<'PY'
+import sys
+
+def read_pgm(path):
+    raw = open(path, "rb").read()
+    fields, i = [], 0
+    while len(fields) < 4:
+        while raw[i:i + 1].isspace():
+            i += 1
+        if raw[i:i + 1] == b"#":
+            while raw[i:i + 1] != b"\n":
+                i += 1
+            continue
+        j = i
+        while not raw[j:j + 1].isspace():
+            j += 1
+        fields.append(raw[i:j])
+        i = j
+    return int(fields[1]), int(fields[2]), raw[i + 1:]
+
+w, h, px = read_pgm(sys.argv[1])
+names = open(sys.argv[2], encoding="utf-8").read().split()
+bands, start = [], None
+for y in range(h):
+    ink = any(px[y * w + x] < 200 for x in range(w))
+    if ink and start is None:
+        start = y
+    if not ink and start is not None:
+        bands.append((start, y)); start = None
+if len(bands) != len(names) + 1:
+    print(f"FAIL  the probe rendered {len(bands)} rows, expected {len(names) + 1}")
+    sys.exit(1)
+def ink(band):
+    a, b = band
+    return sum(1 for y in range(a, b) for x in range(w) if px[y * w + x] < 200)
+baseline = ink(bands[0])
+ok = True
+for band, name in zip(bands[1:], names):
+    if ink(band) > baseline:
+        print(f"PASS  the Material name `{name}` draws a glyph")
+    else:
+        print(f"FAIL  the Material name `{name}` draws nothing but space")
+        ok = False
+sys.exit(0 if ok else 1)
+PY
+  [ $? -eq 0 ] || fail=1
+else
+  bad "the Material Icons family is not usable - run ./install.sh (or docker)"
+fi
+
+# ---------------------------------------------------------------------------
 printf '\n== installation paths: documented and real ==\n'
 # The READMEs promise two ways to get a toolchain.  Keep those promises honest:
 # the Dockerfile has to exist and carry what the documents need, the apt list in
@@ -562,6 +725,10 @@ check(fonts_url in df and fonts_url in ci,
 check(re.search(r"fc-match\s+Tajawal", df) is not None,
       "Dockerfile fails loudly when the Arabic family does not resolve",
       "Dockerfile does not assert the Arabic family resolves")
+icons_url = "raw.githubusercontent.com/google/material-design-icons"
+check(icons_url in df and icons_url in ci,
+      "Dockerfile and CI fetch Material Icons from the same upstream source",
+      "Dockerfile and CI disagree about where Material Icons comes from")
 
 # The installer is the documented shortcut, so it has to exist, be runnable, and
 # install the same set the READMEs promise.  It must stay POSIX sh: zsh does not
@@ -576,6 +743,9 @@ check(inst.startswith("#!/bin/sh"),
 check("kpsewhich fontawesome7.sty" in inst and "mktexlsr" in inst,
       "install.sh installs the icon font from CTAN into the user tree",
       "install.sh does not handle fontawesome7")
+check(icons_url in inst and "Material Icons" in inst,
+      "install.sh fetches the Material Icons family `make material-cv` needs",
+      "install.sh does not provide the material icon family")
 
 mk = open("Makefile", encoding="utf-8").read()
 absent = [t for t in ("docker:", "docker-previews:", "docker-test:") if t not in mk]

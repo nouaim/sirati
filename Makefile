@@ -1,4 +1,4 @@
-.PHONY: examples cv-ar coverletter-ar previews colours docker-image docker docker-previews docker-test clean
+.PHONY: examples cv-ar coverletter-ar material material-cv material-coverletter previews colours docker-image docker docker-previews docker-test clean
 
 EXAMPLES_DIR = examples
 
@@ -23,6 +23,21 @@ $(EXAMPLES_DIR)/cv-ar.pdf: $(EXAMPLES_DIR)/cv-ar.tex $(CV_AR_SRCS)
 
 $(EXAMPLES_DIR)/coverletter-ar.pdf: $(EXAMPLES_DIR)/coverletter-ar.tex $(COVERLETTER_AR_SRCS)
 	cd $(EXAMPLES_DIR) && $(CC) -interaction=nonstopmode coverletter-ar.tex
+
+# The same two documents drawn with Google's Material Icons instead of Font
+# Awesome.  Nothing in examples/ changes: the icon set is handed to XeLaTeX on the
+# command line, and -jobname keeps the result from overwriting the Font Awesome
+# PDFs that the READMEs show.  Needs the family installed (install.sh installs it).
+# These PDFs are build output and are never committed.
+material: material-cv material-coverletter
+
+material-cv:
+	cd $(EXAMPLES_DIR) && $(CC) -interaction=nonstopmode -jobname=cv-ar-material \
+	  '\def\cvIconSet{material}\input{cv-ar.tex}'
+
+material-coverletter:
+	cd $(EXAMPLES_DIR) && $(CC) -interaction=nonstopmode -jobname=coverletter-ar-material \
+	  '\def\cvIconSet{material}\input{coverletter-ar.tex}'
 
 # Regenerate the README preview images from the built PDFs.
 # Needs poppler-utils for pdftoppm; not required by the normal build.

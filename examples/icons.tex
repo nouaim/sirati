@@ -1,0 +1,43 @@
+%-------------------------------------------------------------------------------
+% سيرتي — icons
+% Licence: CC BY-SA 4.0 <https://creativecommons.org/licenses/by-sa/4.0/>
+% Adapted from Awesome CV by Claud D. Park <https://github.com/posquit0/Awesome-CV>,
+% published under the same licence.
+%-------------------------------------------------------------------------------
+% The only place in this repository where an icon is named.  Both documents call
+% the four commands below and never a glyph name, so the whole document moves to
+% another icon set with one switch, given before the document is read:
+%
+%   \def\cvIconSet{material}       % or fa, which is the default
+%
+% `make material-cv` passes exactly that line on the XeLaTeX command line, so
+% nothing in the sources changes to see the other set.  The family each set draws
+% with is named in fonts.tex; this file only picks the glyphs.
+%
+% Font Awesome arrives with the CTAN package, so it needs no font file.  Material
+% Icons is Google's set and install.sh installs it.  It draws an icon from its
+% *name* as a ligature — type `mail` and an envelope appears — and a name it does
+% not know typesets as nothing at all rather than as a visible box, so a typo here
+% would be invisible in the PDF.  tests/check-arabic-examples.sh renders every
+% name in this file and fails on a blank one.
+%
+% Material Icons has no brand marks: `code` stands in for the GitHub profile and
+% `work` for the LinkedIn one, the nearest shapes it has.
+%-------------------------------------------------------------------------------
+\ifx\cvIconSet\cvIconSetMaterial
+  % The family has no space glyph, and the first use of a font makes XeTeX set its
+  % interword space up, which logs "Missing character: There is no (U+0020)".  The
+  % parameter is local, so the group silences that one line without hiding a
+  % missing character anywhere else in the document.
+  \newcommand*{\cviconglyph}[1]{{\tracinglostchars=0 \iconfont #1}}
+  \newcommand*{\cvIconPhone}{\cviconglyph{smartphone}}
+  \newcommand*{\cvIconMail}{\cviconglyph{mail}}
+  \newcommand*{\cvIconGithub}{\cviconglyph{code}}
+  \newcommand*{\cvIconLinkedin}{\cviconglyph{work}}
+\else
+  \usepackage{fontawesome7}
+  \newcommand*{\cvIconPhone}{\faMobile}
+  \newcommand*{\cvIconMail}{\faEnvelope}
+  \newcommand*{\cvIconGithub}{\faSquareGithub}
+  \newcommand*{\cvIconLinkedin}{\faLinkedin}
+\fi
