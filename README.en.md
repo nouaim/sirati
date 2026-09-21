@@ -161,37 +161,37 @@ paper.
 
 The accent is one line in `examples/colours.tex`; these are eight of them to compare, and `make colours` regenerates the previews.
 
-**teal** · `0F6E6E` · [PDF](examples/colours/cv-teal.pdf)
+<p align="center"><strong>teal</strong> · <code>0F6E6E</code> · <a href="examples/colours/cv-teal.pdf">PDF</a></p>
 
-<img src="examples/colours/cv-teal.png" width="520" alt="the CV in teal">
+<p align="center"><a href="examples/colours/cv-teal.pdf"><img src="examples/colours/cv-teal.png" width="520" alt="the CV in teal"></a></p>
 
-**emerald** · `1B7F5A` · [PDF](examples/colours/cv-emerald.pdf)
+<p align="center"><strong>emerald</strong> · <code>1B7F5A</code> · <a href="examples/colours/cv-emerald.pdf">PDF</a></p>
 
-<img src="examples/colours/cv-emerald.png" width="520" alt="the CV in emerald">
+<p align="center"><a href="examples/colours/cv-emerald.pdf"><img src="examples/colours/cv-emerald.png" width="520" alt="the CV in emerald"></a></p>
 
-**navy** · `283593` · [PDF](examples/colours/cv-navy.pdf)
+<p align="center"><strong>navy</strong> · <code>283593</code> · <a href="examples/colours/cv-navy.pdf">PDF</a></p>
 
-<img src="examples/colours/cv-navy.png" width="520" alt="the CV in navy">
+<p align="center"><a href="examples/colours/cv-navy.pdf"><img src="examples/colours/cv-navy.png" width="520" alt="the CV in navy"></a></p>
 
-**violet** · `6A4C93` · [PDF](examples/colours/cv-violet.pdf)
+<p align="center"><strong>violet</strong> · <code>6A4C93</code> · <a href="examples/colours/cv-violet.pdf">PDF</a></p>
 
-<img src="examples/colours/cv-violet.png" width="520" alt="the CV in violet">
+<p align="center"><a href="examples/colours/cv-violet.pdf"><img src="examples/colours/cv-violet.png" width="520" alt="the CV in violet"></a></p>
 
-**rose** · `B03060` · [PDF](examples/colours/cv-rose.pdf)
+<p align="center"><strong>rose</strong> · <code>B03060</code> · <a href="examples/colours/cv-rose.pdf">PDF</a></p>
 
-<img src="examples/colours/cv-rose.png" width="520" alt="the CV in rose">
+<p align="center"><a href="examples/colours/cv-rose.pdf"><img src="examples/colours/cv-rose.png" width="520" alt="the CV in rose"></a></p>
 
-**burgundy** · `8C2F39` · [PDF](examples/colours/cv-burgundy.pdf)
+<p align="center"><strong>burgundy</strong> · <code>8C2F39</code> · <a href="examples/colours/cv-burgundy.pdf">PDF</a></p>
 
-<img src="examples/colours/cv-burgundy.png" width="520" alt="the CV in burgundy">
+<p align="center"><a href="examples/colours/cv-burgundy.pdf"><img src="examples/colours/cv-burgundy.png" width="520" alt="the CV in burgundy"></a></p>
 
-**bronze** · `9A6B2F` · [PDF](examples/colours/cv-bronze.pdf)
+<p align="center"><strong>bronze</strong> · <code>9A6B2F</code> · <a href="examples/colours/cv-bronze.pdf">PDF</a></p>
 
-<img src="examples/colours/cv-bronze.png" width="520" alt="the CV in bronze">
+<p align="center"><a href="examples/colours/cv-bronze.pdf"><img src="examples/colours/cv-bronze.png" width="520" alt="the CV in bronze"></a></p>
 
-**graphite** · `37474F` · [PDF](examples/colours/cv-graphite.pdf)
+<p align="center"><strong>graphite</strong> · <code>37474F</code> · <a href="examples/colours/cv-graphite.pdf">PDF</a></p>
 
-<img src="examples/colours/cv-graphite.png" width="520" alt="the CV in graphite">
+<p align="center"><a href="examples/colours/cv-graphite.pdf"><img src="examples/colours/cv-graphite.png" width="520" alt="the CV in graphite"></a></p>
 
 
 ## Credit

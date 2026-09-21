@@ -156,37 +156,37 @@ cd examples && xelatex cv-ar.tex
 
 اللون سطر واحد في `examples/colours.tex`، وهذه ثماني صبغات للمقارنة. و`make colours` يُعيد توليد المعاينات.
 
-**أزرق مخضرّ** · `0F6E6E` · [PDF](examples/colours/cv-teal.pdf)
+<p align="center"><strong>أزرق مخضرّ</strong> · <code>0F6E6E</code> · <a href="examples/colours/cv-teal.pdf">PDF</a></p>
 
-<img src="examples/colours/cv-teal.png" width="520" alt="سيرتي أزرق مخضرّ">
+<p align="center"><a href="examples/colours/cv-teal.pdf"><img src="examples/colours/cv-teal.png" width="520" alt="سيرتي أزرق مخضرّ"></a></p>
 
-**زمردي** · `1B7F5A` · [PDF](examples/colours/cv-emerald.pdf)
+<p align="center"><strong>زمردي</strong> · <code>1B7F5A</code> · <a href="examples/colours/cv-emerald.pdf">PDF</a></p>
 
-<img src="examples/colours/cv-emerald.png" width="520" alt="سيرتي زمردي">
+<p align="center"><a href="examples/colours/cv-emerald.pdf"><img src="examples/colours/cv-emerald.png" width="520" alt="سيرتي زمردي"></a></p>
 
-**كحلي** · `283593` · [PDF](examples/colours/cv-navy.pdf)
+<p align="center"><strong>كحلي</strong> · <code>283593</code> · <a href="examples/colours/cv-navy.pdf">PDF</a></p>
 
-<img src="examples/colours/cv-navy.png" width="520" alt="سيرتي كحلي">
+<p align="center"><a href="examples/colours/cv-navy.pdf"><img src="examples/colours/cv-navy.png" width="520" alt="سيرتي كحلي"></a></p>
 
-**بنفسجي** · `6A4C93` · [PDF](examples/colours/cv-violet.pdf)
+<p align="center"><strong>بنفسجي</strong> · <code>6A4C93</code> · <a href="examples/colours/cv-violet.pdf">PDF</a></p>
 
-<img src="examples/colours/cv-violet.png" width="520" alt="سيرتي بنفسجي">
+<p align="center"><a href="examples/colours/cv-violet.pdf"><img src="examples/colours/cv-violet.png" width="520" alt="سيرتي بنفسجي"></a></p>
 
-**وردي** · `B03060` · [PDF](examples/colours/cv-rose.pdf)
+<p align="center"><strong>وردي</strong> · <code>B03060</code> · <a href="examples/colours/cv-rose.pdf">PDF</a></p>
 
-<img src="examples/colours/cv-rose.png" width="520" alt="سيرتي وردي">
+<p align="center"><a href="examples/colours/cv-rose.pdf"><img src="examples/colours/cv-rose.png" width="520" alt="سيرتي وردي"></a></p>
 
-**عنّابي** · `8C2F39` · [PDF](examples/colours/cv-burgundy.pdf)
+<p align="center"><strong>عنّابي</strong> · <code>8C2F39</code> · <a href="examples/colours/cv-burgundy.pdf">PDF</a></p>
 
-<img src="examples/colours/cv-burgundy.png" width="520" alt="سيرتي عنّابي">
+<p align="center"><a href="examples/colours/cv-burgundy.pdf"><img src="examples/colours/cv-burgundy.png" width="520" alt="سيرتي عنّابي"></a></p>
 
-**برونزي** · `9A6B2F` · [PDF](examples/colours/cv-bronze.pdf)
+<p align="center"><strong>برونزي</strong> · <code>9A6B2F</code> · <a href="examples/colours/cv-bronze.pdf">PDF</a></p>
 
-<img src="examples/colours/cv-bronze.png" width="520" alt="سيرتي برونزي">
+<p align="center"><a href="examples/colours/cv-bronze.pdf"><img src="examples/colours/cv-bronze.png" width="520" alt="سيرتي برونزي"></a></p>
 
-**جرافيت** · `37474F` · [PDF](examples/colours/cv-graphite.pdf)
+<p align="center"><strong>جرافيت</strong> · <code>37474F</code> · <a href="examples/colours/cv-graphite.pdf">PDF</a></p>
 
-<img src="examples/colours/cv-graphite.png" width="520" alt="سيرتي جرافيت">
+<p align="center"><a href="examples/colours/cv-graphite.pdf"><img src="examples/colours/cv-graphite.png" width="520" alt="سيرتي جرافيت"></a></p>
 
 
 ## شكر وتقدير

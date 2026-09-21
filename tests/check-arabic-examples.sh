@@ -504,6 +504,23 @@ for name in ("README.md", "README.en.md"):
         ok = False
     else:
         print(f"PASS  {name} shows all {len(accents)} colour previews")
+    # A bare <img> is auto-linked to its PNG, which opens a soft bitmap, and an
+    # unaligned one sits flush left while the Arabic around it is right-aligned.
+    # Each preview must stay centred and point at its PDF, label and all.
+    loose = [n for n, _ in accents
+             if f'<p align="center"><a href="examples/colours/cv-{n}.pdf">'
+                f'<img src="examples/colours/cv-{n}.png"' not in txt]
+    if loose:
+        print(f"FAIL  {name}: previews not centred on their PDF: {loose}")
+        ok = False
+    else:
+        print(f"PASS  {name} centres every preview and opens its PDF when clicked")
+    centred = txt.count('<p align="center"><strong>')
+    if centred != len(accents):
+        print(f"FAIL  {name}: {centred} of {len(accents)} colour labels are centred")
+        ok = False
+    else:
+        print(f"PASS  {name} centres all {len(accents)} colour labels")
 sys.exit(0 if ok else 1)
 PY
 [ $? -eq 0 ] || fail=1
